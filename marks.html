@@ -3,714 +3,765 @@
 
 <head>
 
-<meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<title>Bhargav School | Marks</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background: #f1f5f9;
-    color: #1e293b;
-}
-
-/* SIDEBAR */
-
-.sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 250px;
-    height: 100vh;
-    background: #0f172a;
-    color: white;
-    padding: 25px 15px;
-}
-
-.school-name {
-    text-align: center;
-    padding-bottom: 25px;
-    border-bottom: 1px solid #334155;
-}
-
-.school-name h2 {
-    font-size: 20px;
-    letter-spacing: 1px;
-}
-
-.school-name p {
-    color: #94a3b8;
-    margin-top: 5px;
-    font-size: 12px;
-}
-
-.menu {
-    margin-top: 25px;
-}
-
-.menu a {
-    display: block;
-    color: #cbd5e1;
-    text-decoration: none;
-    padding: 13px 15px;
-    border-radius: 8px;
-    margin-bottom: 5px;
-}
-
-.menu a:hover,
-.menu a.active {
-    background: #1e3a8a;
-    color: white;
-}
-
-.logout {
-    position: absolute;
-    bottom: 25px;
-    left: 15px;
-    right: 15px;
-}
-
-.logout button {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #475569;
-    background: transparent;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.logout button:hover {
-    background: #dc2626;
-}
-
-/* MAIN */
-
-.main {
-    margin-left: 250px;
-    padding: 30px;
-}
-
-.topbar {
-    background: white;
-    padding: 20px 25px;
-    border-radius: 15px;
-    margin-bottom: 25px;
-}
-
-.topbar h1 {
-    font-size: 26px;
-}
-
-.topbar p {
-    color: #64748b;
-    margin-top: 6px;
-}
-
-/* SUMMARY */
-
-.summary {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.summary-card {
-    background: white;
-    padding: 20px;
-    border-radius: 15px;
-}
-
-.summary-card p {
-    color: #64748b;
-    font-size: 13px;
-    margin-bottom: 8px;
-}
-
-.summary-card h2 {
-    font-size: 24px;
-}
-
-/* ACTIONS */
-
-.actions {
-    background: white;
-    padding: 20px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-
-    display: flex;
-    gap: 15px;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.search {
-    flex: 1;
-    min-width: 220px;
-}
-
-.search input {
-    width: 100%;
-    padding: 13px;
-    border: 1px solid #cbd5e1;
-    border-radius: 9px;
-    font-size: 14px;
-}
-
-.add-button {
-    background: #1e3a8a;
-    color: white;
-    border: none;
-    padding: 13px 20px;
-    border-radius: 9px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.add-button:hover {
-    background: #172554;
-}
-
-/* TABLE */
-
-.table-container {
-    background: white;
-    border-radius: 15px;
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 1000px;
-}
-
-th {
-    background: #f8fafc;
-    text-align: left;
-    padding: 15px;
-    font-size: 13px;
-    color: #475569;
-}
-
-td {
-    padding: 15px;
-    border-top: 1px solid #e2e8f0;
-    font-size: 14px;
-}
-
-tr:hover {
-    background: #f8fafc;
-}
-
-.edit {
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 7px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-right: 5px;
-}
-
-.delete {
-    background: #dc2626;
-    color: white;
-    border: none;
-    padding: 7px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-/* GRADE */
-
-.grade {
-    display: inline-block;
-    padding: 5px 9px;
-    border-radius: 20px;
-    background: #dbeafe;
-    color: #1e40af;
-    font-weight: bold;
-    font-size: 12px;
-}
-
-/* MODAL */
-
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.65);
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    z-index: 1000;
-}
-
-.modal-box {
-    width: 100%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    background: white;
-    padding: 30px;
-    border-radius: 18px;
-}
-
-.modal-box h2 {
-    margin-bottom: 20px;
-}
-
-.form-group {
-    margin-bottom: 16px;
-}
-
-label {
-    display: block;
-    font-size: 13px;
-    font-weight: bold;
-    margin-bottom: 6px;
-    color: #475569;
-}
-
-input,
-textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    font-size: 14px;
-}
-
-textarea {
-    min-height: 80px;
-    resize: vertical;
-}
-
-.percentage-box {
-    background: #f8fafc;
-    padding: 15px;
-    border-radius: 10px;
-    margin-top: 5px;
-    margin-bottom: 16px;
-}
-
-.percentage-box strong {
-    font-size: 20px;
-}
-
-.modal-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.save-button {
-    flex: 1;
-    padding: 13px;
-    border: none;
-    border-radius: 8px;
-    background: #1e3a8a;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.cancel-button {
-    flex: 1;
-    padding: 13px;
-    border: none;
-    border-radius: 8px;
-    background: #e2e8f0;
-    color: #334155;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-#message {
-    text-align: center;
-    margin: 15px 0;
-    font-size: 14px;
-}
-
-.empty {
-    text-align: center;
-    padding: 40px;
-    color: #64748b;
-}
-
-/* MOBILE */
-
-@media (max-width: 900px) {
-
-    .summary {
-        grid-template-columns: 1fr;
-    }
-
-}
-
-@media (max-width: 700px) {
-
-    .sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-    }
-
-    .logout {
-        position: relative;
-        left: auto;
-        right: auto;
-        bottom: auto;
-        margin-top: 20px;
-    }
-
-    .main {
-        margin-left: 0;
-        padding: 15px;
-    }
-
-}
-
-</style>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Bhargav School | Marks</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #0f172a;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .school-name {
+            text-align: center;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .school-name h2 {
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+
+        .school-name p {
+            color: #94a3b8;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .menu {
+            margin-top: 25px;
+        }
+
+        .menu a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 13px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .logout button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #475569;
+            background: transparent;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .logout button:hover {
+            background: #dc2626;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .topbar {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            font-size: 26px;
+        }
+
+        .topbar p {
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        /* SUMMARY */
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .summary-card p {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .summary-card h2 {
+            font-size: 24px;
+        }
+
+        /* ACTIONS */
+
+        .actions {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        .add-button {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 13px 20px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .add-button:hover {
+            background: #172554;
+        }
+
+        /* TABLE */
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        th {
+            background: #f8fafc;
+            text-align: left;
+            padding: 15px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        td {
+            padding: 15px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .edit {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .delete {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* GRADE */
+
+        .grade {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #dbeafe;
+            color: #1e40af;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        /* MODAL */
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+        }
+
+        .modal-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #475569;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .percentage-box {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 5px;
+            margin-bottom: 16px;
+        }
+
+        .percentage-box strong {
+            font-size: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .save-button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #1e3a8a;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cancel-button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #e2e8f0;
+            color: #334155;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #message {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 14px;
+            min-height: 18px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 900px) {
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .logout {
+                position: relative;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                margin-top: 20px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
+
 <body>
+
 
 <!-- SIDEBAR -->
 
 <aside class="sidebar">
 
-<div class="school-name">
+    <div class="school-name">
 
-<h2>BHARGAV SCHOOL</h2>
+        <h2>BHARGAV SCHOOL</h2>
 
-<p>Management Portal</p>
+        <p>Management Portal</p>
 
-</div>
+    </div>
 
-<nav class="menu">
 
-<a href="dashboard.html">
-📊 Dashboard
-</a>
+    <nav class="menu">
 
-<a href="students.html">
-👨‍🎓 Students
-</a>
+        <a href="dashboard.html">
+            📊 Dashboard
+        </a>
 
-<a href="#">
-👩‍🏫 Teachers
-</a>
+        <a href="students.html">
+            👨‍🎓 Students
+        </a>
 
-<a href="fees.html">
-💰 Fees
-</a>
+        <a href="#">
+            👩‍🏫 Teachers
+        </a>
 
-<a href="marks.html" class="active">
-📚 Marks
-</a>
+        <a href="fees.html">
+            💰 Fees
+        </a>
 
-<a href="#">
-📅 Attendance
-</a>
+        <a href="marks.html" class="active">
+            📚 Marks
+        </a>
 
-<a href="#">
-📢 Notices
-</a>
+        <a href="#">
+            📅 Attendance
+        </a>
 
-<a href="#">
-📝 Homework
-</a>
+        <a href="#">
+            📢 Notices
+        </a>
 
-</nav>
+        <a href="#">
+            📝 Homework
+        </a>
 
-<div class="logout">
+    </nav>
 
-<button id="logoutButton">
-🚪 Logout
-</button>
 
-</div>
+    <div class="logout">
+
+        <button id="logoutButton">
+            🚪 Logout
+        </button>
+
+    </div>
 
 </aside>
+
 
 <!-- MAIN -->
 
 <main class="main">
 
-<div class="topbar">
 
-<h1>Marks Management</h1>
+    <div class="topbar">
 
-<p>
-Manage student examination marks and academic performance.
-</p>
+        <h1>Marks Management</h1>
 
-</div>
+        <p>
+            Manage student examination marks and academic performance.
+        </p>
 
-<!-- SUMMARY -->
+    </div>
 
-<div class="summary">
 
-<div class="summary-card">
+    <!-- SUMMARY -->
 
-<p>Total Marks Records</p>
+    <div class="summary">
 
-<h2 id="recordCount">0</h2>
+        <div class="summary-card">
 
-</div>
+            <p>Total Marks Records</p>
 
-<div class="summary-card">
+            <h2 id="recordCount">
+                0
+            </h2>
 
-<p>Average Percentage</p>
+        </div>
 
-<h2 id="averagePercentage">0%</h2>
 
-</div>
+        <div class="summary-card">
 
-<div class="summary-card">
+            <p>Average Percentage</p>
 
-<p>Highest Percentage</p>
+            <h2 id="averagePercentage">
+                0%
+            </h2>
 
-<h2 id="highestPercentage">0%</h2>
+        </div>
 
-</div>
 
-</div>
+        <div class="summary-card">
 
-<!-- ACTIONS -->
+            <p>Highest Percentage</p>
 
-<div class="actions">
+            <h2 id="highestPercentage">
+                0%
+            </h2>
 
-<div class="search">
+        </div>
 
-<input
-type="text"
-id="searchInput"
-placeholder="🔍 Search by student ID, subject ID or exam ID..."
->
+    </div>
 
-</div>
 
-<button
-class="add-button"
-id="addMarksButton">
+    <!-- ACTIONS -->
 
-+ Add Marks
+    <div class="actions">
 
-</button>
+        <div class="search">
 
-</div>
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="🔍 Search by student ID, subject ID or exam ID..."
+            >
 
-<div id="message"></div>
+        </div>
 
-<!-- TABLE -->
 
-<div class="table-container">
+        <button
+            class="add-button"
+            id="addMarksButton">
 
-<table>
+            + Add Marks
 
-<thead>
+        </button>
 
-<tr>
+    </div>
 
-<th>Student ID</th>
 
-<th>Subject ID</th>
+    <div id="message"></div>
 
-<th>Exam ID</th>
 
-<th>Marks Obtained</th>
+    <!-- TABLE -->
 
-<th>Maximum Marks</th>
+    <div class="table-container">
 
-<th>Percentage</th>
+        <table>
 
-<th>Grade</th>
+            <thead>
 
-<th>Remarks</th>
+                <tr>
 
-<th>Actions</th>
+                    <th>Student ID</th>
 
-</tr>
+                    <th>Subject ID</th>
 
-</thead>
+                    <th>Exam ID</th>
 
-<tbody id="marksTable"></tbody>
+                    <th>Marks Obtained</th>
 
-</table>
+                    <th>Maximum Marks</th>
 
-</div>
+                    <th>Percentage</th>
+
+                    <th>Grade</th>
+
+                    <th>Remarks</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="marksTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 </main>
 
-<!-- MODAL -->
+
+<!-- ADD / EDIT MODAL -->
 
 <div class="modal" id="marksModal">
 
-<div class="modal-box">
+    <div class="modal-box">
 
-<h2 id="modalTitle">
-Add Marks
-</h2>
+        <h2 id="modalTitle">
+            Add Marks
+        </h2>
 
-<form id="marksForm">
 
-<input
-type="hidden"
-id="marksId"
->
+        <form id="marksForm">
 
-<div class="form-group">
+            <input
+                type="hidden"
+                id="marksId"
+            >
 
-<label>Student ID</label>
 
-<input
-type="text"
-id="studentId"
-placeholder="Enter student UUID"
-required
->
+            <div class="form-group">
+
+                <label>
+                    Student ID
+                </label>
+
+                <input
+                    type="text"
+                    id="studentId"
+                    placeholder="Enter student UUID"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Subject ID
+                </label>
+
+                <input
+                    type="text"
+                    id="subjectId"
+                    placeholder="Enter subject UUID"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Exam ID
+                </label>
+
+                <input
+                    type="text"
+                    id="examId"
+                    placeholder="Enter exam UUID"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Maximum Marks
+                </label>
+
+                <input
+                    type="number"
+                    id="maximumMarks"
+                    min="1"
+                    step="0.01"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Marks Obtained
+                </label>
+
+                <input
+                    type="number"
+                    id="marksObtained"
+                    min="0"
+                    step="0.01"
+                    required
+                >
+
+            </div>
+
+
+            <div class="percentage-box">
+
+                <p>
+                    Percentage & Grade
+                </p>
+
+                <strong id="percentagePreview">
+                    0%
+                </strong>
+
+                <br>
+
+                <span id="gradePreview">
+                    Grade: -
+                </span>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Remarks
+                </label>
+
+                <textarea
+                    id="remarks"
+                    placeholder="Optional remarks"
+                ></textarea>
+
+            </div>
+
+
+            <div class="modal-buttons">
+
+                <button
+                    type="submit"
+                    class="save-button">
+
+                    Save Marks
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="cancel-button"
+                    id="cancelButton">
+
+                    Cancel
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
 
 </div>
 
-<div class="form-group">
-
-<label>Subject ID</label>
-
-<input
-type="text"
-id="subjectId"
-placeholder="Enter subject UUID"
-required
->
-
-</div>
-
-<div class="form-group">
-
-<label>Exam ID</label>
-
-<input
-type="text"
-id="examId"
-placeholder="Enter exam UUID"
-required
->
-
-</div>
-
-<div class="form-group">
-
-<label>Maximum Marks</label>
-
-<input
-type="number"
-id="maximumMarks"
-min="1"
-step="0.01"
-required
->
-
-</div>
-
-<div class="form-group">
-
-<label>Marks Obtained</label>
-
-<input
-type="number"
-id="marksObtained"
-min="0"
-step="0.01"
-required
->
-
-</div>
-
-<div class="percentage-box">
-
-<p>Percentage & Grade</p>
-
-<strong id="percentagePreview">
-0%
-</strong>
-
-<br>
-
-<span id="gradePreview">
-Grade: -
-</span>
-
-</div>
-
-<div class="form-group">
-
-<label>Remarks</label>
-
-<textarea
-id="remarks"
-placeholder="Optional remarks"
-></textarea>
-
-</div>
-
-<div class="modal-buttons">
-
-<button
-type="submit"
-class="save-button">
-
-Save Marks
-
-</button>
-
-<button
-type="button"
-class="cancel-button"
-id="cancelButton">
-
-Cancel
-
-</button>
-
-</div>
-
-</form>
-
-</div>
-
-</div>
 
 <script>
 
+
 /* =====================================================
    SUPABASE CONNECTION
-   SAME CONNECTION AS WORKING STUDENTS PAGE
    ===================================================== */
 
 const SUPABASE_URL =
     "https://jmdujouzsiiwvrsnwawv.supabase.co";
 
+
 const SUPABASE_KEY =
     "sb_publishable__sdosuGSmD9Lz29D4CG3YA_-8hOYoVn";
+
 
 const supabaseClient =
     window.supabase.createClient(
@@ -738,69 +789,125 @@ const searchInput =
 const message =
     document.getElementById("message");
 
+
 let marksRecords = [];
 
 
 /* =====================================================
    CHECK LOGIN
-   SAME PATTERN AS STUDENTS PAGE
    ===================================================== */
 
 async function checkLogin() {
 
-    const {
-        data: {
-            session
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient.auth.getSession();
+
+
+        if (error) {
+
+            showMessage(
+                "Login check failed: " +
+                error.message,
+                "error"
+            );
+
+            return;
+
         }
-    } = await supabaseClient.auth.getSession();
 
-    if (!session) {
 
-        window.location.href =
-            "index.html";
+        const session =
+            data.session;
 
-        return;
+
+        if (!session) {
+
+            window.location.href =
+                "index.html";
+
+            return;
+
+        }
+
+
+        /*
+         * Check management role
+         */
+
+        const {
+            data: roleData,
+            error: roleError
+        } = await supabaseClient
+
+            .from("user_roles")
+
+            .select("role")
+
+            .eq(
+                "user_id",
+                session.user.id
+            )
+
+            .maybeSingle();
+
+
+        if (roleError) {
+
+            showMessage(
+                "Unable to check user role: " +
+                roleError.message,
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if (
+            !roleData ||
+            roleData.role !== "management"
+        ) {
+
+            showMessage(
+                "You do not have management access.",
+                "error"
+            );
+
+            await supabaseClient.auth.signOut();
+
+            setTimeout(
+                function() {
+
+                    window.location.href =
+                        "index.html";
+
+                },
+                1500
+            );
+
+            return;
+
+        }
+
+
+        loadMarks();
 
     }
 
-    const {
-        data: roleData,
-        error
-    } = await supabaseClient
+    catch (error) {
 
-        .from("user_roles")
-
-        .select("role")
-
-        .eq(
-            "user_id",
-            session.user.id
-        )
-
-        .single();
-
-    if (
-        error ||
-        !roleData ||
-        roleData.role !== "management"
-    ) {
-
-        console.error(
-            "User role check failed:",
-            error,
-            roleData
+        showMessage(
+            "Unexpected error: " +
+            error.message,
+            "error"
         );
 
-        await supabaseClient.auth.signOut();
-
-        window.location.href =
-            "index.html";
-
-        return;
-
     }
-
-    loadMarks();
 
 }
 
@@ -827,6 +934,7 @@ async function loadMarks() {
             }
         );
 
+
     if (error) {
 
         showMessage(
@@ -835,18 +943,19 @@ async function loadMarks() {
             "error"
         );
 
-        console.error(error);
-
         return;
 
     }
 
+
     marksRecords =
         data || [];
+
 
     displayMarks(
         marksRecords
     );
+
 
     updateSummary(
         marksRecords
@@ -863,110 +972,137 @@ function displayMarks(list) {
 
     marksTable.innerHTML = "";
 
-    if (list.length === 0) {
+
+    if (!list.length) {
 
         marksTable.innerHTML = `
+
             <tr>
-                <td colspan="9" class="empty">
+
+                <td
+                    colspan="9"
+                    class="empty">
+
                     No marks records found.
+
                 </td>
+
             </tr>
+
         `;
 
         return;
 
     }
 
-    list.forEach(record => {
 
-        const obtained =
-            Number(
-                record.marks_obtained
-            ) || 0;
+    list.forEach(
+        function(record) {
 
-        const maximum =
-            Number(
-                record.maximum_marks
-            ) || 0;
+            const obtained =
+                Number(
+                    record.marks_obtained
+                ) || 0;
 
-        const percentage =
-            maximum > 0
-                ? (
-                    obtained /
-                    maximum
-                ) * 100
-                : 0;
 
-        const grade =
-            calculateGrade(
-                percentage
+            const maximum =
+                Number(
+                    record.maximum_marks
+                ) || 0;
+
+
+            const percentage =
+                maximum > 0
+                    ? (
+                        obtained /
+                        maximum
+                    ) * 100
+                    : 0;
+
+
+            const grade =
+                calculateGrade(
+                    percentage
+                );
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${safe(record.student_id)}
+                </td>
+
+                <td>
+                    ${safe(record.subject_id)}
+                </td>
+
+                <td>
+                    ${safe(record.exam_id)}
+                </td>
+
+                <td>
+                    ${formatNumber(obtained)}
+                </td>
+
+                <td>
+                    ${formatNumber(maximum)}
+                </td>
+
+                <td>
+
+                    <strong>
+                        ${percentage.toFixed(2)}%
+                    </strong>
+
+                </td>
+
+                <td>
+
+                    <span class="grade">
+                        ${grade}
+                    </span>
+
+                </td>
+
+                <td>
+                    ${safe(record.remarks)}
+                </td>
+
+                <td>
+
+                    <button
+                        class="edit"
+                        onclick="editMarks('${safeAttribute(record.id)}')">
+
+                        Edit
+
+                    </button>
+
+                    <button
+                        class="delete"
+                        onclick="deleteMarks('${safeAttribute(record.id)}')">
+
+                        Delete
+
+                    </button>
+
+                </td>
+
+            `;
+
+
+            marksTable.appendChild(
+                row
             );
 
-        const row =
-            document.createElement("tr");
-
-        row.innerHTML = `
-
-            <td>
-                ${safe(record.student_id)}
-            </td>
-
-            <td>
-                ${safe(record.subject_id)}
-            </td>
-
-            <td>
-                ${safe(record.exam_id)}
-            </td>
-
-            <td>
-                ${formatNumber(obtained)}
-            </td>
-
-            <td>
-                ${formatNumber(maximum)}
-            </td>
-
-            <td>
-                <strong>
-                    ${percentage.toFixed(2)}%
-                </strong>
-            </td>
-
-            <td>
-                <span class="grade">
-                    ${grade}
-                </span>
-            </td>
-
-            <td>
-                ${safe(record.remarks)}
-            </td>
-
-            <td>
-
-                <button
-                    class="edit"
-                    onclick="editMarks('${record.id}')">
-
-                    Edit
-
-                </button>
-
-                <button
-                    class="delete"
-                    onclick="deleteMarks('${record.id}')">
-
-                    Delete
-
-                </button>
-
-            </td>
-        `;
-
-        marksTable.appendChild(row);
-
-    });
+        }
+    );
 
 }
 
@@ -977,74 +1113,104 @@ function displayMarks(list) {
 
 function updateSummary(list) {
 
-    document.getElementById(
-        "recordCount"
-    ).textContent =
+    document
+        .getElementById("recordCount")
+        .textContent =
         list.length;
 
-    if (list.length === 0) {
 
-        document.getElementById(
-            "averagePercentage"
-        ).textContent =
+    if (!list.length) {
+
+        document
+            .getElementById(
+                "averagePercentage"
+            )
+            .textContent =
             "0%";
 
-        document.getElementById(
-            "highestPercentage"
-        ).textContent =
+
+        document
+            .getElementById(
+                "highestPercentage"
+            )
+            .textContent =
             "0%";
 
         return;
 
     }
 
+
     const percentages =
-        list.map(record => {
+        list.map(
+            function(record) {
 
-            const obtained =
-                Number(
-                    record.marks_obtained
-                ) || 0;
+                const obtained =
+                    Number(
+                        record.marks_obtained
+                    ) || 0;
 
-            const maximum =
-                Number(
-                    record.maximum_marks
-                ) || 0;
 
-            return maximum > 0
-                ? (
+                const maximum =
+                    Number(
+                        record.maximum_marks
+                    ) || 0;
+
+
+                if (maximum <= 0) {
+
+                    return 0;
+
+                }
+
+
+                return (
                     obtained /
                     maximum
-                ) * 100
-                : 0;
+                ) * 100;
 
-        });
+            }
+        );
+
 
     const total =
         percentages.reduce(
-            (sum, value) =>
-                sum + value,
+            function(sum, value) {
+
+                return sum + value;
+
+            },
             0
         );
+
 
     const average =
         total /
         percentages.length;
+
 
     const highest =
         Math.max(
             ...percentages
         );
 
-    document.getElementById(
-        "averagePercentage"
-    ).textContent =
-        average.toFixed(2) + "%";
 
-    document.getElementById(
-        "highestPercentage"
-    ).textContent =
-        highest.toFixed(2) + "%";
+    document
+        .getElementById(
+            "averagePercentage"
+        )
+        .textContent =
+        average.toFixed(2) +
+        "%";
+
+
+    document
+        .getElementById(
+            "highestPercentage"
+        )
+        .textContent =
+        highest.toFixed(2) +
+        "%";
 
 }
 
@@ -1054,24 +1220,34 @@ function updateSummary(list) {
    ===================================================== */
 
 document
-    .getElementById("addMarksButton")
+    .getElementById(
+        "addMarksButton"
+    )
     .addEventListener(
         "click",
         function() {
 
-            document.getElementById(
-                "modalTitle"
-            ).textContent =
-                "Add Marks";
-
             marksForm.reset();
 
-            document.getElementById(
-                "marksId"
-            ).value =
+
+            document
+                .getElementById(
+                    "modalTitle"
+                )
+                .textContent =
+                "Add Marks";
+
+
+            document
+                .getElementById(
+                    "marksId"
+                )
+                .value =
                 "";
 
+
             updatePreview();
+
 
             marksModal.style.display =
                 "flex";
@@ -1085,14 +1261,19 @@ document
    ===================================================== */
 
 document
-    .getElementById("maximumMarks")
+    .getElementById(
+        "maximumMarks"
+    )
     .addEventListener(
         "input",
         updatePreview
     );
 
+
 document
-    .getElementById("marksObtained")
+    .getElementById(
+        "marksObtained"
+    )
     .addEventListener(
         "input",
         updatePreview
@@ -1103,17 +1284,23 @@ function updatePreview() {
 
     const maximum =
         Number(
-            document.getElementById(
-                "maximumMarks"
-            ).value
+            document
+                .getElementById(
+                    "maximumMarks"
+                )
+                .value
         ) || 0;
+
 
     const obtained =
         Number(
-            document.getElementById(
-                "marksObtained"
-            ).value
+            document
+                .getElementById(
+                    "marksObtained"
+                )
+                .value
         ) || 0;
+
 
     const percentage =
         maximum > 0
@@ -1123,20 +1310,27 @@ function updatePreview() {
             ) * 100
             : 0;
 
+
     const grade =
         calculateGrade(
             percentage
         );
 
-    document.getElementById(
-        "percentagePreview"
-    ).textContent =
+
+    document
+        .getElementById(
+            "percentagePreview"
+        )
+        .textContent =
         percentage.toFixed(2) +
         "%";
 
-    document.getElementById(
-        "gradePreview"
-    ).textContent =
+
+    document
+        .getElementById(
+            "gradePreview"
+        )
+        .textContent =
         "Grade: " +
         grade;
 
@@ -1153,44 +1347,121 @@ marksForm.addEventListener(
 
         event.preventDefault();
 
+
         const id =
-            document.getElementById(
-                "marksId"
-            ).value;
+            document
+                .getElementById(
+                    "marksId"
+                )
+                .value
+                .trim();
+
 
         const studentId =
-            document.getElementById(
-                "studentId"
-            ).value.trim();
+            document
+                .getElementById(
+                    "studentId"
+                )
+                .value
+                .trim();
+
 
         const subjectId =
-            document.getElementById(
-                "subjectId"
-            ).value.trim();
+            document
+                .getElementById(
+                    "subjectId"
+                )
+                .value
+                .trim();
+
 
         const examId =
-            document.getElementById(
-                "examId"
-            ).value.trim();
+            document
+                .getElementById(
+                    "examId"
+                )
+                .value
+                .trim();
+
 
         const maximumMarks =
             Number(
-                document.getElementById(
-                    "maximumMarks"
-                ).value
+                document
+                    .getElementById(
+                        "maximumMarks"
+                    )
+                    .value
             );
+
 
         const marksObtained =
             Number(
-                document.getElementById(
-                    "marksObtained"
-                ).value
+                document
+                    .getElementById(
+                        "marksObtained"
+                    )
+                    .value
             );
 
+
         const remarks =
-            document.getElementById(
-                "remarks"
-            ).value.trim();
+            document
+                .getElementById(
+                    "remarks"
+                )
+                .value
+                .trim();
+
+
+        if (
+            !studentId ||
+            !subjectId ||
+            !examId
+        ) {
+
+            showMessage(
+                "Please fill all ID fields.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if (
+            !Number.isFinite(
+                maximumMarks
+            ) ||
+            maximumMarks <= 0
+        ) {
+
+            showMessage(
+                "Maximum marks must be greater than 0.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if (
+            !Number.isFinite(
+                marksObtained
+            ) ||
+            marksObtained < 0
+        ) {
+
+            showMessage(
+                "Marks obtained cannot be negative.",
+                "error"
+            );
+
+            return;
+
+        }
+
 
         if (
             marksObtained >
@@ -1205,6 +1476,7 @@ marksForm.addEventListener(
             return;
 
         }
+
 
         const marksData = {
 
@@ -1224,11 +1496,13 @@ marksForm.addEventListener(
                 maximumMarks,
 
             remarks:
-                remarks
+                remarks || null
 
         };
 
+
         let result;
+
 
         if (id) {
 
@@ -1246,7 +1520,9 @@ marksForm.addEventListener(
                         id
                     );
 
-        } else {
+        }
+
+        else {
 
             result =
                 await supabaseClient
@@ -1259,23 +1535,23 @@ marksForm.addEventListener(
 
         }
 
+
         if (result.error) {
 
             showMessage(
+                "Unable to save marks: " +
                 result.error.message,
                 "error"
-            );
-
-            console.error(
-                result.error
             );
 
             return;
 
         }
 
+
         marksModal.style.display =
             "none";
+
 
         showMessage(
             id
@@ -1284,7 +1560,8 @@ marksForm.addEventListener(
             "success"
         );
 
-        loadMarks();
+
+        await loadMarks();
 
     }
 );
@@ -1299,58 +1576,93 @@ window.editMarks =
 
         const record =
             marksRecords.find(
-                item =>
-                    String(item.id) ===
-                    String(id)
+                function(item) {
+
+                    return String(item.id) ===
+                        String(id);
+
+                }
             );
 
+
         if (!record) {
+
+            showMessage(
+                "Marks record not found.",
+                "error"
+            );
 
             return;
 
         }
 
-        document.getElementById(
-            "modalTitle"
-        ).textContent =
+
+        document
+            .getElementById(
+                "modalTitle"
+            )
+            .textContent =
             "Edit Marks";
 
-        document.getElementById(
-            "marksId"
-        ).value =
-            record.id;
 
-        document.getElementById(
-            "studentId"
-        ).value =
+        document
+            .getElementById(
+                "marksId"
+            )
+            .value =
+            record.id || "";
+
+
+        document
+            .getElementById(
+                "studentId"
+            )
+            .value =
             record.student_id || "";
 
-        document.getElementById(
-            "subjectId"
-        ).value =
+
+        document
+            .getElementById(
+                "subjectId"
+            )
+            .value =
             record.subject_id || "";
 
-        document.getElementById(
-            "examId"
-        ).value =
+
+        document
+            .getElementById(
+                "examId"
+            )
+            .value =
             record.exam_id || "";
 
-        document.getElementById(
-            "maximumMarks"
-        ).value =
-            record.maximum_marks || "";
 
-        document.getElementById(
-            "marksObtained"
-        ).value =
-            record.marks_obtained || "";
+        document
+            .getElementById(
+                "maximumMarks"
+            )
+            .value =
+            record.maximum_marks ?? "";
 
-        document.getElementById(
-            "remarks"
-        ).value =
+
+        document
+            .getElementById(
+                "marksObtained"
+            )
+            .value =
+            record.marks_obtained ?? "";
+
+
+        document
+            .getElementById(
+                "remarks"
+            )
+            .value =
             record.remarks || "";
 
+
         updatePreview();
+
 
         marksModal.style.display =
             "flex";
@@ -1365,16 +1677,37 @@ window.editMarks =
 window.deleteMarks =
     async function(id) {
 
+        const record =
+            marksRecords.find(
+                function(item) {
+
+                    return String(item.id) ===
+                        String(id);
+
+                }
+            );
+
+
+        const name =
+            record
+                ? "this marks record"
+                : "this record";
+
+
         const confirmed =
             confirm(
-                "Are you sure you want to delete this marks record?"
+                "Are you sure you want to delete " +
+                name +
+                "?"
             );
+
 
         if (!confirmed) {
 
             return;
 
         }
+
 
         const {
             error
@@ -1389,9 +1722,11 @@ window.deleteMarks =
                 id
             );
 
+
         if (error) {
 
             showMessage(
+                "Unable to delete marks: " +
                 error.message,
                 "error"
             );
@@ -1400,12 +1735,14 @@ window.deleteMarks =
 
         }
 
+
         showMessage(
             "Marks record deleted successfully.",
             "success"
         );
 
-        loadMarks();
+
+        await loadMarks();
 
     };
 
@@ -1415,7 +1752,9 @@ window.deleteMarks =
    ===================================================== */
 
 document
-    .getElementById("cancelButton")
+    .getElementById(
+        "cancelButton"
+    )
     .addEventListener(
         "click",
         function() {
@@ -1425,6 +1764,28 @@ document
 
         }
     );
+
+
+/* =====================================================
+   CLOSE MODAL WHEN CLICKING OUTSIDE
+   ===================================================== */
+
+marksModal.addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            event.target ===
+            marksModal
+        ) {
+
+            marksModal.style.display =
+                "none";
+
+        }
+
+    }
+);
 
 
 /* =====================================================
@@ -1440,6 +1801,7 @@ searchInput.addEventListener(
                 .toLowerCase()
                 .trim();
 
+
         if (!search) {
 
             displayMarks(
@@ -1450,14 +1812,16 @@ searchInput.addEventListener(
 
         }
 
+
         const filtered =
             marksRecords.filter(
-                record => {
+                function(record) {
 
                     return (
 
                         String(
-                            record.student_id || ""
+                            record.student_id ||
+                            ""
                         )
                         .toLowerCase()
                         .includes(search)
@@ -1465,7 +1829,8 @@ searchInput.addEventListener(
                         ||
 
                         String(
-                            record.subject_id || ""
+                            record.subject_id ||
+                            ""
                         )
                         .toLowerCase()
                         .includes(search)
@@ -1473,7 +1838,8 @@ searchInput.addEventListener(
                         ||
 
                         String(
-                            record.exam_id || ""
+                            record.exam_id ||
+                            ""
                         )
                         .toLowerCase()
                         .includes(search)
@@ -1481,7 +1847,8 @@ searchInput.addEventListener(
                         ||
 
                         String(
-                            record.remarks || ""
+                            record.remarks ||
+                            ""
                         )
                         .toLowerCase()
                         .includes(search)
@@ -1490,6 +1857,7 @@ searchInput.addEventListener(
 
                 }
             );
+
 
         displayMarks(
             filtered
@@ -1565,6 +1933,7 @@ function safe(value) {
 
     }
 
+
     return String(value)
 
         .replace(
@@ -1596,6 +1965,31 @@ function safe(value) {
 
 
 /* =====================================================
+   SAFE ATTRIBUTE
+   ===================================================== */
+
+function safeAttribute(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .replace(
+            /'/g,
+            "\\'"
+        );
+
+}
+
+
+/* =====================================================
    MESSAGE
    ===================================================== */
 
@@ -1607,10 +2001,12 @@ function showMessage(
     message.textContent =
         text;
 
+
     message.style.color =
         type === "success"
             ? "#15803d"
             : "#dc2626";
+
 
     setTimeout(
         function() {
@@ -1630,7 +2026,9 @@ function showMessage(
    ===================================================== */
 
 document
-    .getElementById("logoutButton")
+    .getElementById(
+        "logoutButton"
+    )
     .addEventListener(
         "click",
         async function() {
@@ -1638,6 +2036,7 @@ document
             await supabaseClient
                 .auth
                 .signOut();
+
 
             window.location.href =
                 "index.html";
