@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bhargav School | Management Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #0f172a;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .school-name {
+            text-align: center;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .school-name h2 {
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+
+        .school-name p {
+            color: #94a3b8;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .menu {
+            margin-top: 25px;
+        }
+
+        .menu a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 13px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: 0.2s;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .logout button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #475569;
+            background: transparent;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .logout button:hover {
+            background: #dc2626;
+            border-color: #dc2626;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .topbar {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h1 {
+            font-size: 25px;
+        }
+
+        .topbar p {
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .admin {
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* CARDS */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .card-icon {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            color: #64748b;
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .card strong {
+            display: block;
+            margin-top: 8px;
+            font-size: 30px;
+            color: #0f172a;
+        }
+
+        /* WELCOME */
+
+        .welcome {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        .welcome h2 {
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                width: 210px;
+            }
+
+            .main {
+                margin-left: 210px;
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 650px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .logout {
+                position: relative;
+                bottom: auto;
+                left: auto;
+                right: auto;
+                margin-top: 20px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="school-name">
+
+        <h2>BHARGAV SCHOOL</h2>
+
+        <p>Management Portal</p>
+
+    </div>
+
+    <nav class="menu">
+
+        <a href="#" class="active">
+            📊 Dashboard
+        </a>
+
+        <a href="#">
+            👨‍🎓 Students
+        </a>
+
+        <a href="#">
+            👩‍🏫 Teachers
+        </a>
+
+        <a href="#">
+            💰 Fees
+        </a>
+
+        <a href="#">
+            📚 Marks
+        </a>
+
+        <a href="#">
+            📅 Attendance
+        </a>
+
+        <a href="#">
+            📢 Notices
+        </a>
+
+        <a href="#">
+            📝 Homework
+        </a>
+
+    </nav>
+
+    <div class="logout">
+
+        <button id="logoutButton">
+            🚪 Logout
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- MAIN CONTENT -->
+
+<main class="main">
+
+    <div class="topbar">
+
+        <div>
+
+            <h1>Management Dashboard</h1>
+
+            <p>
+                Welcome to Bhargav School Management Portal
+            </p>
+
+        </div>
+
+        <div class="admin">
+            👨‍💼 MANAGEMENT
+        </div>
+
+    </div>
+
+
+    <!-- STATISTICS -->
+
+    <section class="cards">
+
+        <div class="card">
+
+            <div class="card-icon">
+                👨‍🎓
+            </div>
+
+            <h3>Total Students</h3>
+
+            <strong id="studentCount">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                👩‍🏫
+            </div>
+
+            <h3>Total Teachers</h3>
+
+            <strong id="teacherCount">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                💰
+            </div>
+
+            <h3>Fee Records</h3>
+
+            <strong id="feeCount">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                📢
+            </div>
+
+            <h3>Notices</h3>
+
+            <strong id="noticeCount">
+                0
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <!-- WELCOME -->
+
+    <section class="welcome">
+
+        <h2>Welcome, Management 👋</h2>
+
+        <p>
+            From this dashboard you will be able to manage
+            students, teachers, fees, marks, attendance,
+            notices and other school information.
+        </p>
+
+        <br>
+
+        <p>
+            The management system is being built step by step.
+            The student and teacher management modules will
+            be added next.
+        </p>
+
+    </section>
+
+</main>
+
+
+<script>
+
+    /* =====================================================
+       SUPABASE CONNECTION
+       ===================================================== */
+
+    const SUPABASE_URL =
+        "https://supabase.com/dashboard/project/jmdujouzsiiwvrsnwawv/settings/api-keys";
+
+    const SUPABASE_KEY =
+        "sb_publishable__sdosuGSmD9Lz29D4CG3YA_-8hOYoVn";
+
+
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+
+    /* =====================================================
+       CHECK LOGIN
+       ===================================================== */
+
+    async function checkLogin() {
+
+        const {
+            data: {
+                session
+            }
+        } = await supabaseClient.auth.getSession();
+
+
+        if (!session) {
+
+            window.location.href = "index.html";
+
+            return;
+
+        }
+
+
+        /* Check Management Role */
+
+        const {
+            data: roleData,
+            error
+        } = await supabaseClient
+
+            .from("user_roles")
+
+            .select("role")
+
+            .eq("user_id", session.user.id)
+
+            .single();
+
+
+        if (error || roleData.role !== "management") {
+
+            await supabaseClient.auth.signOut();
+
+            window.location.href = "index.html";
+
+            return;
+
+        }
+
+
+        loadDashboard();
+
+    }
+
+
+    /* =====================================================
+       LOAD DASHBOARD COUNTS
+       ===================================================== */
+
+    async function loadDashboard() {
+
+        const students =
+            await supabaseClient
+                .from("students")
+                .select("*", {
+                    count: "exact",
+                    head: true
+                });
+
+
+        const teachers =
+            await supabaseClient
+                .from("teachers")
+                .select("*", {
+                    count: "exact",
+                    head: true
+                });
+
+
+        const fees =
+            await supabaseClient
+                .from("fees")
+                .select("*", {
+                    count: "exact",
+                    head: true
+                });
+
+
+        const notices =
+            await supabaseClient
+                .from("notices")
+                .select("*", {
+                    count: "exact",
+                    head: true
+                });
+
+
+        document.getElementById("studentCount")
+            .textContent =
+            students.count || 0;
+
+
+        document.getElementById("teacherCount")
+            .textContent =
+            teachers.count || 0;
+
+
+        document.getElementById("feeCount")
+            .textContent =
+            fees.count || 0;
+
+
+        document.getElementById("noticeCount")
+            .textContent =
+            notices.count || 0;
+
+    }
+
+
+    /* =====================================================
+       LOGOUT
+       ===================================================== */
+
+    document
+        .getElementById("logoutButton")
+        .addEventListener("click", async function() {
+
+            await supabaseClient.auth.signOut();
+
+            window.location.href = "index.html";
+
+        });
+
+
+    /* START */
+
+    checkLogin();
+
+</script>
+
+</body>
+</html>
