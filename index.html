@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Bhargav School | Management Login</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Bhargav School | Login</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -18,58 +23,107 @@
         body {
             font-family: Arial, sans-serif;
             min-height: 100vh;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f172a,
+                    #1e3a8a
+                );
+
             display: flex;
             align-items: center;
             justify-content: center;
-            background:
-                linear-gradient(135deg, #0f172a, #1e3a8a);
+
             padding: 20px;
         }
 
-        .login-box {
+        /* LOGIN CONTAINER */
+
+        .login-container {
             width: 100%;
-            max-width: 430px;
+            max-width: 440px;
+
             background: white;
-            padding: 42px;
-            border-radius: 22px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.30);
+
+            border-radius: 20px;
+
+            padding: 40px 35px;
+
+            box-shadow:
+                0 25px 60px
+                rgba(0, 0, 0, 0.25);
         }
 
-        .logo {
+        /* SCHOOL HEADER */
+
+        .school-header {
             text-align: center;
             margin-bottom: 30px;
         }
 
-        .logo h1 {
-            color: #1e3a8a;
-            font-size: 27px;
-            letter-spacing: 1px;
-        }
+        .school-logo {
+            width: 80px;
+            height: 80px;
 
-        .logo p {
-            color: #64748b;
-            margin-top: 7px;
-            font-size: 14px;
-        }
-
-        .portal-icon {
-            width: 70px;
-            height: 70px;
             margin: 0 auto 15px;
+
             border-radius: 50%;
-            background: #eff6ff;
+
+            background: #1e3a8a;
+
+            color: white;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             font-size: 32px;
+            font-weight: bold;
         }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 25px;
-            color: #111827;
-            font-size: 23px;
+        .school-header h1 {
+            color: #0f172a;
+            font-size: 25px;
+            letter-spacing: 1px;
         }
+
+        .school-header p {
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .tagline {
+            margin-top: 10px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            color: #1e3a8a;
+
+            letter-spacing: 1px;
+        }
+
+        /* LOGIN TITLE */
+
+        .login-title {
+            margin-bottom: 20px;
+        }
+
+        .login-title h2 {
+            color: #1e293b;
+            font-size: 22px;
+        }
+
+        .login-title p {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        /* FORM */
 
         .form-group {
             margin-bottom: 18px;
@@ -77,53 +131,116 @@
 
         label {
             display: block;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            color: #475569;
+
             margin-bottom: 7px;
-            color: #374151;
-            font-weight: 600;
-            font-size: 14px;
         }
 
         input {
             width: 100%;
-            padding: 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 15px;
+
+            padding: 13px 14px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 9px;
+
+            font-size: 14px;
+
+            outline: none;
+
             transition: 0.2s;
         }
 
         input:focus {
-            outline: none;
             border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37, 99, 235, 0.1);
         }
 
-        button {
-            width: 100%;
-            padding: 14px;
+        /* PASSWORD */
+
+        .password-box {
+            position: relative;
+        }
+
+        .password-box input {
+            padding-right: 75px;
+        }
+
+        .show-password {
+            position: absolute;
+
+            right: 10px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
             border: none;
-            border-radius: 10px;
-            background: #1e3a8a;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
+
+            background: transparent;
+
+            color: #2563eb;
+
+            font-size: 12px;
+
             cursor: pointer;
+
+            font-weight: bold;
+        }
+
+        /* LOGIN BUTTON */
+
+        .login-button {
+            width: 100%;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            background: #1e3a8a;
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            margin-top: 5px;
+
             transition: 0.2s;
         }
 
-        button:hover {
+        .login-button:hover {
             background: #172554;
         }
 
-        button:disabled {
-            opacity: 0.7;
+        .login-button:disabled {
+            background: #94a3b8;
+
             cursor: not-allowed;
         }
 
+        /* MESSAGE */
+
         #message {
             text-align: center;
-            margin-top: 16px;
-            font-size: 14px;
+
+            margin-top: 18px;
+
+            font-size: 13px;
+
             min-height: 20px;
         }
 
@@ -135,250 +252,708 @@
             color: #dc2626;
         }
 
+        /* FOOTER */
+
         .footer {
             text-align: center;
-            margin-top: 28px;
-            color: #94a3b8;
-            font-size: 12px;
+
+            margin-top: 25px;
+
+            padding-top: 20px;
+
+            border-top: 1px solid #e2e8f0;
         }
 
-        @media (max-width: 480px) {
-            .login-box {
+        .footer p {
+            color: #94a3b8;
+
+            font-size: 11px;
+
+            line-height: 1.6;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 500px) {
+
+            .login-container {
                 padding: 30px 22px;
             }
 
-            .logo h1 {
-                font-size: 23px;
+            .school-header h1 {
+                font-size: 21px;
             }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
-<div class="login-box">
 
-    <div class="logo">
+<div class="login-container">
 
-        <div class="portal-icon">
-            🏫
+
+    <!-- SCHOOL HEADER -->
+
+    <div class="school-header">
+
+        <div class="school-logo">
+            BS
         </div>
 
-        <h1>BHARGAV SCHOOL</h1>
+        <h1>
+            BHARGAV SCHOOL
+        </h1>
 
-        <p>Educate • Empower • Excel</p>
+        <p>
+            Management & Learning Portal
+        </p>
+
+        <div class="tagline">
+            EDUCATE • EMPOWER • EXCEL
+        </div>
 
     </div>
 
-    <h2>Management Login</h2>
+
+    <!-- LOGIN TITLE -->
+
+    <div class="login-title">
+
+        <h2>
+            Welcome Back
+        </h2>
+
+        <p>
+            Login to access your school portal.
+        </p>
+
+    </div>
+
+
+    <!-- LOGIN FORM -->
 
     <form id="loginForm">
 
+
         <div class="form-group">
 
-            <label for="email">
+            <label>
                 Email Address
             </label>
 
             <input
                 type="email"
                 id="email"
-                placeholder="Enter management email"
-                autocomplete="username"
+                placeholder="Enter your email"
+                autocomplete="email"
                 required
             >
 
         </div>
+
 
         <div class="form-group">
 
-            <label for="password">
+            <label>
                 Password
             </label>
 
-            <input
-                type="password"
-                id="password"
-                placeholder="Enter your password"
-                autocomplete="current-password"
-                required
-            >
+            <div class="password-box">
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button
+                    type="button"
+                    class="show-password"
+                    id="showPassword">
+
+                    Show
+
+                </button>
+
+            </div>
 
         </div>
 
-        <button type="submit" id="loginButton">
+
+        <button
+            type="submit"
+            class="login-button"
+            id="loginButton">
+
             Login
+
         </button>
+
 
     </form>
 
+
+    <!-- MESSAGE -->
+
     <div id="message"></div>
 
+
+    <!-- FOOTER -->
+
     <div class="footer">
-        © 2026 Bhargav School • Management Portal
+
+        <p>
+            © 2026 Bhargav School
+        </p>
+
+        <p>
+            Secure School Management Portal
+        </p>
+
     </div>
+
 
 </div>
 
 
 <script>
 
-    /* =====================================================
-       SUPABASE CONNECTION
-       ===================================================== */
 
-    const SUPABASE_URL ="https://jmdujouzsiiwvrsnwawv.supabase.co";
+/* =====================================================
+   SUPABASE CONNECTION
+   ===================================================== */
 
-    const SUPABASE_KEY = "sb_publishable__sdosuGSmD9Lz29D4CG3YA_-8hOYoVn";
-
-
-    const supabaseClient =
-        window.supabase.createClient(
-            SUPABASE_URL,
-            SUPABASE_KEY
-        );
+const SUPABASE_URL =
+    "https://jmdujouzsiiwvrsnwawv.supabase.co";
 
 
-    /* =====================================================
-       LOGIN
-       ===================================================== */
-
-    const loginForm =
-        document.getElementById("loginForm");
-
-    const loginButton =
-        document.getElementById("loginButton");
-
-    const message =
-        document.getElementById("message");
+const SUPABASE_KEY =
+    "sb_publishable__sdosuGSmD9Lz29D4CG3YA_-8hOYoVn";
 
 
-    loginForm.addEventListener("submit", async function(event) {
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =====================================================
+   ELEMENTS
+   ===================================================== */
+
+const loginForm =
+    document.getElementById(
+        "loginForm"
+    );
+
+
+const emailInput =
+    document.getElementById(
+        "email"
+    );
+
+
+const passwordInput =
+    document.getElementById(
+        "password"
+    );
+
+
+const loginButton =
+    document.getElementById(
+        "loginButton"
+    );
+
+
+const message =
+    document.getElementById(
+        "message"
+    );
+
+
+const showPassword =
+    document.getElementById(
+        "showPassword"
+    );
+
+
+/* =====================================================
+   SHOW / HIDE PASSWORD
+   ===================================================== */
+
+showPassword.addEventListener(
+    "click",
+    function() {
+
+        if (
+            passwordInput.type ===
+            "password"
+        ) {
+
+            passwordInput.type =
+                "text";
+
+            showPassword.textContent =
+                "Hide";
+
+        } else {
+
+            passwordInput.type =
+                "password";
+
+            showPassword.textContent =
+                "Show";
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   MESSAGE FUNCTION
+   ===================================================== */
+
+function showMessage(
+    text,
+    type
+) {
+
+    message.textContent =
+        text;
+
+    message.className =
+        type;
+
+}
+
+
+/* =====================================================
+   REDIRECT USER
+   ===================================================== */
+
+function redirectUser(
+    role
+) {
+
+    role =
+        String(role || "")
+            .toLowerCase()
+            .trim();
+
+
+    /* MANAGEMENT */
+
+    if (
+        role ===
+        "management"
+    ) {
+
+        window.location.href =
+            "dashboard.html";
+
+        return;
+
+    }
+
+
+    /* TEACHER */
+
+    if (
+        role ===
+        "teacher"
+    ) {
+
+        window.location.href =
+            "teacher-dashboard.html";
+
+        return;
+
+    }
+
+
+    /* STUDENT */
+
+    if (
+        role ===
+        "student"
+    ) {
+
+        window.location.href =
+            "student-dashboard.html";
+
+        return;
+
+    }
+
+
+    /* UNKNOWN ROLE */
+
+    showMessage(
+        "Your account does not have a valid portal role. Please contact school management.",
+        "error"
+    );
+
+}
+
+
+/* =====================================================
+   LOGIN
+   ===================================================== */
+
+loginForm.addEventListener(
+    "submit",
+    async function(event) {
 
         event.preventDefault();
 
-        message.textContent = "";
-        message.className = "";
-
-        loginButton.disabled = true;
-        loginButton.textContent = "Logging in...";
-
 
         const email =
-            document.getElementById("email").value.trim();
+            emailInput.value
+                .trim()
+                .toLowerCase();
+
 
         const password =
-            document.getElementById("password").value;
+            passwordInput.value;
+
+
+        if (
+            !email ||
+            !password
+        ) {
+
+            showMessage(
+                "Please enter your email and password.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        /* BUTTON LOADING */
+
+        loginButton.disabled =
+            true;
+
+        loginButton.textContent =
+            "Logging in...";
+
+
+        showMessage(
+            "",
+            ""
+        );
 
 
         try {
 
-            /* Login through Supabase */
 
-            const { data, error } =
-                await supabaseClient.auth.signInWithPassword({
+            /* =========================================
+               SUPABASE AUTH LOGIN
+               ========================================= */
 
-                    email: email,
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .auth
+                    .signInWithPassword({
 
-                    password: password
+                        email:
+                            email,
 
-                });
+                        password:
+                            password
 
+                    });
+
+
+            /* LOGIN ERROR */
 
             if (error) {
 
-                throw error;
-
-            }
-
-
-            const user = data.user;
-
-
-            if (!user) {
-
-                throw new Error(
-                    "Unable to identify the user."
+                showMessage(
+                    error.message ||
+                    "Login failed. Please check your credentials.",
+                    "error"
                 );
 
+                loginButton.disabled =
+                    false;
+
+                loginButton.textContent =
+                    "Login";
+
+                return;
+
             }
 
 
-            /* Check the user's role */
+            /* =========================================
+               CHECK SESSION
+               ========================================= */
 
-            const { data: roleData, error: roleError } =
+            if (
+                !data ||
+                !data.user
+            ) {
+
+                showMessage(
+                    "Unable to create login session.",
+                    "error"
+                );
+
+                loginButton.disabled =
+                    false;
+
+                loginButton.textContent =
+                    "Login";
+
+                return;
+
+            }
+
+
+            const userId =
+                data.user.id;
+
+
+            /* =========================================
+               GET USER ROLE
+               ========================================= */
+
+            const {
+                data: roleData,
+                error: roleError
+            } =
                 await supabaseClient
 
-                    .from("user_roles")
+                    .from(
+                        "user_roles"
+                    )
 
-                    .select("role")
+                    .select(
+                        "role"
+                    )
 
-                    .eq("user_id", user.id)
+                    .eq(
+                        "user_id",
+                        userId
+                    )
 
-                    .single();
+                    .maybeSingle();
 
 
-            if (roleError) {
+            if (
+                roleError
+            ) {
 
-                await supabaseClient.auth.signOut();
-
-                throw new Error(
-                    "Your account does not have a management role."
+                console.error(
+                    roleError
                 );
+
+
+                await supabaseClient
+                    .auth
+                    .signOut();
+
+
+                showMessage(
+                    "Unable to verify your account role. Please contact management.",
+                    "error"
+                );
+
+
+                loginButton.disabled =
+                    false;
+
+                loginButton.textContent =
+                    "Login";
+
+                return;
 
             }
 
 
-            if (roleData.role !== "management") {
+            if (
+                !roleData ||
+                !roleData.role
+            ) {
 
-                await supabaseClient.auth.signOut();
+                await supabaseClient
+                    .auth
+                    .signOut();
 
-                throw new Error(
-                    "Access denied. This account is not a Management account."
+
+                showMessage(
+                    "No portal role is assigned to this account. Please contact school management.",
+                    "error"
                 );
+
+
+                loginButton.disabled =
+                    false;
+
+                loginButton.textContent =
+                    "Login";
+
+                return;
 
             }
 
 
-            /* Successful login */
+            /* =========================================
+               SUCCESS
+               ========================================= */
 
-            message.textContent =
-                "Login successful. Opening Management Portal...";
-
-            message.className = "success";
-
-
-            /*
-             * Dashboard will be created next.
-             * For now we use dashboard.html.
-             */
-
-            setTimeout(function() {
-
-                window.location.href =
-                    "dashboard.html";
-
-            }, 800);
+            showMessage(
+                "Login successful. Opening your portal...",
+                "success"
+            );
 
 
-        } catch (error) {
+            setTimeout(
+                function() {
 
-            console.error(error);
+                    redirectUser(
+                        roleData.role
+                    );
 
-            message.textContent =
-                error.message || "Login failed.";
+                },
+                500
+            );
 
-            message.className = "error";
 
-            loginButton.disabled = false;
+        } catch (
+            error
+        ) {
 
-            loginButton.textContent = "Login";
+            console.error(
+                error
+            );
+
+
+            showMessage(
+                "Something went wrong. Please try again.",
+                "error"
+            );
+
+
+            loginButton.disabled =
+                false;
+
+            loginButton.textContent =
+                "Login";
 
         }
 
-    });
+    }
+);
+
+
+/* =====================================================
+   CHECK IF ALREADY LOGGED IN
+   ===================================================== */
+
+async function checkExistingSession() {
+
+    try {
+
+        const {
+            data
+        } =
+            await supabaseClient
+                .auth
+                .getSession();
+
+
+        const session =
+            data.session;
+
+
+        if (
+            !session
+        ) {
+
+            return;
+
+        }
+
+
+        /* =============================================
+           GET EXISTING USER ROLE
+           ============================================= */
+
+        const {
+            data: roleData,
+            error
+        } =
+            await supabaseClient
+
+                .from(
+                    "user_roles"
+                )
+
+                .select(
+                    "role"
+                )
+
+                .eq(
+                    "user_id",
+                    session.user.id
+                )
+
+                .maybeSingle();
+
+
+        if (
+            error ||
+            !roleData
+        ) {
+
+            return;
+
+        }
+
+
+        redirectUser(
+            roleData.role
+        );
+
+    } catch (
+        error
+    ) {
+
+        console.error(
+            error
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   START
+   ===================================================== */
+
+checkExistingSession();
+
 
 </script>
 
 </body>
+
 </html>
