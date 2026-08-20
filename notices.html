@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Bhargav School | Notices</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #0f172a;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .school-name {
+            text-align: center;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .school-name h2 {
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+
+        .school-name p {
+            color: #94a3b8;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .menu {
+            margin-top: 25px;
+        }
+
+        .menu a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 13px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .logout button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #475569;
+            background: transparent;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .logout button:hover {
+            background: #dc2626;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .topbar {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            font-size: 26px;
+        }
+
+        .topbar p {
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        /* SUMMARY */
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .summary-card p {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .summary-card h2 {
+            font-size: 24px;
+        }
+
+        /* ACTIONS */
+
+        .actions {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        .add-button {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 13px 20px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .add-button:hover {
+            background: #172554;
+        }
+
+        /* TABLE */
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th {
+            background: #f8fafc;
+            text-align: left;
+            padding: 15px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        td {
+            padding: 15px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .important {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #fee2e2;
+            color: #b91c1c;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .normal {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #dcfce7;
+            color: #166534;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .edit {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .delete {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .view-link {
+            display: inline-block;
+            margin-top: 5px;
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .view-link:hover {
+            text-decoration: underline;
+        }
+
+        /* MODAL */
+
+        .modal {
+            display: none;
+
+            position: fixed;
+            inset: 0;
+
+            background: rgba(15, 23, 42, 0.65);
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            z-index: 1000;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
+
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 18px;
+        }
+
+        .modal-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #475569;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .save-button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #1e3a8a;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cancel-button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #e2e8f0;
+            color: #334155;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #message {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 900px) {
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .logout {
+                position: relative;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                margin-top: 20px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="school-name">
+
+        <h2>BHARGAV SCHOOL</h2>
+
+        <p>Management Portal</p>
+
+    </div>
+
+
+    <nav class="menu">
+
+        <a href="dashboard.html">
+            📊 Dashboard
+        </a>
+
+        <a href="students.html">
+            👨‍🎓 Students
+        </a>
+
+        <a href="teachers.html">
+            👩‍🏫 Teachers
+        </a>
+
+        <a href="fees.html">
+            💰 Fees
+        </a>
+
+        <a href="marks.html">
+            📚 Marks
+        </a>
+
+        <a href="attendance.html">
+            📅 Attendance
+        </a>
+
+        <a href="notices.html" class="active">
+            📢 Notices
+        </a>
+
+        <a href="homework.html">
+            📝 Homework
+        </a>
+
+    </nav>
+
+
+    <div class="logout">
+
+        <button id="logoutButton">
+            🚪 Logout
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<main class="main">
+
+
+    <div class="topbar">
+
+        <h1>Notice Management</h1>
+
+        <p>
+            Create and manage school notices and announcements.
+        </p>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary">
+
+        <div class="summary-card">
+
+            <p>Total Notices</p>
+
+            <h2 id="noticeCount">
+                0
+            </h2>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <p>Important Notices</p>
+
+            <h2 id="importantCount">
+                0
+            </h2>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <p>Today's Notices</p>
+
+            <h2 id="todayCount">
+                0
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTIONS -->
+
+    <div class="actions">
+
+        <div class="search">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="🔍 Search by title or message..."
+            >
+
+        </div>
+
+
+        <button
+            class="add-button"
+            id="addNoticeButton">
+
+            + Add Notice
+
+        </button>
+
+    </div>
+
+
+    <div id="message"></div>
+
+
+    <!-- TABLE -->
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Title</th>
+
+                    <th>Message</th>
+
+                    <th>Notice Date</th>
+
+                    <th>Important</th>
+
+                    <th>Attachment</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="noticeTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</main>
+
+
+<!-- ADD / EDIT MODAL -->
+
+<div class="modal" id="noticeModal">
+
+    <div class="modal-box">
+
+        <h2 id="modalTitle">
+            Add Notice
+        </h2>
+
+
+        <form id="noticeForm">
+
+
+            <input
+                type="hidden"
+                id="noticeId"
+            >
+
+
+            <div class="form-group">
+
+                <label>
+                    Notice Title
+                </label>
+
+                <input
+                    type="text"
+                    id="title"
+                    placeholder="Enter notice title"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Notice Message
+                </label>
+
+                <textarea
+                    id="noticeMessage"
+                    placeholder="Enter notice message"
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Notice Date
+                </label>
+
+                <input
+                    type="date"
+                    id="noticeDate"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Attachment URL
+                </label>
+
+                <input
+                    type="url"
+                    id="attachmentUrl"
+                    placeholder="https://example.com/file.pdf"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label class="checkbox-group">
+
+                    <input
+                        type="checkbox"
+                        id="important"
+                    >
+
+                    <span>
+                        Mark as Important Notice
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <div class="modal-buttons">
+
+                <button
+                    type="submit"
+                    class="save-button">
+
+                    Save Notice
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="cancel-button"
+                    id="cancelButton">
+
+                    Cancel
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+/* =====================================================
+   SUPABASE CONNECTION
+   ===================================================== */
+
+const SUPABASE_URL =
+    "https://jmdujouzsiiwvrsnwawv.supabase.co";
+
+
+const SUPABASE_KEY =
+    "sb_publishable__sdosuGSmD9Lz29D4CG3YA_-8hOYoVn";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =====================================================
+   ELEMENTS
+   ===================================================== */
+
+const noticeTable =
+    document.getElementById("noticeTable");
+
+const noticeModal =
+    document.getElementById("noticeModal");
+
+const noticeForm =
+    document.getElementById("noticeForm");
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const message =
+    document.getElementById("message");
+
+
+let notices = [];
+
+
+/* =====================================================
+   CHECK LOGIN
+   ===================================================== */
+
+async function checkLogin() {
+
+    const {
+        data: {
+            session
+        }
+    } = await supabaseClient.auth.getSession();
+
+
+    if (!session) {
+
+        window.location.href =
+            "index.html";
+
+        return;
+
+    }
+
+
+    const {
+        data: roleData,
+        error
+    } = await supabaseClient
+
+        .from("user_roles")
+
+        .select("role")
+
+        .eq("user_id", session.user.id)
+
+        .single();
+
+
+    if (
+        error ||
+        !roleData ||
+        roleData.role !== "management"
+    ) {
+
+        await supabaseClient.auth.signOut();
+
+        window.location.href =
+            "index.html";
+
+        return;
+
+    }
+
+
+    loadNotices();
+
+}
+
+
+/* =====================================================
+   LOAD NOTICES
+   ===================================================== */
+
+async function loadNotices() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+
+        .from("notices")
+
+        .select("*")
+
+        .order(
+            "notice_date",
+            {
+                ascending: false
+            }
+        );
+
+
+    if (error) {
+
+        showMessage(
+            "Unable to load notices: " +
+            error.message,
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    notices = data || [];
+
+    displayNotices(notices);
+
+    updateSummary(notices);
+
+}
+
+
+/* =====================================================
+   DISPLAY NOTICES
+   ===================================================== */
+
+function displayNotices(list) {
+
+    noticeTable.innerHTML = "";
+
+
+    if (list.length === 0) {
+
+        noticeTable.innerHTML = `
+            <tr>
+                <td colspan="6" class="empty">
+                    No notices found.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    list.forEach(notice => {
+
+        const row =
+            document.createElement("tr");
+
+
+        let attachment = "";
+
+
+        if (notice.attachment_url) {
+
+            attachment = `
+                <a
+                    href="${safeAttribute(notice.attachment_url)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="view-link">
+                    📎 View Attachment
+                </a>
+            `;
+
+        } else {
+
+            attachment = "—";
+
+        }
+
+
+        row.innerHTML = `
+
+            <td>
+                <strong>
+                    ${safe(notice.title)}
+                </strong>
+            </td>
+
+            <td>
+                ${safe(notice.message)}
+            </td>
+
+            <td>
+                ${formatDate(notice.notice_date)}
+            </td>
+
+            <td>
+
+                ${
+                    notice.important
+                    ?
+                    `<span class="important">
+                        ⭐ Important
+                    </span>`
+                    :
+                    `<span class="normal">
+                        Normal
+                    </span>`
+                }
+
+            </td>
+
+            <td>
+                ${attachment}
+            </td>
+
+            <td>
+
+                <button
+                    class="edit"
+                    onclick="editNotice('${notice.id}')">
+
+                    Edit
+
+                </button>
+
+                <button
+                    class="delete"
+                    onclick="deleteNotice('${notice.id}')">
+
+                    Delete
+
+                </button>
+
+            </td>
+
+        `;
+
+
+        noticeTable.appendChild(row);
+
+    });
+
+}
+
+
+/* =====================================================
+   SUMMARY
+   ===================================================== */
+
+function updateSummary(list) {
+
+    document
+        .getElementById("noticeCount")
+        .textContent =
+        list.length;
+
+
+    const important =
+        list.filter(
+            notice =>
+                notice.important === true
+        ).length;
+
+
+    document
+        .getElementById("importantCount")
+        .textContent =
+        important;
+
+
+    const today =
+        new Date()
+            .toISOString()
+            .split("T")[0];
+
+
+    const todayNotices =
+        list.filter(
+            notice =>
+                notice.notice_date === today
+        ).length;
+
+
+    document
+        .getElementById("todayCount")
+        .textContent =
+        todayNotices;
+
+}
+
+
+/* =====================================================
+   ADD NOTICE
+   ===================================================== */
+
+document
+    .getElementById("addNoticeButton")
+    .addEventListener(
+        "click",
+        function() {
+
+            document
+                .getElementById("modalTitle")
+                .textContent =
+                "Add Notice";
+
+
+            noticeForm.reset();
+
+
+            document
+                .getElementById("noticeId")
+                .value =
+                "";
+
+
+            document
+                .getElementById("noticeDate")
+                .value =
+                new Date()
+                    .toISOString()
+                    .split("T")[0];
+
+
+            noticeModal.style.display =
+                "flex";
+
+        }
+    );
+
+
+/* =====================================================
+   SAVE NOTICE
+   ===================================================== */
+
+noticeForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const id =
+            document
+                .getElementById("noticeId")
+                .value;
+
+
+        const title =
+            document
+                .getElementById("title")
+                .value
+                .trim();
+
+
+        const noticeMessage =
+            document
+                .getElementById("noticeMessage")
+                .value
+                .trim();
+
+
+        const noticeDate =
+            document
+                .getElementById("noticeDate")
+                .value;
+
+
+        const attachmentUrl =
+            document
+                .getElementById("attachmentUrl")
+                .value
+                .trim();
+
+
+        const important =
+            document
+                .getElementById("important")
+                .checked;
+
+
+        const noticeData = {
+
+            title:
+                title,
+
+            message:
+                noticeMessage,
+
+            notice_date:
+                noticeDate,
+
+            attachment_url:
+                attachmentUrl || null,
+
+            important:
+                important
+
+        };
+
+
+        let result;
+
+
+        if (id) {
+
+            result =
+                await supabaseClient
+
+                    .from("notices")
+
+                    .update(noticeData)
+
+                    .eq("id", id);
+
+        } else {
+
+            result =
+                await supabaseClient
+
+                    .from("notices")
+
+                    .insert(noticeData);
+
+        }
+
+
+        if (result.error) {
+
+            showMessage(
+                result.error.message,
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        noticeModal.style.display =
+            "none";
+
+
+        showMessage(
+            id
+                ?
+                "Notice updated successfully."
+                :
+                "Notice added successfully.",
+            "success"
+        );
+
+
+        loadNotices();
+
+    }
+);
+
+
+/* =====================================================
+   EDIT NOTICE
+   ===================================================== */
+
+window.editNotice =
+    function(id) {
+
+        const notice =
+            notices.find(
+                item =>
+                    String(item.id) ===
+                    String(id)
+            );
+
+
+        if (!notice) {
+
+            return;
+
+        }
+
+
+        document
+            .getElementById("modalTitle")
+            .textContent =
+            "Edit Notice";
+
+
+        document
+            .getElementById("noticeId")
+            .value =
+            notice.id;
+
+
+        document
+            .getElementById("title")
+            .value =
+            notice.title || "";
+
+
+        document
+            .getElementById("noticeMessage")
+            .value =
+            notice.message || "";
+
+
+        document
+            .getElementById("noticeDate")
+            .value =
+            notice.notice_date || "";
+
+
+        document
+            .getElementById("attachmentUrl")
+            .value =
+            notice.attachment_url || "";
+
+
+        document
+            .getElementById("important")
+            .checked =
+            notice.important === true;
+
+
+        noticeModal.style.display =
+            "flex";
+
+    };
+
+
+/* =====================================================
+   DELETE NOTICE
+   ===================================================== */
+
+window.deleteNotice =
+    async function(id) {
+
+        const notice =
+            notices.find(
+                item =>
+                    String(item.id) ===
+                    String(id)
+            );
+
+
+        if (!notice) {
+
+            return;
+
+        }
+
+
+        const confirmed =
+            confirm(
+                "Delete this notice?\n\n" +
+                notice.title
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        const {
+            error
+        } = await supabaseClient
+
+            .from("notices")
+
+            .delete()
+
+            .eq(
+                "id",
+                id
+            );
+
+
+        if (error) {
+
+            showMessage(
+                error.message,
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        showMessage(
+            "Notice deleted successfully.",
+            "success"
+        );
+
+
+        loadNotices();
+
+    };
+
+
+/* =====================================================
+   CANCEL
+   ===================================================== */
+
+document
+    .getElementById("cancelButton")
+    .addEventListener(
+        "click",
+        function() {
+
+            noticeModal.style.display =
+                "none";
+
+        }
+    );
+
+
+/* =====================================================
+   SEARCH
+   ===================================================== */
+
+searchInput.addEventListener(
+    "input",
+    function() {
+
+        const search =
+            this.value
+                .toLowerCase()
+                .trim();
+
+
+        if (!search) {
+
+            displayNotices(notices);
+
+            return;
+
+        }
+
+
+        const filtered =
+            notices.filter(
+                notice => {
+
+                    return (
+
+                        String(
+                            notice.title || ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
+
+                        ||
+
+                        String(
+                            notice.message || ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
+
+                    );
+
+                }
+            );
+
+
+        displayNotices(filtered);
+
+    }
+);
+
+
+/* =====================================================
+   FORMAT DATE
+   ===================================================== */
+
+function formatDate(date) {
+
+    if (!date) {
+
+        return "—";
+
+    }
+
+
+    const parts =
+        String(date).split("-");
+
+
+    if (parts.length !== 3) {
+
+        return safe(date);
+
+    }
+
+
+    return (
+        parts[2] +
+        "-" +
+        parts[1] +
+        "-" +
+        parts[0]
+    );
+
+}
+
+
+/* =====================================================
+   SAFE TEXT
+   ===================================================== */
+
+function safe(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   SAFE ATTRIBUTE
+   ===================================================== */
+
+function safeAttribute(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        );
+
+}
+
+
+/* =====================================================
+   MESSAGE
+   ===================================================== */
+
+function showMessage(
+    text,
+    type
+) {
+
+    message.textContent =
+        text;
+
+
+    message.style.color =
+        type === "success"
+            ? "#15803d"
+            : "#dc2626";
+
+
+    setTimeout(
+        function() {
+
+            message.textContent =
+                "";
+
+        },
+        4000
+    );
+
+}
+
+
+/* =====================================================
+   LOGOUT
+   ===================================================== */
+
+document
+    .getElementById("logoutButton")
+    .addEventListener(
+        "click",
+        async function() {
+
+            await supabaseClient
+                .auth
+                .signOut();
+
+
+            window.location.href =
+                "index.html";
+
+        }
+    );
+
+
+/* =====================================================
+   START
+   ===================================================== */
+
+checkLogin();
+
+</script>
+
+</body>
+
+</html>
