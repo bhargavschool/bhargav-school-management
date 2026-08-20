@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Bhargav School | Students</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #0f172a;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .school-name {
+            text-align: center;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .school-name h2 {
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+
+        .school-name p {
+            color: #94a3b8;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .menu {
+            margin-top: 25px;
+        }
+
+        .menu a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 13px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .logout button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #475569;
+            background: transparent;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .logout button:hover {
+            background: #dc2626;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .topbar {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            font-size: 26px;
+        }
+
+        .topbar p {
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        /* ACTION BAR */
+
+        .actions {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        .add-button {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 13px 20px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .add-button:hover {
+            background: #172554;
+        }
+
+        /* TABLE */
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th {
+            background: #f8fafc;
+            text-align: left;
+            padding: 15px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        td {
+            padding: 15px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .edit {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .delete {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* MODAL */
+
+        .modal {
+            display: none;
+
+            position: fixed;
+            inset: 0;
+
+            background: rgba(15, 23, 42, 0.65);
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            z-index: 1000;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
+
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 18px;
+        }
+
+        .modal-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 5px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #475569;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .save-button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #1e3a8a;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cancel-button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #e2e8f0;
+            color: #334155;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #message {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .logout {
+                position: relative;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                margin-top: 20px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="school-name">
+
+        <h2>BHARGAV SCHOOL</h2>
+
+        <p>Management Portal</p>
+
+    </div>
+
+
+    <nav class="menu">
+
+        <a href="dashboard.html">
+            📊 Dashboard
+        </a>
+
+        <a href="students.html" class="active">
+            👨‍🎓 Students
+        </a>
+
+        <a href="#">
+            👩‍🏫 Teachers
+        </a>
+
+        <a href="#">
+            💰 Fees
+        </a>
+
+        <a href="#">
+            📚 Marks
+        </a>
+
+        <a href="#">
+            📅 Attendance
+        </a>
+
+        <a href="#">
+            📢 Notices
+        </a>
+
+        <a href="#">
+            📝 Homework
+        </a>
+
+    </nav>
+
+
+    <div class="logout">
+
+        <button id="logoutButton">
+            🚪 Logout
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<main class="main">
+
+
+    <div class="topbar">
+
+        <h1>Student Management</h1>
+
+        <p>
+            Add, edit, search and manage student information.
+        </p>
+
+    </div>
+
+
+    <!-- ACTIONS -->
+
+    <div class="actions">
+
+        <div class="search">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="🔍 Search by name, admission number or class..."
+            >
+
+        </div>
+
+
+        <button
+            class="add-button"
+            id="addStudentButton">
+
+            + Add Student
+
+        </button>
+
+    </div>
+
+
+    <div id="message"></div>
+
+
+    <!-- STUDENT TABLE -->
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Admission No.</th>
+
+                    <th>Student Name</th>
+
+                    <th>Class</th>
+
+                    <th>Section</th>
+
+                    <th>Date of Birth</th>
+
+                    <th>Parent Name</th>
+
+                    <th>Parent Phone</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="studentTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</main>
+
+
+<!-- ADD / EDIT MODAL -->
+
+<div class="modal" id="studentModal">
+
+    <div class="modal-box">
+
+        <h2 id="modalTitle">
+            Add Student
+        </h2>
+
+
+        <form id="studentForm">
+
+            <input
+                type="hidden"
+                id="studentId"
+            >
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Admission Number
+                    </label>
+
+                    <input
+                        type="text"
+                        id="admissionNumber"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Student Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="studentName"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Class
+                    </label>
+
+                    <input
+                        type="text"
+                        id="studentClass"
+                        placeholder="Example: 5"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Section
+                    </label>
+
+                    <input
+                        type="text"
+                        id="section"
+                        placeholder="Example: A"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Date of Birth
+                    </label>
+
+                    <input
+                        type="date"
+                        id="dateOfBirth"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Parent Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="parentName"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Parent Phone
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="parentPhone"
+                    >
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Address
+                    </label>
+
+                    <textarea
+                        id="address"
+                    ></textarea>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="modal-buttons">
+
+                <button
+                    type="submit"
+                    class="save-button">
+
+                    Save Student
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="cancel-button"
+                    id="cancelButton">
+
+                    Cancel
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+/* =====================================================
+   SUPABASE CONNECTION
+   ===================================================== */
+
+const SUPABASE_URL =
+    "https://jmdujouzsiiwvrsnwawv.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable__sdosuGSmD9Lz29D4CG3YA_-8hOYoVn";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =====================================================
+   ELEMENTS
+   ===================================================== */
+
+const studentTable =
+    document.getElementById("studentTable");
+
+const modal =
+    document.getElementById("studentModal");
+
+const studentForm =
+    document.getElementById("studentForm");
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const message =
+    document.getElementById("message");
+
+
+let students = [];
+
+
+/* =====================================================
+   CHECK LOGIN
+   ===================================================== */
+
+async function checkLogin() {
+
+    const {
+        data: {
+            session
+        }
+    } = await supabaseClient.auth.getSession();
+
+
+    if (!session) {
+
+        window.location.href =
+            "index.html";
+
+        return;
+
+    }
+
+
+    const {
+        data: roleData,
+        error
+    } = await supabaseClient
+
+        .from("user_roles")
+
+        .select("role")
+
+        .eq("user_id", session.user.id)
+
+        .single();
+
+
+    if (
+        error ||
+        roleData.role !== "management"
+    ) {
+
+        await supabaseClient.auth.signOut();
+
+        window.location.href =
+            "index.html";
+
+        return;
+
+    }
+
+
+    loadStudents();
+
+}
+
+
+/* =====================================================
+   LOAD STUDENTS
+   ===================================================== */
+
+async function loadStudents() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+
+        .from("students")
+
+        .select("*")
+
+        .order(
+            "student_name",
+            {
+                ascending: true
+            }
+        );
+
+
+    if (error) {
+
+        showMessage(
+            "Unable to load students: " +
+            error.message,
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    students = data || [];
+
+    displayStudents(students);
+
+}
+
+
+/* =====================================================
+   DISPLAY STUDENTS
+   ===================================================== */
+
+function displayStudents(list) {
+
+    studentTable.innerHTML = "";
+
+
+    if (list.length === 0) {
+
+        studentTable.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty">
+                    No students found.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    list.forEach(student => {
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                ${safe(student.admission_number)}
+            </td>
+
+            <td>
+                <strong>
+                    ${safe(student.student_name)}
+                </strong>
+            </td>
+
+            <td>
+                ${safe(student.class)}
+            </td>
+
+            <td>
+                ${safe(student.section)}
+            </td>
+
+            <td>
+                ${safe(student.date_of_birth)}
+            </td>
+
+            <td>
+                ${safe(student.parent_name)}
+            </td>
+
+            <td>
+                ${safe(student.parent_phone)}
+            </td>
+
+            <td>
+
+                <button
+                    class="edit"
+                    onclick="editStudent('${student.id}')">
+
+                    Edit
+
+                </button>
+
+                <button
+                    class="delete"
+                    onclick="deleteStudent('${student.id}')">
+
+                    Delete
+
+                </button>
+
+            </td>
+
+        `;
+
+
+        studentTable.appendChild(row);
+
+    });
+
+}
+
+
+/* =====================================================
+   SAFE TEXT
+   ===================================================== */
+
+function safe(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =====================================================
+   OPEN ADD STUDENT
+   ===================================================== */
+
+document
+    .getElementById("addStudentButton")
+    .addEventListener(
+        "click",
+        function() {
+
+            document
+                .getElementById("modalTitle")
+                .textContent =
+                "Add Student";
+
+
+            studentForm.reset();
+
+
+            document
+                .getElementById("studentId")
+                .value = "";
+
+
+            modal.style.display =
+                "flex";
+
+        }
+    );
+
+
+/* =====================================================
+   SAVE STUDENT
+   ===================================================== */
+
+studentForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const id =
+            document
+                .getElementById("studentId")
+                .value;
+
+
+        const studentData = {
+
+            admission_number:
+                document
+                    .getElementById(
+                        "admissionNumber"
+                    )
+                    .value
+                    .trim(),
+
+            student_name:
+                document
+                    .getElementById(
+                        "studentName"
+                    )
+                    .value
+                    .trim(),
+
+            class:
+                document
+                    .getElementById(
+                        "studentClass"
+                    )
+                    .value
+                    .trim(),
+
+            section:
+                document
+                    .getElementById(
+                        "section"
+                    )
+                    .value
+                    .trim(),
+
+            date_of_birth:
+                document
+                    .getElementById(
+                        "dateOfBirth"
+                    )
+                    .value || null,
+
+            parent_name:
+                document
+                    .getElementById(
+                        "parentName"
+                    )
+                    .value
+                    .trim(),
+
+            parent_phone:
+                document
+                    .getElementById(
+                        "parentPhone"
+                    )
+                    .value
+                    .trim(),
+
+            address:
+                document
+                    .getElementById(
+                        "address"
+                    )
+                    .value
+                    .trim()
+
+        };
+
+
+        let result;
+
+
+        if (id) {
+
+            result =
+                await supabaseClient
+
+                    .from("students")
+
+                    .update(studentData)
+
+                    .eq("id", id);
+
+        } else {
+
+            result =
+                await supabaseClient
+
+                    .from("students")
+
+                    .insert(
+                        studentData
+                    );
+
+        }
+
+
+        if (result.error) {
+
+            showMessage(
+                result.error.message,
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        modal.style.display =
+            "none";
+
+
+        showMessage(
+            id
+                ? "Student updated successfully."
+                : "Student added successfully.",
+            "success"
+        );
+
+
+        loadStudents();
+
+    }
+);
+
+
+/* =====================================================
+   EDIT STUDENT
+   ===================================================== */
+
+window.editStudent =
+    function(id) {
+
+        const student =
+            students.find(
+                s => s.id === id
+            );
+
+
+        if (!student) {
+
+            return;
+
+        }
+
+
+        document
+            .getElementById("modalTitle")
+            .textContent =
+            "Edit Student";
+
+
+        document
+            .getElementById("studentId")
+            .value =
+            student.id;
+
+
+        document
+            .getElementById("admissionNumber")
+            .value =
+            student.admission_number || "";
+
+
+        document
+            .getElementById("studentName")
+            .value =
+            student.student_name || "";
+
+
+        document
+            .getElementById("studentClass")
+            .value =
+            student.class || "";
+
+
+        document
+            .getElementById("section")
+            .value =
+            student.section || "";
+
+
+        document
+            .getElementById("dateOfBirth")
+            .value =
+            student.date_of_birth || "";
+
+
+        document
+            .getElementById("parentName")
+            .value =
+            student.parent_name || "";
+
+
+        document
+            .getElementById("parentPhone")
+            .value =
+            student.parent_phone || "";
+
+
+        document
+            .getElementById("address")
+            .value =
+            student.address || "";
+
+
+        modal.style.display =
+            "flex";
+
+    };
+
+
+/* =====================================================
+   DELETE STUDENT
+   ===================================================== */
+
+window.deleteStudent =
+    async function(id) {
+
+        const student =
+            students.find(
+                s => s.id === id
+            );
+
+
+        if (!student) {
+
+            return;
+
+        }
+
+
+        const confirmed =
+            confirm(
+                "Delete " +
+                student.student_name +
+                "? This cannot be undone."
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        const {
+            error
+        } = await supabaseClient
+
+            .from("students")
+
+            .delete()
+
+            .eq("id", id);
+
+
+        if (error) {
+
+            showMessage(
+                error.message,
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        showMessage(
+            "Student deleted successfully.",
+            "success"
+        );
+
+
+        loadStudents();
+
+    };
+
+
+/* =====================================================
+   CANCEL
+   ===================================================== */
+
+document
+    .getElementById("cancelButton")
+    .addEventListener(
+        "click",
+        function() {
+
+            modal.style.display =
+                "none";
+
+        }
+    );
+
+
+/* =====================================================
+   SEARCH
+   ===================================================== */
+
+searchInput.addEventListener(
+    "input",
+    function() {
+
+        const search =
+            this.value
+                .toLowerCase()
+                .trim();
+
+
+        const filtered =
+            students.filter(student => {
+
+                return (
+
+                    String(
+                        student.student_name || ""
+                    )
+                    .toLowerCase()
+                    .includes(search)
+
+                    ||
+
+                    String(
+                        student.admission_number || ""
+                    )
+                    .toLowerCase()
+                    .includes(search)
+
+                    ||
+
+                    String(
+                        student.class || ""
+                    )
+                    .toLowerCase()
+                    .includes(search)
+
+                );
+
+            });
+
+
+        displayStudents(filtered);
+
+    }
+);
+
+
+/* =====================================================
+   MESSAGE
+   ===================================================== */
+
+function showMessage(
+    text,
+    type
+) {
+
+    message.textContent =
+        text;
+
+    message.style.color =
+        type === "success"
+            ? "#15803d"
+            : "#dc2626";
+
+
+    setTimeout(
+        function() {
+
+            message.textContent =
+                "";
+
+        },
+        4000
+    );
+
+}
+
+
+/* =====================================================
+   LOGOUT
+   ===================================================== */
+
+document
+    .getElementById("logoutButton")
+    .addEventListener(
+        "click",
+        async function() {
+
+            await supabaseClient
+                .auth
+                .signOut();
+
+
+            window.location.href =
+                "index.html";
+
+        }
+    );
+
+
+/* =====================================================
+   START
+   ===================================================== */
+
+checkLogin();
+
+</script>
+
+</body>
+</html>
