@@ -1,0 +1,2285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Bhargav School | Student Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #0f172a;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .school-name {
+            text-align: center;
+            padding-bottom: 22px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .school-name h2 {
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+
+        .school-name p {
+            color: #94a3b8;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .student-box {
+            text-align: center;
+            padding: 20px 5px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .student-icon {
+            width: 58px;
+            height: 58px;
+            background: #1e3a8a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+            font-size: 27px;
+        }
+
+        .student-box h3 {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .student-box p {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .menu {
+            margin-top: 20px;
+        }
+
+        .menu a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 13px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .logout button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #475569;
+            background: transparent;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .logout button:hover {
+            background: #dc2626;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .topbar {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            font-size: 28px;
+        }
+
+        .topbar p {
+            color: #64748b;
+            margin-top: 7px;
+        }
+
+        /* CARDS */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 15px;
+        }
+
+        .card-icon {
+            font-size: 27px;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .card h2 {
+            margin-top: 7px;
+            font-size: 25px;
+        }
+
+        /* PROFILE */
+
+        .profile {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .profile h2 {
+            margin-bottom: 18px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .profile-item {
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .profile-item span {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .profile-item strong {
+            font-size: 14px;
+        }
+
+        /* SECTIONS */
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .section h2 {
+            margin-bottom: 18px;
+        }
+
+        /* TABLE */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th {
+            background: #f8fafc;
+            text-align: left;
+            padding: 13px;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 13px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        /* STATUS */
+
+        .present {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #dcfce7;
+            color: #166534;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .absent {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #fee2e2;
+            color: #991b1b;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .late {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .grade {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #dbeafe;
+            color: #1e40af;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* NOTICE */
+
+        .notice {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+        }
+
+        .notice:last-child {
+            margin-bottom: 0;
+        }
+
+        .notice h3 {
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        .notice p {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .notice-date {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 8px;
+        }
+
+        .important {
+            border-left: 4px solid #dc2626;
+        }
+
+        /* EMPTY */
+
+        .empty {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+        }
+
+        /* LOADING */
+
+        #loading {
+            text-align: center;
+            padding: 50px;
+            color: #64748b;
+        }
+
+        /* ERROR */
+
+        #errorBox {
+            display: none;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 1000px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .logout {
+                position: relative;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                margin-top: 20px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .card {
+                padding: 17px;
+            }
+
+            .card h2 {
+                font-size: 21px;
+            }
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar h1 {
+                font-size: 22px;
+            }
+
+            .section,
+            .profile,
+            .welcome {
+                padding: 18px;
+            }
+
+        }
+
+        @media (max-width: 450px) {
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="school-name">
+
+        <h2>BHARGAV SCHOOL</h2>
+
+        <p>Student Portal</p>
+
+    </div>
+
+
+    <div class="student-box">
+
+        <div class="student-icon">
+            👨‍🎓
+        </div>
+
+        <h3 id="sidebarStudentName">
+            Student
+        </h3>
+
+        <p id="sidebarClass">
+            Loading...
+        </p>
+
+    </div>
+
+
+    <nav class="menu">
+
+        <a href="student-dashboard.html"
+           class="active">
+            📊 Dashboard
+        </a>
+
+        <a href="#attendanceSection">
+            🗓️ Attendance
+        </a>
+
+        <a href="#marksSection">
+            📚 Marks
+        </a>
+
+        <a href="#feesSection">
+            💰 Fees
+        </a>
+
+        <a href="#homeworkSection">
+            📝 Homework
+        </a>
+
+        <a href="#noticesSection">
+            📢 Notices
+        </a>
+
+    </nav>
+
+
+    <div class="logout">
+
+        <button id="logoutButton">
+            🚪 Logout
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<main class="main">
+
+
+    <div id="loading">
+        Checking student login...
+    </div>
+
+
+    <div id="dashboard"
+         style="display:none;">
+
+
+        <div id="errorBox"></div>
+
+
+        <!-- TOPBAR -->
+
+        <div class="topbar">
+
+            <h1>
+                Welcome,
+                <span id="welcomeName">
+                    Student
+                </span>
+                👋
+            </h1>
+
+            <p>
+                Welcome to your Bhargav School student portal.
+            </p>
+
+        </div>
+
+
+        <!-- SUMMARY CARDS -->
+
+        <div class="cards">
+
+
+            <div class="card">
+
+                <div class="card-icon">
+                    🗓️
+                </div>
+
+                <p>
+                    Attendance
+                </p>
+
+                <h2 id="attendancePercentage">
+                    0%
+                </h2>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-icon">
+                    📚
+                </div>
+
+                <p>
+                    Marks Records
+                </p>
+
+                <h2 id="marksCount">
+                    0
+                </h2>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-icon">
+                    📝
+                </div>
+
+                <p>
+                    Homework
+                </p>
+
+                <h2 id="homeworkCount">
+                    0
+                </h2>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-icon">
+                    📢
+                </div>
+
+                <p>
+                    Notices
+                </p>
+
+                <h2 id="noticeCount">
+                    0
+                </h2>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- PROFILE -->
+
+        <div class="profile">
+
+            <h2>
+                Student Information
+            </h2>
+
+
+            <div class="profile-grid">
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Student Name
+                    </span>
+
+                    <strong id="studentName">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Admission Number
+                    </span>
+
+                    <strong id="admissionNumber">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Class
+                    </span>
+
+                    <strong id="studentClass">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Section
+                    </span>
+
+                    <strong id="studentSection">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Date of Birth
+                    </span>
+
+                    <strong id="dateOfBirth">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Parent Name
+                    </span>
+
+                    <strong id="parentName">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Parent Phone
+                    </span>
+
+                    <strong id="parentPhone">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Email
+                    </span>
+
+                    <strong id="studentEmail">
+                        -
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- ATTENDANCE -->
+
+        <div class="section"
+             id="attendanceSection">
+
+            <h2>
+                🗓️ Attendance
+            </h2>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Remarks
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="attendanceTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- MARKS -->
+
+        <div class="section"
+             id="marksSection">
+
+            <h2>
+                📚 Marks
+            </h2>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Subject ID
+                            </th>
+
+                            <th>
+                                Exam ID
+                            </th>
+
+                            <th>
+                                Obtained
+                            </th>
+
+                            <th>
+                                Maximum
+                            </th>
+
+                            <th>
+                                Percentage
+                            </th>
+
+                            <th>
+                                Grade
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="marksTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- FEES -->
+
+        <div class="section"
+             id="feesSection">
+
+            <h2>
+                💰 Fees
+            </h2>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Fee Type
+                            </th>
+
+                            <th>
+                                Amount
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Due Date
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="feesTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- HOMEWORK -->
+
+        <div class="section"
+             id="homeworkSection">
+
+            <h2>
+                📝 Homework
+            </h2>
+
+
+            <div id="homeworkList">
+
+            </div>
+
+        </div>
+
+
+        <!-- NOTICES -->
+
+        <div class="section"
+             id="noticesSection">
+
+            <h2>
+                📢 Notices
+            </h2>
+
+
+            <div id="noticeList">
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</main>
+
+
+<script>
+
+/* =====================================================
+   SUPABASE CONNECTION
+   ===================================================== */
+
+const SUPABASE_URL =
+    "https://jmdujouzsiiwvrsnwawv.supabase.co";
+
+
+const SUPABASE_KEY =
+    "sb_publishable__sdosuGSmD9Lz29D4CG3YA_-8hOYoVn";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =====================================================
+   CHECK STUDENT LOGIN
+   ===================================================== */
+
+async function checkStudentLogin() {
+
+    const {
+        data: {
+            session
+        },
+        error
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
+
+
+    if (error) {
+
+        redirectToLogin();
+
+        return;
+
+    }
+
+
+    if (!session) {
+
+        redirectToLogin();
+
+        return;
+
+    }
+
+
+    /* GET USER ROLE */
+
+    const {
+        data: roleData,
+        error: roleError
+    } =
+        await supabaseClient
+
+            .from("user_roles")
+
+            .select("role")
+
+            .eq(
+                "user_id",
+                session.user.id
+            )
+
+            .maybeSingle();
+
+
+    if (
+        roleError ||
+        !roleData ||
+        String(roleData.role)
+            .toLowerCase()
+            .trim() !== "student"
+    ) {
+
+        await supabaseClient
+            .auth
+            .signOut();
+
+        redirectToLogin();
+
+        return;
+
+    }
+
+
+    /* LOAD STUDENT */
+
+    const student =
+        await loadStudent(
+            session.user
+        );
+
+
+    if (!student) {
+
+        showError(
+            "Your account is logged in, but no student record was found. Please contact school management."
+        );
+
+        document
+            .getElementById("loading")
+            .style.display =
+            "none";
+
+        document
+            .getElementById("dashboard")
+            .style.display =
+            "block";
+
+        return;
+
+    }
+
+
+    document
+        .getElementById("loading")
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById("dashboard")
+        .style.display =
+        "block";
+
+
+    await Promise.all([
+
+        loadAttendance(
+            student.id
+        ),
+
+        loadMarks(
+            student.id
+        ),
+
+        loadFees(
+            student.id
+        ),
+
+        loadHomework(
+            student
+        ),
+
+        loadNotices()
+
+    ]);
+
+}
+
+
+/* =====================================================
+   LOAD STUDENT
+   ===================================================== */
+
+async function loadStudent(user) {
+
+    const email =
+        user.email;
+
+
+    /*
+       The student's Supabase Auth email
+       should match students.email.
+    */
+
+    const {
+        data: student,
+        error
+    } =
+        await supabaseClient
+
+            .from("students")
+
+            .select("*")
+
+            .eq(
+                "email",
+                email
+            )
+
+            .maybeSingle();
+
+
+    if (error) {
+
+        console.error(
+            "Student error:",
+            error
+        );
+
+        showError(
+            "Unable to load student information."
+        );
+
+        return null;
+
+    }
+
+
+    if (!student) {
+
+        return null;
+
+    }
+
+
+    const fullName =
+        (
+            student.first_name ||
+            ""
+        ) +
+        (
+            student.last_name
+                ? " " +
+                  student.last_name
+                : ""
+        );
+
+
+    /*
+       Your current students table from
+       the earlier module uses student_name.
+       Therefore we prefer student_name,
+       and fall back to first_name/last_name.
+    */
+
+    const name =
+        student.student_name ||
+        fullName.trim() ||
+        "Student";
+
+
+    document
+        .getElementById(
+            "sidebarStudentName"
+        )
+        .textContent =
+        name;
+
+
+    document
+        .getElementById(
+            "welcomeName"
+        )
+        .textContent =
+        name;
+
+
+    document
+        .getElementById(
+            "studentName"
+        )
+        .textContent =
+        name;
+
+
+    document
+        .getElementById(
+            "admissionNumber"
+        )
+        .textContent =
+        student.admission_number ||
+        "-";
+
+
+    document
+        .getElementById(
+            "studentClass"
+        )
+        .textContent =
+        student.class ||
+        "-";
+
+
+    document
+        .getElementById(
+            "sidebarClass"
+        )
+        .textContent =
+        student.class
+            ? "Class " +
+              student.class +
+              (
+                  student.section
+                      ? " - " +
+                        student.section
+                      : ""
+              )
+            : "Student";
+
+
+    document
+        .getElementById(
+            "studentSection"
+        )
+        .textContent =
+        student.section ||
+        "-";
+
+
+    document
+        .getElementById(
+            "dateOfBirth"
+        )
+        .textContent =
+        student.date_of_birth ||
+        "-";
+
+
+    document
+        .getElementById(
+            "parentName"
+        )
+        .textContent =
+        student.parent_name ||
+        "-";
+
+
+    document
+        .getElementById(
+            "parentPhone"
+        )
+        .textContent =
+        student.parent_phone ||
+        "-";
+
+
+    document
+        .getElementById(
+            "studentEmail"
+        )
+        .textContent =
+        student.email ||
+        email ||
+        "-";
+
+
+    return student;
+
+}
+
+
+/* =====================================================
+   ATTENDANCE
+   ===================================================== */
+
+async function loadAttendance(
+    studentId
+) {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+
+            .from("attendance")
+
+            .select(
+                "id, attendance_date, status, remarks"
+            )
+
+            .eq(
+                "student_id",
+                studentId
+            )
+
+            .order(
+                "attendance_date",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Attendance error:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    const records =
+        data || [];
+
+
+    const table =
+        document.getElementById(
+            "attendanceTable"
+        );
+
+
+    table.innerHTML = "";
+
+
+    if (records.length === 0) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="3"
+                    class="empty">
+                    No attendance records found.
+                </td>
+            </tr>
+        `;
+
+        document
+            .getElementById(
+                "attendancePercentage"
+            )
+            .textContent =
+            "0%";
+
+        return;
+
+    }
+
+
+    let presentCount = 0;
+
+
+    records.forEach(
+        record => {
+
+            const status =
+                String(
+                    record.status ||
+                    ""
+                )
+                .toLowerCase()
+                .trim();
+
+
+            if (
+                status === "present"
+            ) {
+
+                presentCount++;
+
+            }
+
+
+            let statusClass =
+                "";
+
+
+            if (
+                status ===
+                "present"
+            ) {
+
+                statusClass =
+                    "present";
+
+            } else if (
+                status ===
+                "absent"
+            ) {
+
+                statusClass =
+                    "absent";
+
+            } else if (
+                status ===
+                "late"
+            ) {
+
+                statusClass =
+                    "late";
+
+            }
+
+
+            const row =
+                document
+                    .createElement("tr");
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${safe(
+                        record.attendance_date
+                    )}
+                </td>
+
+                <td>
+
+                    <span class="${statusClass}">
+                        ${safe(
+                            record.status
+                        )}
+                    </span>
+
+                </td>
+
+                <td>
+                    ${safe(
+                        record.remarks
+                    )}
+                </td>
+
+            `;
+
+
+            table.appendChild(
+                row
+            );
+
+        }
+    );
+
+
+    const percentage =
+        records.length > 0
+            ? (
+                presentCount /
+                records.length
+            ) * 100
+            : 0;
+
+
+    document
+        .getElementById(
+            "attendancePercentage"
+        )
+        .textContent =
+        percentage.toFixed(1) +
+        "%";
+
+}
+
+
+/* =====================================================
+   MARKS
+   ===================================================== */
+
+async function loadMarks(
+    studentId
+) {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+
+            .from("marks")
+
+            .select("*")
+
+            .eq(
+                "student_id",
+                studentId
+            )
+
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Marks error:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    const records =
+        data || [];
+
+
+    document
+        .getElementById(
+            "marksCount"
+        )
+        .textContent =
+        records.length;
+
+
+    const table =
+        document.getElementById(
+            "marksTable"
+        );
+
+
+    table.innerHTML = "";
+
+
+    if (records.length === 0) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="6"
+                    class="empty">
+                    No marks records found.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    records.forEach(
+        record => {
+
+            const obtained =
+                Number(
+                    record.marks_obtained
+                ) || 0;
+
+
+            const maximum =
+                Number(
+                    record.maximum_marks
+                ) || 0;
+
+
+            const percentage =
+                maximum > 0
+                    ? (
+                        obtained /
+                        maximum
+                    ) * 100
+                    : 0;
+
+
+            const grade =
+                calculateGrade(
+                    percentage
+                );
+
+
+            const row =
+                document
+                    .createElement("tr");
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${safe(
+                        record.subject_id
+                    )}
+                </td>
+
+                <td>
+                    ${safe(
+                        record.exam_id
+                    )}
+                </td>
+
+                <td>
+                    ${formatNumber(
+                        obtained
+                    )}
+                </td>
+
+                <td>
+                    ${formatNumber(
+                        maximum
+                    )}
+                </td>
+
+                <td>
+                    ${percentage.toFixed(2)}%
+                </td>
+
+                <td>
+
+                    <span class="grade">
+                        ${grade}
+                    </span>
+
+                </td>
+
+            `;
+
+
+            table.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   FEES
+   ===================================================== */
+
+async function loadFees(
+    studentId
+) {
+
+    const table =
+        document.getElementById(
+            "feesTable"
+        );
+
+
+    /*
+       This section is prepared to work
+       with the fees module when its exact
+       columns are confirmed.
+
+       We first try to read common fields.
+    */
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+
+            .from("fees")
+
+            .select("*")
+
+            .eq(
+                "student_id",
+                studentId
+            )
+
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Fees error:",
+            error
+        );
+
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="4"
+                    class="empty">
+                    Fees information is not available yet.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    const records =
+        data || [];
+
+
+    table.innerHTML = "";
+
+
+    if (records.length === 0) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="4"
+                    class="empty">
+                    No fee records found.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    records.forEach(
+        fee => {
+
+            const row =
+                document
+                    .createElement("tr");
+
+
+            const feeType =
+                fee.fee_type ||
+                fee.type ||
+                fee.description ||
+                "-";
+
+
+            const amount =
+                fee.amount ??
+                fee.total_amount ??
+                fee.fee_amount ??
+                0;
+
+
+            const status =
+                fee.status ||
+                fee.payment_status ||
+                "-";
+
+
+            const dueDate =
+                fee.due_date ||
+                "-";
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${safe(feeType)}
+                </td>
+
+                <td>
+                    ₹${formatNumber(amount)}
+                </td>
+
+                <td>
+                    ${safe(status)}
+                </td>
+
+                <td>
+                    ${safe(dueDate)}
+                </td>
+
+            `;
+
+
+            table.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   HOMEWORK
+   ===================================================== */
+
+async function loadHomework(
+    student
+) {
+
+    const container =
+        document.getElementById(
+            "homeworkList"
+        );
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+
+            .from("homework")
+
+            .select("*")
+
+            .order(
+                "due_date",
+                {
+                    ascending: true
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Homework error:",
+            error
+        );
+
+
+        container.innerHTML = `
+            <div class="empty">
+                Homework information is not available.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    let records =
+        data || [];
+
+
+    /*
+       Filter homework for the student's
+       class and section.
+    */
+
+    if (student.class) {
+
+        records =
+            records.filter(
+                homework => {
+
+                    const sameClass =
+                        String(
+                            homework.class_name ||
+                            ""
+                        )
+                        .toLowerCase()
+                        .trim() ===
+                        String(
+                            student.class
+                        )
+                        .toLowerCase()
+                        .trim();
+
+
+                    const sameSection =
+                        !homework.section ||
+                        !student.section ||
+                        String(
+                            homework.section
+                        )
+                        .toLowerCase()
+                        .trim() ===
+                        String(
+                            student.section
+                        )
+                        .toLowerCase()
+                        .trim();
+
+
+                    return (
+                        sameClass &&
+                        sameSection
+                    );
+
+                }
+            );
+
+    }
+
+
+    document
+        .getElementById(
+            "homeworkCount"
+        )
+        .textContent =
+        records.length;
+
+
+    container.innerHTML = "";
+
+
+    if (records.length === 0) {
+
+        container.innerHTML = `
+            <div class="empty">
+                No homework assigned.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    records.forEach(
+        homework => {
+
+            const div =
+                document
+                    .createElement("div");
+
+
+            div.className =
+                "notice";
+
+
+            div.innerHTML = `
+
+                <h3>
+                    ${safe(
+                        homework.title
+                    )}
+                </h3>
+
+                <p>
+                    ${safe(
+                        homework.description
+                    )}
+                </p>
+
+                <div class="notice-date">
+
+                    Assigned:
+                    ${safe(
+                        homework.assigned_date
+                    )}
+
+                    &nbsp; | &nbsp;
+
+                    Due:
+                    ${safe(
+                        homework.due_date
+                    )}
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                div
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   NOTICES
+   ===================================================== */
+
+async function loadNotices() {
+
+    const container =
+        document.getElementById(
+            "noticeList"
+        );
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+
+            .from("notices")
+
+            .select("*")
+
+            .order(
+                "notice_date",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Notices error:",
+            error
+        );
+
+
+        container.innerHTML = `
+            <div class="empty">
+                Notices are not available.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    const records =
+        data || [];
+
+
+    document
+        .getElementById(
+            "noticeCount"
+        )
+        .textContent =
+        records.length;
+
+
+    container.innerHTML = "";
+
+
+    if (records.length === 0) {
+
+        container.innerHTML = `
+            <div class="empty">
+                No notices available.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    records.forEach(
+        notice => {
+
+            const div =
+                document
+                    .createElement("div");
+
+
+            div.className =
+                notice.important
+                    ? "notice important"
+                    : "notice";
+
+
+            div.innerHTML = `
+
+                <h3>
+                    ${safe(
+                        notice.title
+                    )}
+                </h3>
+
+                <p>
+                    ${safe(
+                        notice.message
+                    )}
+                </p>
+
+                <div class="notice-date">
+
+                    ${safe(
+                        notice.notice_date
+                    )}
+
+                    ${
+                        notice.important
+                            ? " • IMPORTANT"
+                            : ""
+                    }
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                div
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   GRADE
+   ===================================================== */
+
+function calculateGrade(
+    percentage
+) {
+
+    if (percentage >= 90)
+        return "A+";
+
+    if (percentage >= 80)
+        return "A";
+
+    if (percentage >= 70)
+        return "B+";
+
+    if (percentage >= 60)
+        return "B";
+
+    if (percentage >= 50)
+        return "C";
+
+    if (percentage >= 40)
+        return "D";
+
+    return "F";
+
+}
+
+
+/* =====================================================
+   NUMBER FORMAT
+   ===================================================== */
+
+function formatNumber(
+    value
+) {
+
+    return Number(
+        value || 0
+    ).toLocaleString(
+        "en-IN",
+        {
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+
+/* =====================================================
+   SAFE TEXT
+   ===================================================== */
+
+function safe(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   ERROR
+   ===================================================== */
+
+function showError(
+    text
+) {
+
+    const box =
+        document.getElementById(
+            "errorBox"
+        );
+
+
+    box.textContent =
+        text;
+
+
+    box.style.display =
+        "block";
+
+}
+
+
+/* =====================================================
+   REDIRECT
+   ===================================================== */
+
+function redirectToLogin() {
+
+    window.location.href =
+        "index.html";
+
+}
+
+
+/* =====================================================
+   LOGOUT
+   ===================================================== */
+
+document
+    .getElementById(
+        "logoutButton"
+    )
+    .addEventListener(
+        "click",
+        async function() {
+
+            await supabaseClient
+                .auth
+                .signOut();
+
+
+            window.location.href =
+                "index.html";
+
+        }
+    );
+
+
+/* =====================================================
+   START
+   ===================================================== */
+
+checkStudentLogin();
+
+</script>
+
+</body>
+
+</html>
