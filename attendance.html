@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Bhargav School | Attendance</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #0f172a;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .school-name {
+            text-align: center;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .school-name h2 {
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+
+        .school-name p {
+            color: #94a3b8;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .menu {
+            margin-top: 25px;
+        }
+
+        .menu a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 13px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .logout button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #475569;
+            background: transparent;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .logout button:hover {
+            background: #dc2626;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .topbar {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            font-size: 26px;
+        }
+
+        .topbar p {
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        /* SUMMARY */
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .summary-card p {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .summary-card h2 {
+            font-size: 24px;
+        }
+
+        .present-number {
+            color: #15803d;
+        }
+
+        .absent-number {
+            color: #dc2626;
+        }
+
+        .late-number {
+            color: #d97706;
+        }
+
+        /* ACTIONS */
+
+        .actions {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        .date-filter {
+            min-width: 180px;
+        }
+
+        .date-filter input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        .add-button {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 13px 20px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .add-button:hover {
+            background: #172554;
+        }
+
+        .today-button {
+            background: #0f766e;
+            color: white;
+            border: none;
+            padding: 13px 18px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .today-button:hover {
+            background: #115e59;
+        }
+
+        /* TABLE */
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th {
+            background: #f8fafc;
+            text-align: left;
+            padding: 15px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        td {
+            padding: 15px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        /* STATUS */
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .present {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .absent {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .late {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .leave {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* BUTTONS */
+
+        .edit {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .delete {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* MODAL */
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+        }
+
+        .modal-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #475569;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .save-button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #1e3a8a;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cancel-button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #e2e8f0;
+            color: #334155;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #message {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 1000px) {
+
+            .summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .logout {
+                position: relative;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                margin-top: 20px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="school-name">
+
+        <h2>BHARGAV SCHOOL</h2>
+
+        <p>Management Portal</p>
+
+    </div>
+
+
+    <nav class="menu">
+
+        <a href="dashboard.html">
+            📊 Dashboard
+        </a>
+
+        <a href="students.html">
+            👨‍🎓 Students
+        </a>
+
+        <a href="#">
+            👩‍🏫 Teachers
+        </a>
+
+        <a href="fees.html">
+            💰 Fees
+        </a>
+
+        <a href="marks.html">
+            📚 Marks
+        </a>
+
+        <a href="attendance.html" class="active">
+            📅 Attendance
+        </a>
+
+        <a href="#">
+            📢 Notices
+        </a>
+
+        <a href="#">
+            📝 Homework
+        </a>
+
+    </nav>
+
+
+    <div class="logout">
+
+        <button id="logoutButton">
+            🚪 Logout
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<main class="main">
+
+
+    <div class="topbar">
+
+        <h1>Attendance Management</h1>
+
+        <p>
+            Record and manage daily student attendance.
+        </p>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary">
+
+        <div class="summary-card">
+
+            <p>Total Records</p>
+
+            <h2 id="recordCount">
+                0
+            </h2>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <p>Present</p>
+
+            <h2
+                id="presentCount"
+                class="present-number">
+
+                0
+
+            </h2>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <p>Absent</p>
+
+            <h2
+                id="absentCount"
+                class="absent-number">
+
+                0
+
+            </h2>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <p>Late / Leave</p>
+
+            <h2
+                id="lateLeaveCount"
+                class="late-number">
+
+                0
+
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTIONS -->
+
+    <div class="actions">
+
+        <div class="search">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="🔍 Search by student ID or remarks..."
+            >
+
+        </div>
+
+
+        <div class="date-filter">
+
+            <input
+                type="date"
+                id="dateFilter"
+            >
+
+        </div>
+
+
+        <button
+            class="today-button"
+            id="todayButton">
+
+            Today
+
+        </button>
+
+
+        <button
+            class="add-button"
+            id="addAttendanceButton">
+
+            + Add Attendance
+
+        </button>
+
+    </div>
+
+
+    <div id="message"></div>
+
+
+    <!-- TABLE -->
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Attendance Date</th>
+
+                    <th>Student ID</th>
+
+                    <th>Status</th>
+
+                    <th>Remarks</th>
+
+                    <th>Created At</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="attendanceTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</main>
+
+
+<!-- ADD / EDIT MODAL -->
+
+<div class="modal" id="attendanceModal">
+
+    <div class="modal-box">
+
+        <h2 id="modalTitle">
+            Add Attendance
+        </h2>
+
+
+        <form id="attendanceForm">
+
+
+            <input
+                type="hidden"
+                id="attendanceId"
+            >
+
+
+            <div class="form-group">
+
+                <label>
+                    Attendance Date
+                </label>
+
+                <input
+                    type="date"
+                    id="attendanceDate"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Student ID
+                </label>
+
+                <input
+                    type="text"
+                    id="studentId"
+                    placeholder="Enter student UUID"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Status
+                </label>
+
+                <select
+                    id="status"
+                    required>
+
+                    <option value="">
+                        Select Status
+                    </option>
+
+                    <option value="Present">
+                        Present
+                    </option>
+
+                    <option value="Absent">
+                        Absent
+                    </option>
+
+                    <option value="Late">
+                        Late
+                    </option>
+
+                    <option value="Leave">
+                        Leave
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Remarks
+                </label>
+
+                <textarea
+                    id="remarks"
+                    placeholder="Optional remarks">
+                </textarea>
+
+            </div>
+
+
+            <div class="modal-buttons">
+
+                <button
+                    type="submit"
+                    class="save-button">
+
+                    Save Attendance
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="cancel-button"
+                    id="cancelButton">
+
+                    Cancel
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+/* =====================================================
+   SUPABASE CONNECTION
+   ===================================================== */
+
+const SUPABASE_URL =
+    "https://jmdujouzsiiwvrsnwawv.supabase.co";
+
+
+const SUPABASE_KEY =
+    "sb_publishable__sdosuGSmD9Lz29D4CG3YA_-8hOYoVn";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =====================================================
+   ELEMENTS
+   ===================================================== */
+
+const attendanceTable =
+    document.getElementById("attendanceTable");
+
+const attendanceModal =
+    document.getElementById("attendanceModal");
+
+const attendanceForm =
+    document.getElementById("attendanceForm");
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const dateFilter =
+    document.getElementById("dateFilter");
+
+const message =
+    document.getElementById("message");
+
+
+let attendanceRecords = [];
+
+
+/* =====================================================
+   CHECK LOGIN
+   ===================================================== */
+
+async function checkLogin() {
+
+    const {
+        data: {
+            session
+        }
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
+
+
+    if (!session) {
+
+        window.location.href =
+            "index.html";
+
+        return;
+
+    }
+
+
+    const {
+        data: roleData,
+        error
+    } =
+        await supabaseClient
+
+            .from("user_roles")
+
+            .select("role")
+
+            .eq(
+                "user_id",
+                session.user.id
+            )
+
+            .single();
+
+
+    if (
+        error ||
+        !roleData ||
+        roleData.role !== "management"
+    ) {
+
+        await supabaseClient
+            .auth
+            .signOut();
+
+        window.location.href =
+            "index.html";
+
+        return;
+
+    }
+
+
+    loadAttendance();
+
+}
+
+
+/* =====================================================
+   LOAD ATTENDANCE
+   ===================================================== */
+
+async function loadAttendance() {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+
+            .from("attendance")
+
+            .select("*")
+
+            .order(
+                "attendance_date",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (error) {
+
+        showMessage(
+            "Unable to load attendance: " +
+            error.message,
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    attendanceRecords =
+        data || [];
+
+
+    displayAttendance(
+        attendanceRecords
+    );
+
+
+    updateSummary(
+        attendanceRecords
+    );
+
+}
+
+
+/* =====================================================
+   DISPLAY ATTENDANCE
+   ===================================================== */
+
+function displayAttendance(list) {
+
+    attendanceTable.innerHTML = "";
+
+
+    if (list.length === 0) {
+
+        attendanceTable.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="empty">
+
+                    No attendance records found.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    list.forEach(record => {
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                ${safe(record.attendance_date)}
+            </td>
+
+            <td>
+                ${safe(record.student_id)}
+            </td>
+
+            <td>
+
+                <span class="status ${getStatusClass(record.status)}">
+
+                    ${safe(record.status)}
+
+                </span>
+
+            </td>
+
+            <td>
+                ${safe(record.remarks)}
+            </td>
+
+            <td>
+                ${formatDateTime(record.created_at)}
+            </td>
+
+            <td>
+
+                <button
+                    class="edit"
+                    onclick="editAttendance('${record.id}')">
+
+                    Edit
+
+                </button>
+
+                <button
+                    class="delete"
+                    onclick="deleteAttendance('${record.id}')">
+
+                    Delete
+
+                </button>
+
+            </td>
+
+        `;
+
+
+        attendanceTable.appendChild(row);
+
+    });
+
+}
+
+
+/* =====================================================
+   SUMMARY
+   ===================================================== */
+
+function updateSummary(list) {
+
+    document
+        .getElementById("recordCount")
+        .textContent =
+        list.length;
+
+
+    const present =
+        list.filter(
+            record =>
+                normalizeStatus(
+                    record.status
+                ) === "present"
+        ).length;
+
+
+    const absent =
+        list.filter(
+            record =>
+                normalizeStatus(
+                    record.status
+                ) === "absent"
+        ).length;
+
+
+    const lateLeave =
+        list.filter(
+            record => {
+
+                const status =
+                    normalizeStatus(
+                        record.status
+                    );
+
+                return (
+                    status === "late" ||
+                    status === "leave"
+                );
+
+            }
+        ).length;
+
+
+    document
+        .getElementById("presentCount")
+        .textContent =
+        present;
+
+
+    document
+        .getElementById("absentCount")
+        .textContent =
+        absent;
+
+
+    document
+        .getElementById("lateLeaveCount")
+        .textContent =
+        lateLeave;
+
+}
+
+
+/* =====================================================
+   ADD ATTENDANCE
+   ===================================================== */
+
+document
+    .getElementById(
+        "addAttendanceButton"
+    )
+    .addEventListener(
+        "click",
+        function() {
+
+            attendanceForm.reset();
+
+
+            document
+                .getElementById(
+                    "attendanceId"
+                )
+                .value = "";
+
+
+            document
+                .getElementById(
+                    "attendanceDate"
+                )
+                .value =
+                getToday();
+
+
+            document
+                .getElementById(
+                    "modalTitle"
+                )
+                .textContent =
+                "Add Attendance";
+
+
+            attendanceModal.style.display =
+                "flex";
+
+        }
+    );
+
+
+/* =====================================================
+   SAVE ATTENDANCE
+   ===================================================== */
+
+attendanceForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const id =
+            document
+                .getElementById(
+                    "attendanceId"
+                )
+                .value;
+
+
+        const attendanceDate =
+            document
+                .getElementById(
+                    "attendanceDate"
+                )
+                .value;
+
+
+        const studentId =
+            document
+                .getElementById(
+                    "studentId"
+                )
+                .value
+                .trim();
+
+
+        const status =
+            document
+                .getElementById(
+                    "status"
+                )
+                .value;
+
+
+        const remarks =
+            document
+                .getElementById(
+                    "remarks"
+                )
+                .value
+                .trim();
+
+
+        const attendanceData = {
+
+            attendance_date:
+                attendanceDate,
+
+            student_id:
+                studentId,
+
+            status:
+                status,
+
+            remarks:
+                remarks || null
+
+        };
+
+
+        let result;
+
+
+        if (id) {
+
+            result =
+                await supabaseClient
+
+                    .from("attendance")
+
+                    .update(
+                        attendanceData
+                    )
+
+                    .eq(
+                        "id",
+                        id
+                    );
+
+        } else {
+
+            result =
+                await supabaseClient
+
+                    .from("attendance")
+
+                    .insert(
+                        attendanceData
+                    );
+
+        }
+
+
+        if (result.error) {
+
+            showMessage(
+                result.error.message,
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        attendanceModal.style.display =
+            "none";
+
+
+        showMessage(
+            id
+                ? "Attendance updated successfully."
+                : "Attendance added successfully.",
+            "success"
+        );
+
+
+        loadAttendance();
+
+    }
+);
+
+
+/* =====================================================
+   EDIT ATTENDANCE
+   ===================================================== */
+
+window.editAttendance =
+    function(id) {
+
+        const record =
+            attendanceRecords.find(
+                item =>
+                    String(item.id) ===
+                    String(id)
+            );
+
+
+        if (!record) {
+
+            return;
+
+        }
+
+
+        document
+            .getElementById(
+                "modalTitle"
+            )
+            .textContent =
+            "Edit Attendance";
+
+
+        document
+            .getElementById(
+                "attendanceId"
+            )
+            .value =
+            record.id;
+
+
+        document
+            .getElementById(
+                "attendanceDate"
+            )
+            .value =
+            record.attendance_date || "";
+
+
+        document
+            .getElementById(
+                "studentId"
+            )
+            .value =
+            record.student_id || "";
+
+
+        document
+            .getElementById(
+                "status"
+            )
+            .value =
+            record.status || "";
+
+
+        document
+            .getElementById(
+                "remarks"
+            )
+            .value =
+            record.remarks || "";
+
+
+        attendanceModal.style.display =
+            "flex";
+
+    };
+
+
+/* =====================================================
+   DELETE ATTENDANCE
+   ===================================================== */
+
+window.deleteAttendance =
+    async function(id) {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to delete this attendance record?"
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        const {
+            error
+        } =
+            await supabaseClient
+
+                .from("attendance")
+
+                .delete()
+
+                .eq(
+                    "id",
+                    id
+                );
+
+
+        if (error) {
+
+            showMessage(
+                error.message,
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        showMessage(
+            "Attendance deleted successfully.",
+            "success"
+        );
+
+
+        loadAttendance();
+
+    };
+
+
+/* =====================================================
+   SEARCH
+   ===================================================== */
+
+searchInput.addEventListener(
+    "input",
+    applyFilters
+);
+
+
+/* =====================================================
+   DATE FILTER
+   ===================================================== */
+
+dateFilter.addEventListener(
+    "change",
+    applyFilters
+);
+
+
+function applyFilters() {
+
+    const search =
+        searchInput
+            .value
+            .toLowerCase()
+            .trim();
+
+
+    const selectedDate =
+        dateFilter.value;
+
+
+    const filtered =
+        attendanceRecords.filter(
+            record => {
+
+                const matchesSearch =
+
+                    !search ||
+
+                    String(
+                        record.student_id ||
+                        ""
+                    )
+                    .toLowerCase()
+                    .includes(search)
+
+                    ||
+
+                    String(
+                        record.status ||
+                        ""
+                    )
+                    .toLowerCase()
+                    .includes(search)
+
+                    ||
+
+                    String(
+                        record.remarks ||
+                        ""
+                    )
+                    .toLowerCase()
+                    .includes(search);
+
+
+                const matchesDate =
+
+                    !selectedDate ||
+
+                    record.attendance_date ===
+                    selectedDate;
+
+
+                return (
+                    matchesSearch &&
+                    matchesDate
+                );
+
+            }
+        );
+
+
+    displayAttendance(
+        filtered
+    );
+
+
+    updateSummary(
+        filtered
+    );
+
+}
+
+
+/* =====================================================
+   TODAY BUTTON
+   ===================================================== */
+
+document
+    .getElementById(
+        "todayButton"
+    )
+    .addEventListener(
+        "click",
+        function() {
+
+            dateFilter.value =
+                getToday();
+
+            applyFilters();
+
+        }
+    );
+
+
+/* =====================================================
+   CANCEL
+   ===================================================== */
+
+document
+    .getElementById(
+        "cancelButton"
+    )
+    .addEventListener(
+        "click",
+        function() {
+
+            attendanceModal.style.display =
+                "none";
+
+        }
+    );
+
+
+/* =====================================================
+   STATUS CLASS
+   ===================================================== */
+
+function getStatusClass(status) {
+
+    const value =
+        normalizeStatus(status);
+
+
+    if (value === "present")
+        return "present";
+
+
+    if (value === "absent")
+        return "absent";
+
+
+    if (value === "late")
+        return "late";
+
+
+    if (value === "leave")
+        return "leave";
+
+
+    return "";
+
+}
+
+
+/* =====================================================
+   NORMALIZE STATUS
+   ===================================================== */
+
+function normalizeStatus(status) {
+
+    return String(
+        status || ""
+    )
+        .toLowerCase()
+        .trim();
+
+}
+
+
+/* =====================================================
+   GET TODAY
+   ===================================================== */
+
+function getToday() {
+
+    const today =
+        new Date();
+
+
+    const year =
+        today.getFullYear();
+
+
+    const month =
+        String(
+            today.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const day =
+        String(
+            today.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+    );
+
+}
+
+
+/* =====================================================
+   FORMAT DATE TIME
+   ===================================================== */
+
+function formatDateTime(value) {
+
+    if (!value) {
+
+        return "";
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return safe(value);
+
+    }
+
+
+    return date.toLocaleString(
+        "en-IN",
+        {
+            dateStyle: "medium",
+            timeStyle: "short"
+        }
+    );
+
+}
+
+
+/* =====================================================
+   SAFE TEXT
+   ===================================================== */
+
+function safe(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   MESSAGE
+   ===================================================== */
+
+function showMessage(
+    text,
+    type
+) {
+
+    message.textContent =
+        text;
+
+
+    message.style.color =
+        type === "success"
+            ? "#15803d"
+            : "#dc2626";
+
+
+    setTimeout(
+        function() {
+
+            message.textContent =
+                "";
+
+        },
+        4000
+    );
+
+}
+
+
+/* =====================================================
+   LOGOUT
+   ===================================================== */
+
+document
+    .getElementById(
+        "logoutButton"
+    )
+    .addEventListener(
+        "click",
+        async function() {
+
+            await supabaseClient
+                .auth
+                .signOut();
+
+
+            window.location.href =
+                "index.html";
+
+        }
+    );
+
+
+/* =====================================================
+   START
+   ===================================================== */
+
+checkLogin();
+
+</script>
+
+</body>
+
+</html>
