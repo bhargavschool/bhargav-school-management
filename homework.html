@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Bhargav School | Homework</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #0f172a;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .school-name {
+            text-align: center;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .school-name h2 {
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+
+        .school-name p {
+            color: #94a3b8;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .menu {
+            margin-top: 25px;
+        }
+
+        .menu a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 13px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .logout button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #475569;
+            background: transparent;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .logout button:hover {
+            background: #dc2626;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .topbar {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            font-size: 26px;
+        }
+
+        .topbar p {
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        /* SUMMARY */
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .summary-card p {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .summary-card h2 {
+            font-size: 24px;
+        }
+
+        /* ACTIONS */
+
+        .actions {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        .add-button {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 13px 20px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .add-button:hover {
+            background: #172554;
+        }
+
+        /* TABLE */
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1100px;
+        }
+
+        th {
+            background: #f8fafc;
+            text-align: left;
+            padding: 15px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        td {
+            padding: 15px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 14px;
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .edit {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .delete {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .attachment {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            text-decoration: none;
+            padding: 6px 9px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .attachment:hover {
+            background: #bae6fd;
+        }
+
+        .description {
+            max-width: 250px;
+            white-space: normal;
+            line-height: 1.5;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .active-status {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .overdue-status {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* MODAL */
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+        }
+
+        .modal-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 5px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #475569;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .save-button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #1e3a8a;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cancel-button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #e2e8f0;
+            color: #334155;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #message {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 900px) {
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .logout {
+                position: relative;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                margin-top: 20px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="school-name">
+
+        <h2>BHARGAV SCHOOL</h2>
+
+        <p>Management Portal</p>
+
+    </div>
+
+
+    <nav class="menu">
+
+        <a href="dashboard.html">
+            📊 Dashboard
+        </a>
+
+        <a href="students.html">
+            👨‍🎓 Students
+        </a>
+
+        <a href="teachers.html">
+            👩‍🏫 Teachers
+        </a>
+
+        <a href="fees.html">
+            💰 Fees
+        </a>
+
+        <a href="marks.html">
+            📚 Marks
+        </a>
+
+        <a href="attendance.html">
+            📅 Attendance
+        </a>
+
+        <a href="notices.html">
+            📢 Notices
+        </a>
+
+        <a href="homework.html" class="active">
+            📝 Homework
+        </a>
+
+    </nav>
+
+
+    <div class="logout">
+
+        <button id="logoutButton">
+            🚪 Logout
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<main class="main">
+
+
+    <div class="topbar">
+
+        <h1>Homework Management</h1>
+
+        <p>
+            Create, edit and manage homework assignments for students.
+        </p>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary">
+
+        <div class="summary-card">
+
+            <p>Total Homework</p>
+
+            <h2 id="totalHomework">
+                0
+            </h2>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <p>Active Homework</p>
+
+            <h2 id="activeHomework">
+                0
+            </h2>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <p>Overdue Homework</p>
+
+            <h2 id="overdueHomework">
+                0
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTIONS -->
+
+    <div class="actions">
+
+        <div class="search">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="🔍 Search by title, class, section or subject ID..."
+            >
+
+        </div>
+
+
+        <button
+            class="add-button"
+            id="addHomeworkButton">
+
+            + Add Homework
+
+        </button>
+
+    </div>
+
+
+    <div id="message"></div>
+
+
+    <!-- TABLE -->
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Title</th>
+
+                    <th>Class</th>
+
+                    <th>Section</th>
+
+                    <th>Subject ID</th>
+
+                    <th>Assigned Date</th>
+
+                    <th>Due Date</th>
+
+                    <th>Description</th>
+
+                    <th>Attachment</th>
+
+                    <th>Status</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="homeworkTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</main>
+
+
+<!-- ADD / EDIT MODAL -->
+
+<div class="modal" id="homeworkModal">
+
+    <div class="modal-box">
+
+        <h2 id="modalTitle">
+            Add Homework
+        </h2>
+
+
+        <form id="homeworkForm">
+
+            <input
+                type="hidden"
+                id="homeworkId"
+            >
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Homework Title
+                    </label>
+
+                    <input
+                        type="text"
+                        id="title"
+                        placeholder="Example: Mathematics Exercise"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Class
+                    </label>
+
+                    <input
+                        type="text"
+                        id="className"
+                        placeholder="Example: 5"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Section
+                    </label>
+
+                    <input
+                        type="text"
+                        id="section"
+                        placeholder="Example: A"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Subject ID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="subjectId"
+                        placeholder="Enter subject UUID"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Assigned Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="assignedDate"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Due Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="dueDate"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        placeholder="Enter homework instructions..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Attachment URL
+                    </label>
+
+                    <input
+                        type="url"
+                        id="attachmentUrl"
+                        placeholder="https://example.com/file.pdf"
+                    >
+
+                </div>
+
+
+            </div>
+
+
+            <div class="modal-buttons">
+
+                <button
+                    type="submit"
+                    class="save-button">
+
+                    Save Homework
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="cancel-button"
+                    id="cancelButton">
+
+                    Cancel
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+/* =====================================================
+   SUPABASE CONNECTION
+   ===================================================== */
+
+const SUPABASE_URL =
+    "https://jmdujouzsiiwvrsnwawv.supabase.co";
+
+
+const SUPABASE_KEY =
+    "sb_publishable__sdosuGSmD9Lz29D4CG3YA_-8hOYoVn";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =====================================================
+   ELEMENTS
+   ===================================================== */
+
+const homeworkTable =
+    document.getElementById("homeworkTable");
+
+const homeworkModal =
+    document.getElementById("homeworkModal");
+
+const homeworkForm =
+    document.getElementById("homeworkForm");
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const message =
+    document.getElementById("message");
+
+
+let homeworkRecords = [];
+
+
+/* =====================================================
+   CHECK LOGIN
+   ===================================================== */
+
+async function checkLogin() {
+
+    const {
+        data: {
+            session
+        }
+    } = await supabaseClient.auth.getSession();
+
+
+    if (!session) {
+
+        window.location.href =
+            "index.html";
+
+        return;
+
+    }
+
+
+    const {
+        data: roleData,
+        error
+    } = await supabaseClient
+
+        .from("user_roles")
+
+        .select("role")
+
+        .eq(
+            "user_id",
+            session.user.id
+        )
+
+        .single();
+
+
+    if (
+        error ||
+        !roleData ||
+        roleData.role !== "management"
+    ) {
+
+        await supabaseClient.auth.signOut();
+
+        window.location.href =
+            "index.html";
+
+        return;
+
+    }
+
+
+    loadHomework();
+
+}
+
+
+/* =====================================================
+   LOAD HOMEWORK
+   ===================================================== */
+
+async function loadHomework() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+
+        .from("homework")
+
+        .select("*")
+
+        .order(
+            "created_at",
+            {
+                ascending: false
+            }
+        );
+
+
+    if (error) {
+
+        showMessage(
+            "Unable to load homework: " +
+            error.message,
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    homeworkRecords =
+        data || [];
+
+
+    displayHomework(
+        homeworkRecords
+    );
+
+
+    updateSummary(
+        homeworkRecords
+    );
+
+}
+
+
+/* =====================================================
+   DISPLAY HOMEWORK
+   ===================================================== */
+
+function displayHomework(list) {
+
+    homeworkTable.innerHTML = "";
+
+
+    if (list.length === 0) {
+
+        homeworkTable.innerHTML = `
+            <tr>
+                <td colspan="10" class="empty">
+                    No homework found.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    list.forEach(homework => {
+
+        const status =
+            getHomeworkStatus(
+                homework.due_date
+            );
+
+
+        let attachment = "";
+
+        if (
+            homework.attachment_url
+        ) {
+
+            attachment = `
+                <a
+                    class="attachment"
+                    href="${safeAttribute(homework.attachment_url)}"
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    📎 Open
+                </a>
+            `;
+
+        } else {
+
+            attachment = "—";
+
+        }
+
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                <strong>
+                    ${safe(homework.title)}
+                </strong>
+            </td>
+
+            <td>
+                ${safe(homework.class_name)}
+            </td>
+
+            <td>
+                ${safe(homework.section)}
+            </td>
+
+            <td>
+                ${safe(homework.subject_id)}
+            </td>
+
+            <td>
+                ${formatDate(homework.assigned_date)}
+            </td>
+
+            <td>
+                ${formatDate(homework.due_date)}
+            </td>
+
+            <td>
+                <div class="description">
+                    ${safe(homework.description)}
+                </div>
+            </td>
+
+            <td>
+                ${attachment}
+            </td>
+
+            <td>
+                <span class="status ${status.className}">
+                    ${status.text}
+                </span>
+            </td>
+
+            <td>
+
+                <button
+                    class="edit"
+                    onclick="editHomework('${homework.id}')">
+
+                    Edit
+
+                </button>
+
+                <button
+                    class="delete"
+                    onclick="deleteHomework('${homework.id}')">
+
+                    Delete
+
+                </button>
+
+            </td>
+
+        `;
+
+
+        homeworkTable.appendChild(row);
+
+    });
+
+}
+
+
+/* =====================================================
+   HOMEWORK STATUS
+   ===================================================== */
+
+function getHomeworkStatus(
+    dueDate
+) {
+
+    if (!dueDate) {
+
+        return {
+            text: "No Due Date",
+            className: "active-status"
+        };
+
+    }
+
+
+    const today =
+        new Date();
+
+
+    today.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+
+    const due =
+        new Date(
+            dueDate + "T00:00:00"
+        );
+
+
+    if (due < today) {
+
+        return {
+            text: "Overdue",
+            className: "overdue-status"
+        };
+
+    }
+
+
+    return {
+        text: "Active",
+        className: "active-status"
+    };
+
+}
+
+
+/* =====================================================
+   SUMMARY
+   ===================================================== */
+
+function updateSummary(
+    list
+) {
+
+    document
+        .getElementById(
+            "totalHomework"
+        )
+        .textContent =
+        list.length;
+
+
+    let active = 0;
+
+    let overdue = 0;
+
+
+    list.forEach(homework => {
+
+        const status =
+            getHomeworkStatus(
+                homework.due_date
+            );
+
+
+        if (
+            status.text ===
+            "Overdue"
+        ) {
+
+            overdue++;
+
+        } else {
+
+            active++;
+
+        }
+
+    });
+
+
+    document
+        .getElementById(
+            "activeHomework"
+        )
+        .textContent =
+        active;
+
+
+    document
+        .getElementById(
+            "overdueHomework"
+        )
+        .textContent =
+        overdue;
+
+}
+
+
+/* =====================================================
+   ADD HOMEWORK
+   ===================================================== */
+
+document
+    .getElementById(
+        "addHomeworkButton"
+    )
+    .addEventListener(
+        "click",
+        function() {
+
+            document
+                .getElementById(
+                    "modalTitle"
+                )
+                .textContent =
+                "Add Homework";
+
+
+            homeworkForm.reset();
+
+
+            document
+                .getElementById(
+                    "homeworkId"
+                )
+                .value = "";
+
+
+            /*
+               Automatically use today's date
+               as assigned date.
+            */
+
+            document
+                .getElementById(
+                    "assignedDate"
+                )
+                .value =
+                getToday();
+
+
+            homeworkModal.style.display =
+                "flex";
+
+        }
+    );
+
+
+/* =====================================================
+   SAVE HOMEWORK
+   ===================================================== */
+
+homeworkForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const id =
+            document
+                .getElementById(
+                    "homeworkId"
+                )
+                .value;
+
+
+        const title =
+            document
+                .getElementById(
+                    "title"
+                )
+                .value
+                .trim();
+
+
+        const className =
+            document
+                .getElementById(
+                    "className"
+                )
+                .value
+                .trim();
+
+
+        const section =
+            document
+                .getElementById(
+                    "section"
+                )
+                .value
+                .trim();
+
+
+        const subjectId =
+            document
+                .getElementById(
+                    "subjectId"
+                )
+                .value
+                .trim();
+
+
+        const assignedDate =
+            document
+                .getElementById(
+                    "assignedDate"
+                )
+                .value;
+
+
+        const dueDate =
+            document
+                .getElementById(
+                    "dueDate"
+                )
+                .value;
+
+
+        const description =
+            document
+                .getElementById(
+                    "description"
+                )
+                .value
+                .trim();
+
+
+        const attachmentUrl =
+            document
+                .getElementById(
+                    "attachmentUrl"
+                )
+                .value
+                .trim();
+
+
+        if (
+            dueDate &&
+            assignedDate &&
+            dueDate < assignedDate
+        ) {
+
+            showMessage(
+                "Due date cannot be before assigned date.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        const homeworkData = {
+
+            title:
+                title,
+
+            class_name:
+                className,
+
+            section:
+                section || null,
+
+            subject_id:
+                subjectId,
+
+            assigned_date:
+                assignedDate,
+
+            due_date:
+                dueDate,
+
+            description:
+                description,
+
+            attachment_url:
+                attachmentUrl || null
+
+        };
+
+
+        let result;
+
+
+        if (id) {
+
+            result =
+                await supabaseClient
+
+                    .from("homework")
+
+                    .update(
+                        homeworkData
+                    )
+
+                    .eq(
+                        "id",
+                        id
+                    );
+
+        } else {
+
+            result =
+                await supabaseClient
+
+                    .from("homework")
+
+                    .insert(
+                        homeworkData
+                    );
+
+        }
+
+
+        if (result.error) {
+
+            showMessage(
+                result.error.message,
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        homeworkModal.style.display =
+            "none";
+
+
+        showMessage(
+            id
+                ? "Homework updated successfully."
+                : "Homework added successfully.",
+            "success"
+        );
+
+
+        loadHomework();
+
+    }
+);
+
+
+/* =====================================================
+   EDIT HOMEWORK
+   ===================================================== */
+
+window.editHomework =
+    function(id) {
+
+        const homework =
+            homeworkRecords.find(
+                item =>
+                    String(item.id) ===
+                    String(id)
+            );
+
+
+        if (!homework) {
+
+            return;
+
+        }
+
+
+        document
+            .getElementById(
+                "modalTitle"
+            )
+            .textContent =
+            "Edit Homework";
+
+
+        document
+            .getElementById(
+                "homeworkId"
+            )
+            .value =
+            homework.id;
+
+
+        document
+            .getElementById(
+                "title"
+            )
+            .value =
+            homework.title || "";
+
+
+        document
+            .getElementById(
+                "className"
+            )
+            .value =
+            homework.class_name || "";
+
+
+        document
+            .getElementById(
+                "section"
+            )
+            .value =
+            homework.section || "";
+
+
+        document
+            .getElementById(
+                "subjectId"
+            )
+            .value =
+            homework.subject_id || "";
+
+
+        document
+            .getElementById(
+                "assignedDate"
+            )
+            .value =
+            homework.assigned_date || "";
+
+
+        document
+            .getElementById(
+                "dueDate"
+            )
+            .value =
+            homework.due_date || "";
+
+
+        document
+            .getElementById(
+                "description"
+            )
+            .value =
+            homework.description || "";
+
+
+        document
+            .getElementById(
+                "attachmentUrl"
+            )
+            .value =
+            homework.attachment_url || "";
+
+
+        homeworkModal.style.display =
+            "flex";
+
+    };
+
+
+/* =====================================================
+   DELETE HOMEWORK
+   ===================================================== */
+
+window.deleteHomework =
+    async function(id) {
+
+        const homework =
+            homeworkRecords.find(
+                item =>
+                    String(item.id) ===
+                    String(id)
+            );
+
+
+        if (!homework) {
+
+            return;
+
+        }
+
+
+        const confirmed =
+            confirm(
+                "Delete homework: " +
+                homework.title +
+                "?"
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        const {
+            error
+        } = await supabaseClient
+
+            .from("homework")
+
+            .delete()
+
+            .eq(
+                "id",
+                id
+            );
+
+
+        if (error) {
+
+            showMessage(
+                error.message,
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        showMessage(
+            "Homework deleted successfully.",
+            "success"
+        );
+
+
+        loadHomework();
+
+    };
+
+
+/* =====================================================
+   CANCEL
+   ===================================================== */
+
+document
+    .getElementById(
+        "cancelButton"
+    )
+    .addEventListener(
+        "click",
+        function() {
+
+            homeworkModal.style.display =
+                "none";
+
+        }
+    );
+
+
+/* =====================================================
+   SEARCH
+   ===================================================== */
+
+searchInput.addEventListener(
+    "input",
+    function() {
+
+        const search =
+            this.value
+                .toLowerCase()
+                .trim();
+
+
+        if (!search) {
+
+            displayHomework(
+                homeworkRecords
+            );
+
+            return;
+
+        }
+
+
+        const filtered =
+            homeworkRecords.filter(
+                homework => {
+
+                    return (
+
+                        String(
+                            homework.title ||
+                            ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
+
+                        ||
+
+                        String(
+                            homework.class_name ||
+                            ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
+
+                        ||
+
+                        String(
+                            homework.section ||
+                            ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
+
+                        ||
+
+                        String(
+                            homework.subject_id ||
+                            ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
+
+                        ||
+
+                        String(
+                            homework.description ||
+                            ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
+
+                    );
+
+                }
+            );
+
+
+        displayHomework(
+            filtered
+        );
+
+    }
+);
+
+
+/* =====================================================
+   FORMAT DATE
+   ===================================================== */
+
+function formatDate(
+    value
+) {
+
+    if (!value) {
+
+        return "—";
+
+    }
+
+
+    const date =
+        new Date(
+            value + "T00:00:00"
+        );
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return safe(value);
+
+    }
+
+
+    return date.toLocaleDateString(
+        "en-IN",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+/* =====================================================
+   TODAY
+   ===================================================== */
+
+function getToday() {
+
+    const date =
+        new Date();
+
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        )
+        .padStart(
+            2,
+            "0"
+        );
+
+
+    const day =
+        String(
+            date.getDate()
+        )
+        .padStart(
+            2,
+            "0"
+        );
+
+
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+    );
+
+}
+
+
+/* =====================================================
+   SAFE TEXT
+   ===================================================== */
+
+function safe(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   SAFE ATTRIBUTE
+   ===================================================== */
+
+function safeAttribute(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "#";
+
+    }
+
+
+    return String(value)
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   MESSAGE
+   ===================================================== */
+
+function showMessage(
+    text,
+    type
+) {
+
+    message.textContent =
+        text;
+
+
+    message.style.color =
+        type === "success"
+            ? "#15803d"
+            : "#dc2626";
+
+
+    setTimeout(
+        function() {
+
+            message.textContent =
+                "";
+
+        },
+        4000
+    );
+
+}
+
+
+/* =====================================================
+   LOGOUT
+   ===================================================== */
+
+document
+    .getElementById(
+        "logoutButton"
+    )
+    .addEventListener(
+        "click",
+        async function() {
+
+            await supabaseClient
+                .auth
+                .signOut();
+
+
+            window.location.href =
+                "index.html";
+
+        }
+    );
+
+
+/* =====================================================
+   START
+   ===================================================== */
+
+checkLogin();
+
+</script>
+
+</body>
+
+</html>
