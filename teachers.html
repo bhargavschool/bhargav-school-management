@@ -1,0 +1,1961 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Bhargav School | Teachers</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #0f172a;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .school-name {
+            text-align: center;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .school-name h2 {
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+
+        .school-name p {
+            color: #94a3b8;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .menu {
+            margin-top: 25px;
+        }
+
+        .menu a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 13px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .logout button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #475569;
+            background: transparent;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .logout button:hover {
+            background: #dc2626;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .topbar {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            font-size: 26px;
+        }
+
+        .topbar p {
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        /* SUMMARY */
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .summary-card p {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .summary-card h2 {
+            font-size: 24px;
+        }
+
+        /* ACTIONS */
+
+        .actions {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        .add-button {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 13px 20px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .add-button:hover {
+            background: #172554;
+        }
+
+        /* TABLE */
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1100px;
+        }
+
+        th {
+            background: #f8fafc;
+            text-align: left;
+            padding: 15px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        td {
+            padding: 15px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        /* BUTTONS */
+
+        .edit {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .delete {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* STATUS */
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .active-status {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .inactive-status {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .other-status {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        /* MODAL */
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+        }
+
+        .modal-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 5px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #475569;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .save-button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #1e3a8a;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cancel-button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #e2e8f0;
+            color: #334155;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #message {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 900px) {
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .logout {
+                position: relative;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                margin-top: 20px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="school-name">
+
+        <h2>BHARGAV SCHOOL</h2>
+
+        <p>Management Portal</p>
+
+    </div>
+
+
+    <nav class="menu">
+
+        <a href="dashboard.html">
+            📊 Dashboard
+        </a>
+
+        <a href="students.html">
+            👨‍🎓 Students
+        </a>
+
+        <a href="teachers.html" class="active">
+            👩‍🏫 Teachers
+        </a>
+
+        <a href="fees.html">
+            💰 Fees
+        </a>
+
+        <a href="marks.html">
+            📚 Marks
+        </a>
+
+        <a href="#">
+            📅 Attendance
+        </a>
+
+        <a href="#">
+            📢 Notices
+        </a>
+
+        <a href="#">
+            📝 Homework
+        </a>
+
+    </nav>
+
+
+    <div class="logout">
+
+        <button id="logoutButton">
+            🚪 Logout
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<main class="main">
+
+
+    <div class="topbar">
+
+        <h1>Teacher Management</h1>
+
+        <p>
+            Add, edit, search and manage teacher information.
+        </p>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary">
+
+        <div class="summary-card">
+
+            <p>Total Teachers</p>
+
+            <h2 id="teacherCount">
+                0
+            </h2>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <p>Active Teachers</p>
+
+            <h2 id="activeTeacherCount">
+                0
+            </h2>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <p>Subjects</p>
+
+            <h2 id="subjectCount">
+                0
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTION BAR -->
+
+    <div class="actions">
+
+        <div class="search">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="🔍 Search by teacher ID, name, subject or phone..."
+            >
+
+        </div>
+
+
+        <button
+            class="add-button"
+            id="addTeacherButton">
+
+            + Add Teacher
+
+        </button>
+
+    </div>
+
+
+    <div id="message"></div>
+
+
+    <!-- TEACHER TABLE -->
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Teacher ID</th>
+
+                    <th>Name</th>
+
+                    <th>Subject</th>
+
+                    <th>Phone</th>
+
+                    <th>Email</th>
+
+                    <th>Qualification</th>
+
+                    <th>Joining Date</th>
+
+                    <th>Status</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="teacherTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</main>
+
+
+<!-- ADD / EDIT MODAL -->
+
+<div class="modal" id="teacherModal">
+
+    <div class="modal-box">
+
+        <h2 id="modalTitle">
+            Add Teacher
+        </h2>
+
+
+        <form id="teacherForm">
+
+            <input
+                type="hidden"
+                id="teacherRecordId"
+            >
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Teacher ID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="teacherId"
+                        placeholder="Example: T001"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        First Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="firstName"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Last Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="lastName"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Subject
+                    </label>
+
+                    <input
+                        type="text"
+                        id="subject"
+                        placeholder="Example: Mathematics"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Phone
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        placeholder="Enter phone number"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="teacher@example.com"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Qualification
+                    </label>
+
+                    <input
+                        type="text"
+                        id="qualification"
+                        placeholder="Example: B.Ed"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Joining Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="joiningDate"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select id="status">
+
+                        <option value="active">
+                            Active
+                        </option>
+
+                        <option value="inactive">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="modal-buttons">
+
+                <button
+                    type="submit"
+                    class="save-button">
+
+                    Save Teacher
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="cancel-button"
+                    id="cancelButton">
+
+                    Cancel
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+/* =====================================================
+   SUPABASE CONNECTION
+   ===================================================== */
+
+const SUPABASE_URL =
+    "https://jmdujouzsiiwvrsnwawv.supabase.co";
+
+
+const SUPABASE_KEY =
+    "sb_publishable__sdosuGSmD9Lz29D4CG3YA_-8hOYoVn";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =====================================================
+   ELEMENTS
+   ===================================================== */
+
+const teacherTable =
+    document.getElementById("teacherTable");
+
+const teacherModal =
+    document.getElementById("teacherModal");
+
+const teacherForm =
+    document.getElementById("teacherForm");
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const message =
+    document.getElementById("message");
+
+
+let teachers = [];
+
+
+/* =====================================================
+   CHECK LOGIN
+   ===================================================== */
+
+async function checkLogin() {
+
+    const {
+        data: {
+            session
+        }
+    } = await supabaseClient.auth.getSession();
+
+
+    if (!session) {
+
+        window.location.href =
+            "index.html";
+
+        return;
+
+    }
+
+
+    const {
+        data: roleData,
+        error
+    } = await supabaseClient
+
+        .from("user_roles")
+
+        .select("role")
+
+        .eq(
+            "user_id",
+            session.user.id
+        )
+
+        .single();
+
+
+    if (
+        error ||
+        !roleData ||
+        roleData.role !== "management"
+    ) {
+
+        await supabaseClient
+            .auth
+            .signOut();
+
+        window.location.href =
+            "index.html";
+
+        return;
+
+    }
+
+
+    loadTeachers();
+
+}
+
+
+/* =====================================================
+   LOAD TEACHERS
+   ===================================================== */
+
+async function loadTeachers() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+
+        .from("teachers")
+
+        .select("*")
+
+        .order(
+            "first_name",
+            {
+                ascending: true
+            }
+        );
+
+
+    if (error) {
+
+        showMessage(
+            "Unable to load teachers: " +
+            error.message,
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    teachers =
+        data || [];
+
+
+    displayTeachers(
+        teachers
+    );
+
+
+    updateSummary(
+        teachers
+    );
+
+}
+
+
+/* =====================================================
+   DISPLAY TEACHERS
+   ===================================================== */
+
+function displayTeachers(list) {
+
+    teacherTable.innerHTML = "";
+
+
+    if (list.length === 0) {
+
+        teacherTable.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="9"
+                    class="empty">
+
+                    No teachers found.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    list.forEach(teacher => {
+
+
+        const firstName =
+            teacher.first_name || "";
+
+
+        const lastName =
+            teacher.last_name || "";
+
+
+        const fullName =
+            (
+                firstName +
+                " " +
+                lastName
+            ).trim();
+
+
+        const status =
+            String(
+                teacher.status || ""
+            );
+
+
+        let statusClass =
+            "other-status";
+
+
+        if (
+            status.toLowerCase() ===
+            "active"
+        ) {
+
+            statusClass =
+                "active-status";
+
+        }
+
+
+        if (
+            status.toLowerCase() ===
+            "inactive"
+        ) {
+
+            statusClass =
+                "inactive-status";
+
+        }
+
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                ${safe(
+                    teacher.teacher_id
+                )}
+            </td>
+
+            <td>
+                <strong>
+                    ${safe(
+                        fullName
+                    )}
+                </strong>
+            </td>
+
+            <td>
+                ${safe(
+                    teacher.subject
+                )}
+            </td>
+
+            <td>
+                ${safe(
+                    teacher.phone
+                )}
+            </td>
+
+            <td>
+                ${safe(
+                    teacher.email
+                )}
+            </td>
+
+            <td>
+                ${safe(
+                    teacher.qualification
+                )}
+            </td>
+
+            <td>
+                ${formatDate(
+                    teacher.joining_date
+                )}
+            </td>
+
+            <td>
+
+                <span
+                    class="status ${statusClass}">
+
+                    ${safe(
+                        teacher.status ||
+                        "Not Set"
+                    )}
+
+                </span>
+
+            </td>
+
+            <td>
+
+                <button
+                    class="edit"
+                    onclick="editTeacher('${teacher.id}')">
+
+                    Edit
+
+                </button>
+
+                <button
+                    class="delete"
+                    onclick="deleteTeacher('${teacher.id}')">
+
+                    Delete
+
+                </button>
+
+            </td>
+
+        `;
+
+
+        teacherTable.appendChild(row);
+
+    });
+
+}
+
+
+/* =====================================================
+   SUMMARY
+   ===================================================== */
+
+function updateSummary(list) {
+
+    document
+        .getElementById(
+            "teacherCount"
+        )
+        .textContent =
+        list.length;
+
+
+    const activeTeachers =
+        list.filter(
+            teacher =>
+                String(
+                    teacher.status || ""
+                ).toLowerCase() ===
+                "active"
+        );
+
+
+    document
+        .getElementById(
+            "activeTeacherCount"
+        )
+        .textContent =
+        activeTeachers.length;
+
+
+    const subjects =
+        new Set();
+
+
+    list.forEach(
+        teacher => {
+
+            if (
+                teacher.subject &&
+                String(
+                    teacher.subject
+                ).trim()
+            ) {
+
+                subjects.add(
+                    String(
+                        teacher.subject
+                    )
+                    .trim()
+                    .toLowerCase()
+                );
+
+            }
+
+        }
+    );
+
+
+    document
+        .getElementById(
+            "subjectCount"
+        )
+        .textContent =
+        subjects.size;
+
+}
+
+
+/* =====================================================
+   ADD TEACHER
+   ===================================================== */
+
+document
+    .getElementById(
+        "addTeacherButton"
+    )
+    .addEventListener(
+        "click",
+        function() {
+
+            document
+                .getElementById(
+                    "modalTitle"
+                )
+                .textContent =
+                "Add Teacher";
+
+
+            teacherForm.reset();
+
+
+            document
+                .getElementById(
+                    "teacherRecordId"
+                )
+                .value = "";
+
+
+            document
+                .getElementById(
+                    "status"
+                )
+                .value =
+                "active";
+
+
+            teacherModal.style.display =
+                "flex";
+
+        }
+    );
+
+
+/* =====================================================
+   SAVE TEACHER
+   ===================================================== */
+
+teacherForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const recordId =
+            document
+                .getElementById(
+                    "teacherRecordId"
+                )
+                .value;
+
+
+        const teacherId =
+            document
+                .getElementById(
+                    "teacherId"
+                )
+                .value
+                .trim();
+
+
+        const firstName =
+            document
+                .getElementById(
+                    "firstName"
+                )
+                .value
+                .trim();
+
+
+        const lastName =
+            document
+                .getElementById(
+                    "lastName"
+                )
+                .value
+                .trim();
+
+
+        const subject =
+            document
+                .getElementById(
+                    "subject"
+                )
+                .value
+                .trim();
+
+
+        const phone =
+            document
+                .getElementById(
+                    "phone"
+                )
+                .value
+                .trim();
+
+
+        const email =
+            document
+                .getElementById(
+                    "email"
+                )
+                .value
+                .trim();
+
+
+        const qualification =
+            document
+                .getElementById(
+                    "qualification"
+                )
+                .value
+                .trim();
+
+
+        const joiningDate =
+            document
+                .getElementById(
+                    "joiningDate"
+                )
+                .value ||
+            null;
+
+
+        const status =
+            document
+                .getElementById(
+                    "status"
+                )
+                .value;
+
+
+        const teacherData = {
+
+            teacher_id:
+                teacherId,
+
+            first_name:
+                firstName,
+
+            last_name:
+                lastName,
+
+            subject:
+                subject,
+
+            phone:
+                phone,
+
+            email:
+                email,
+
+            qualification:
+                qualification,
+
+            joining_date:
+                joiningDate,
+
+            status:
+                status
+
+        };
+
+
+        let result;
+
+
+        /* UPDATE */
+
+        if (recordId) {
+
+            result =
+                await supabaseClient
+
+                    .from("teachers")
+
+                    .update(
+                        teacherData
+                    )
+
+                    .eq(
+                        "id",
+                        recordId
+                    );
+
+        }
+
+        /* INSERT */
+
+        else {
+
+            result =
+                await supabaseClient
+
+                    .from("teachers")
+
+                    .insert(
+                        teacherData
+                    );
+
+        }
+
+
+        if (result.error) {
+
+            showMessage(
+                result.error.message,
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        teacherModal.style.display =
+            "none";
+
+
+        showMessage(
+            recordId
+                ? "Teacher updated successfully."
+                : "Teacher added successfully.",
+            "success"
+        );
+
+
+        loadTeachers();
+
+    }
+);
+
+
+/* =====================================================
+   EDIT TEACHER
+   ===================================================== */
+
+window.editTeacher =
+    function(id) {
+
+
+        const teacher =
+            teachers.find(
+                item =>
+                    String(
+                        item.id
+                    ) ===
+                    String(id)
+            );
+
+
+        if (!teacher) {
+
+            return;
+
+        }
+
+
+        document
+            .getElementById(
+                "modalTitle"
+            )
+            .textContent =
+            "Edit Teacher";
+
+
+        document
+            .getElementById(
+                "teacherRecordId"
+            )
+            .value =
+            teacher.id;
+
+
+        document
+            .getElementById(
+                "teacherId"
+            )
+            .value =
+            teacher.teacher_id || "";
+
+
+        document
+            .getElementById(
+                "firstName"
+            )
+            .value =
+            teacher.first_name || "";
+
+
+        document
+            .getElementById(
+                "lastName"
+            )
+            .value =
+            teacher.last_name || "";
+
+
+        document
+            .getElementById(
+                "subject"
+            )
+            .value =
+            teacher.subject || "";
+
+
+        document
+            .getElementById(
+                "phone"
+            )
+            .value =
+            teacher.phone || "";
+
+
+        document
+            .getElementById(
+                "email"
+            )
+            .value =
+            teacher.email || "";
+
+
+        document
+            .getElementById(
+                "qualification"
+            )
+            .value =
+            teacher.qualification || "";
+
+
+        document
+            .getElementById(
+                "joiningDate"
+            )
+            .value =
+            teacher.joining_date || "";
+
+
+        document
+            .getElementById(
+                "status"
+            )
+            .value =
+            teacher.status || "active";
+
+
+        teacherModal.style.display =
+            "flex";
+
+    };
+
+
+/* =====================================================
+   DELETE TEACHER
+   ===================================================== */
+
+window.deleteTeacher =
+    async function(id) {
+
+
+        const teacher =
+            teachers.find(
+                item =>
+                    String(
+                        item.id
+                    ) ===
+                    String(id)
+            );
+
+
+        if (!teacher) {
+
+            return;
+
+        }
+
+
+        const name =
+            (
+                String(
+                    teacher.first_name ||
+                    ""
+                ) +
+                " " +
+                String(
+                    teacher.last_name ||
+                    ""
+                )
+            ).trim();
+
+
+        const confirmed =
+            confirm(
+                "Delete " +
+                (
+                    name ||
+                    "this teacher"
+                ) +
+                "?\n\nThis cannot be undone."
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        const {
+            error
+        } = await supabaseClient
+
+            .from("teachers")
+
+            .delete()
+
+            .eq(
+                "id",
+                id
+            );
+
+
+        if (error) {
+
+            showMessage(
+                error.message,
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        showMessage(
+            "Teacher deleted successfully.",
+            "success"
+        );
+
+
+        loadTeachers();
+
+    };
+
+
+/* =====================================================
+   CANCEL
+   ===================================================== */
+
+document
+    .getElementById(
+        "cancelButton"
+    )
+    .addEventListener(
+        "click",
+        function() {
+
+            teacherModal.style.display =
+                "none";
+
+        }
+    );
+
+
+/* =====================================================
+   SEARCH
+   ===================================================== */
+
+searchInput.addEventListener(
+    "input",
+    function() {
+
+
+        const search =
+            this.value
+                .toLowerCase()
+                .trim();
+
+
+        if (!search) {
+
+            displayTeachers(
+                teachers
+            );
+
+            return;
+
+        }
+
+
+        const filtered =
+            teachers.filter(
+                teacher => {
+
+
+                    const firstName =
+                        String(
+                            teacher.first_name ||
+                            ""
+                        )
+                        .toLowerCase();
+
+
+                    const lastName =
+                        String(
+                            teacher.last_name ||
+                            ""
+                        )
+                        .toLowerCase();
+
+
+                    const teacherId =
+                        String(
+                            teacher.teacher_id ||
+                            ""
+                        )
+                        .toLowerCase();
+
+
+                    const subject =
+                        String(
+                            teacher.subject ||
+                            ""
+                        )
+                        .toLowerCase();
+
+
+                    const phone =
+                        String(
+                            teacher.phone ||
+                            ""
+                        )
+                        .toLowerCase();
+
+
+                    const email =
+                        String(
+                            teacher.email ||
+                            ""
+                        )
+                        .toLowerCase();
+
+
+                    return (
+
+                        teacherId.includes(
+                            search
+                        )
+
+                        ||
+
+                        firstName.includes(
+                            search
+                        )
+
+                        ||
+
+                        lastName.includes(
+                            search
+                        )
+
+                        ||
+
+                        subject.includes(
+                            search
+                        )
+
+                        ||
+
+                        phone.includes(
+                            search
+                        )
+
+                        ||
+
+                        email.includes(
+                            search
+                        )
+
+                    );
+
+                }
+            );
+
+
+        displayTeachers(
+            filtered
+        );
+
+    }
+);
+
+
+/* =====================================================
+   DATE FORMAT
+   ===================================================== */
+
+function formatDate(value) {
+
+    if (!value) {
+
+        return "";
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return safe(value);
+
+    }
+
+
+    return date.toLocaleDateString(
+        "en-IN",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+/* =====================================================
+   SAFE TEXT
+   ===================================================== */
+
+function safe(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   MESSAGE
+   ===================================================== */
+
+function showMessage(
+    text,
+    type
+) {
+
+    message.textContent =
+        text;
+
+
+    message.style.color =
+        type === "success"
+            ? "#15803d"
+            : "#dc2626";
+
+
+    setTimeout(
+        function() {
+
+            message.textContent =
+                "";
+
+        },
+        4000
+    );
+
+}
+
+
+/* =====================================================
+   LOGOUT
+   ===================================================== */
+
+document
+    .getElementById(
+        "logoutButton"
+    )
+    .addEventListener(
+        "click",
+        async function() {
+
+            await supabaseClient
+                .auth
+                .signOut();
+
+
+            window.location.href =
+                "index.html";
+
+        }
+    );
+
+
+/* =====================================================
+   START
+   ===================================================== */
+
+checkLogin();
+
+</script>
+
+</body>
+
+</html>
