@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bhargav School | Teacher Attendance</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f1f5f9;
+    color:#1e293b;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:250px;
+    height:100vh;
+    background:#0f172a;
+    color:white;
+    padding:25px 15px;
+}
+
+.school-name{
+    text-align:center;
+    padding-bottom:22px;
+    border-bottom:1px solid #334155;
+}
+
+.school-name h2{
+    font-size:20px;
+    letter-spacing:1px;
+}
+
+.school-name p{
+    color:#94a3b8;
+    font-size:12px;
+    margin-top:5px;
+}
+
+.teacher-box{
+    text-align:center;
+    padding:18px 5px;
+    border-bottom:1px solid #334155;
+}
+
+.teacher-avatar{
+    width:55px;
+    height:55px;
+    border-radius:50%;
+    background:#1e3a8a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 9px;
+    font-size:23px;
+}
+
+.teacher-box h3{
+    font-size:14px;
+}
+
+.teacher-box p{
+    color:#94a3b8;
+    font-size:12px;
+    margin-top:5px;
+}
+
+.menu{
+    margin-top:20px;
+}
+
+.menu a{
+    display:block;
+    color:#cbd5e1;
+    text-decoration:none;
+    padding:13px 15px;
+    border-radius:8px;
+    margin-bottom:5px;
+}
+
+.menu a:hover,
+.menu a.active{
+    background:#1e3a8a;
+    color:white;
+}
+
+.logout{
+    position:absolute;
+    left:15px;
+    right:15px;
+    bottom:25px;
+}
+
+.logout button{
+    width:100%;
+    padding:12px;
+    background:transparent;
+    border:1px solid #475569;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.logout button:hover{
+    background:#dc2626;
+}
+
+/* MAIN */
+
+.main{
+    margin-left:250px;
+    padding:30px;
+}
+
+.topbar{
+    background:white;
+    padding:22px 25px;
+    border-radius:15px;
+    margin-bottom:20px;
+}
+
+.topbar h1{
+    font-size:25px;
+}
+
+.topbar p{
+    color:#64748b;
+    margin-top:6px;
+}
+
+/* CONTROLS */
+
+.controls{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+
+    display:grid;
+    grid-template-columns:
+        1fr 1fr 1fr auto;
+
+    gap:15px;
+    align-items:end;
+}
+
+.form-group label{
+    display:block;
+    font-size:12px;
+    font-weight:bold;
+    color:#475569;
+    margin-bottom:7px;
+}
+
+.form-group input,
+.form-group select{
+    width:100%;
+    padding:12px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    background:white;
+    font-size:14px;
+}
+
+.load-button{
+    padding:12px 20px;
+    border:none;
+    border-radius:8px;
+    background:#1e3a8a;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.load-button:hover{
+    background:#172554;
+}
+
+/* SUMMARY */
+
+.summary{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.summary-card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+}
+
+.summary-card p{
+    color:#64748b;
+    font-size:13px;
+    margin-bottom:8px;
+}
+
+.summary-card h2{
+    font-size:25px;
+}
+
+/* ATTENDANCE */
+
+.attendance-container{
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+}
+
+.attendance-header{
+    padding:20px;
+    border-bottom:1px solid #e2e8f0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+}
+
+.attendance-header h2{
+    font-size:18px;
+}
+
+.mark-all{
+    display:flex;
+    gap:8px;
+}
+
+.mark-all button{
+    padding:9px 12px;
+    border:none;
+    border-radius:7px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:12px;
+}
+
+.present-all{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.absent-all{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.student-list{
+    padding:10px 20px 20px;
+}
+
+/* STUDENT ROW */
+
+.student-row{
+    display:grid;
+    grid-template-columns:55px 1fr 170px 200px;
+    gap:15px;
+    align-items:center;
+
+    padding:15px 5px;
+    border-bottom:1px solid #e2e8f0;
+}
+
+.student-row:last-child{
+    border-bottom:none;
+}
+
+.student-number{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#eff6ff;
+    color:#1e40af;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+.student-name{
+    font-weight:bold;
+    font-size:14px;
+}
+
+.student-id{
+    color:#64748b;
+    font-size:12px;
+    margin-top:4px;
+}
+
+/* STATUS */
+
+.status-buttons{
+    display:flex;
+    gap:7px;
+}
+
+.status-btn{
+    flex:1;
+    padding:10px 7px;
+    border:1px solid #cbd5e1;
+    background:white;
+    border-radius:7px;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.status-btn.present.active{
+    background:#16a34a;
+    color:white;
+    border-color:#16a34a;
+}
+
+.status-btn.absent.active{
+    background:#dc2626;
+    color:white;
+    border-color:#dc2626;
+}
+
+.status-btn.leave.active{
+    background:#f59e0b;
+    color:white;
+    border-color:#f59e0b;
+}
+
+/* REMARK */
+
+.remark-input{
+    width:100%;
+    padding:9px;
+    border:1px solid #cbd5e1;
+    border-radius:7px;
+    font-size:12px;
+}
+
+/* SAVE */
+
+.save-area{
+    padding:20px;
+    border-top:1px solid #e2e8f0;
+    display:flex;
+    justify-content:flex-end;
+}
+
+.save-button{
+    padding:13px 25px;
+    border:none;
+    border-radius:8px;
+    background:#1e3a8a;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.save-button:hover{
+    background:#172554;
+}
+
+.save-button:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+/* MESSAGE */
+
+#message{
+    text-align:center;
+    margin-bottom:15px;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.empty{
+    text-align:center;
+    padding:45px 20px;
+    color:#64748b;
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+    .controls{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .summary{
+        grid-template-columns:1fr 1fr 1fr;
+    }
+
+    .student-row{
+        grid-template-columns:45px 1fr;
+    }
+
+    .status-buttons,
+    .remark-input{
+        grid-column:2;
+    }
+}
+
+@media(max-width:700px){
+
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+    }
+
+    .logout{
+        position:relative;
+        left:auto;
+        right:auto;
+        bottom:auto;
+        margin-top:20px;
+    }
+
+    .main{
+        margin-left:0;
+        padding:15px;
+    }
+
+    .controls{
+        grid-template-columns:1fr;
+    }
+
+    .summary{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .attendance-header{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .mark-all{
+        width:100%;
+    }
+
+    .mark-all button{
+        flex:1;
+    }
+}
+
+@media(max-width:450px){
+
+    .summary{
+        grid-template-columns:1fr;
+    }
+
+    .student-list{
+        padding:10px;
+    }
+
+    .student-row{
+        grid-template-columns:40px 1fr;
+        gap:10px;
+    }
+
+    .status-buttons,
+    .remark-input{
+        grid-column:2;
+    }
+
+    .status-btn{
+        padding:11px 4px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="school-name">
+
+        <h2>BHARGAV SCHOOL</h2>
+
+        <p>Teacher Portal</p>
+
+    </div>
+
+
+    <div class="teacher-box">
+
+        <div class="teacher-avatar">
+            👩‍🏫
+        </div>
+
+        <h3 id="teacherNameSide">
+            Teacher
+        </h3>
+
+        <p id="teacherSubjectSide">
+            Teacher
+        </p>
+
+    </div>
+
+
+    <nav class="menu">
+
+        <a href="teacher-dashboard.html">
+            📊 Dashboard
+        </a>
+
+        <a href="teacher-attendance.html"
+           class="active">
+            📅 Attendance
+        </a>
+
+        <a href="teacher-marks.html">
+            📚 Marks
+        </a>
+
+        <a href="homework.html">
+            📝 Homework
+        </a>
+
+        <a href="notices.html">
+            📢 Notices
+        </a>
+
+    </nav>
+
+
+    <div class="logout">
+
+        <button id="logoutButton">
+            🚪 Logout
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<main class="main">
+
+    <div class="topbar">
+
+        <h1>
+            Student Attendance
+        </h1>
+
+        <p id="teacherInfo">
+            Loading teacher information...
+        </p>
+
+    </div>
+
+
+    <div id="message"></div>
+
+
+    <!-- CONTROLS -->
+
+    <div class="controls">
+
+        <div class="form-group">
+
+            <label>
+                Attendance Date
+            </label>
+
+            <input
+                type="date"
+                id="attendanceDate"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Class
+            </label>
+
+            <select id="classSelect">
+
+                <option value="">
+                    Select Class
+                </option>
+
+                <option value="Nursery">
+                    Nursery
+                </option>
+
+                <option value="LKG">
+                    LKG
+                </option>
+
+                <option value="UKG">
+                    UKG
+                </option>
+
+                <option value="1">
+                    Class 1
+                </option>
+
+                <option value="2">
+                    Class 2
+                </option>
+
+                <option value="3">
+                    Class 3
+                </option>
+
+                <option value="4">
+                    Class 4
+                </option>
+
+                <option value="5">
+                    Class 5
+                </option>
+
+                <option value="6">
+                    Class 6
+                </option>
+
+                <option value="7">
+                    Class 7
+                </option>
+
+                <option value="8">
+                    Class 8
+                </option>
+
+                <option value="9">
+                    Class 9
+                </option>
+
+                <option value="10">
+                    Class 10
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Section
+            </label>
+
+            <select id="sectionSelect">
+
+                <option value="">
+                    Select Section
+                </option>
+
+                <option value="A">
+                    Section A
+                </option>
+
+                <option value="B">
+                    Section B
+                </option>
+
+                <option value="C">
+                    Section C
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <button
+            class="load-button"
+            id="loadStudentsButton">
+
+            Load Students
+
+        </button>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary">
+
+        <div class="summary-card">
+
+            <p>
+                Total Students
+            </p>
+
+            <h2 id="totalStudents">
+                0
+            </h2>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <p>
+                Present
+            </p>
+
+            <h2 id="presentCount">
+                0
+            </h2>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <p>
+                Absent
+            </p>
+
+            <h2 id="absentCount">
+                0
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- ATTENDANCE -->
+
+    <div class="attendance-container">
+
+        <div class="attendance-header">
+
+            <h2>
+                Mark Attendance
+            </h2>
+
+            <div class="mark-all">
+
+                <button
+                    class="present-all"
+                    id="presentAllButton">
+
+                    ✓ Mark All Present
+
+                </button>
+
+                <button
+                    class="absent-all"
+                    id="absentAllButton">
+
+                    ✕ Mark All Absent
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="student-list"
+            id="studentList">
+
+            <div class="empty">
+
+                Select date, class and section,
+                then click <strong>Load Students</strong>.
+
+            </div>
+
+        </div>
+
+
+        <div class="save-area">
+
+            <button
+                class="save-button"
+                id="saveButton"
+                disabled>
+
+                💾 Save Attendance
+
+            </button>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<script>
+
+/* =====================================================
+   SUPABASE
+   ===================================================== */
+
+const SUPABASE_URL =
+    "https://jmdujouzsiiwvrsnwawv.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable__sdosuGSmD9Lz29D4CG3YA_-8hOYoVn";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =====================================================
+   VARIABLES
+   ===================================================== */
+
+let currentTeacher = null;
+
+let students = [];
+
+let attendanceData = {};
+
+
+/* =====================================================
+   ELEMENTS
+   ===================================================== */
+
+const studentList =
+    document.getElementById(
+        "studentList"
+    );
+
+const attendanceDate =
+    document.getElementById(
+        "attendanceDate"
+    );
+
+const classSelect =
+    document.getElementById(
+        "classSelect"
+    );
+
+const sectionSelect =
+    document.getElementById(
+        "sectionSelect"
+    );
+
+const saveButton =
+    document.getElementById(
+        "saveButton"
+    );
+
+const message =
+    document.getElementById(
+        "message"
+    );
+
+
+/* =====================================================
+   TODAY
+   ===================================================== */
+
+function setToday(){
+
+    const today =
+        new Date();
+
+    const year =
+        today.getFullYear();
+
+    const month =
+        String(
+            today.getMonth()+1
+        ).padStart(2,"0");
+
+    const day =
+        String(
+            today.getDate()
+        ).padStart(2,"0");
+
+    attendanceDate.value =
+        `${year}-${month}-${day}`;
+
+}
+
+
+/* =====================================================
+   MESSAGE
+   ===================================================== */
+
+function showMessage(
+    text,
+    type="error"
+){
+
+    message.textContent =
+        text;
+
+    message.style.color =
+        type === "success"
+            ? "#15803d"
+            : "#dc2626";
+
+    setTimeout(
+        ()=>{
+            message.textContent="";
+        },
+        4000
+    );
+
+}
+
+
+/* =====================================================
+   CHECK LOGIN
+   ===================================================== */
+
+async function checkLogin(){
+
+    const {
+        data:{
+            session
+        }
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
+
+
+    if(!session){
+
+        window.location.href =
+            "index.html";
+
+        return false;
+
+    }
+
+
+    /*
+       Try to identify teacher
+       using authenticated email.
+    */
+
+    const email =
+        session.user.email;
+
+
+    if(!email){
+
+        showMessage(
+            "Teacher account email was not found."
+        );
+
+        return false;
+
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("teachers")
+            .select(`
+                id,
+                teacher_id,
+                first_name,
+                last_name,
+                subject,
+                email,
+                status
+            `)
+            .eq(
+                "email",
+                email
+            )
+            .maybeSingle();
+
+
+    if(error){
+
+        console.error(error);
+
+        showMessage(
+            "Unable to load teacher profile."
+        );
+
+        return false;
+
+    }
+
+
+    if(!data){
+
+        showMessage(
+            "Teacher profile was not found."
+        );
+
+        return false;
+
+    }
+
+
+    if(
+        data.status &&
+        String(data.status).toLowerCase() !==
+        "active"
+    ){
+
+        showMessage(
+            "This teacher account is inactive."
+        );
+
+        await supabaseClient
+            .auth
+            .signOut();
+
+        setTimeout(
+            ()=>{
+                window.location.href="index.html";
+            },
+            1500
+        );
+
+        return false;
+
+    }
+
+
+    currentTeacher =
+        data;
+
+
+    const fullName =
+        `${data.first_name || ""} ${data.last_name || ""}`
+        .trim() ||
+        "Teacher";
+
+
+    document
+        .getElementById(
+            "teacherNameSide"
+        )
+        .textContent =
+        fullName;
+
+
+    document
+        .getElementById(
+            "teacherSubjectSide"
+        )
+        .textContent =
+        data.subject ||
+        "Teacher";
+
+
+    document
+        .getElementById(
+            "teacherInfo"
+        )
+        .textContent =
+        `${fullName} • ${data.subject || "Teacher"}`;
+
+
+    return true;
+
+}
+
+
+/* =====================================================
+   LOAD STUDENTS
+   ===================================================== */
+
+async function loadStudents(){
+
+    const className =
+        classSelect.value;
+
+    const section =
+        sectionSelect.value;
+
+
+    if(!attendanceDate.value){
+
+        showMessage(
+            "Please select attendance date."
+        );
+
+        return;
+
+    }
+
+
+    if(!className){
+
+        showMessage(
+            "Please select a class."
+        );
+
+        return;
+
+    }
+
+
+    if(!section){
+
+        showMessage(
+            "Please select a section."
+        );
+
+        return;
+
+    }
+
+
+    studentList.innerHTML =
+        `
+        <div class="empty">
+            Loading students...
+        </div>
+        `;
+
+
+    /*
+       IMPORTANT:
+
+       This query expects your students table
+       to have class_name and section columns.
+
+       If your students table uses different
+       column names, tell me those column names
+       and I will adjust this file.
+    */
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("students")
+            .select("*")
+            .eq(
+                "class_name",
+                className
+            )
+            .eq(
+                "section",
+                section
+            )
+            .order(
+                "first_name",
+                {
+                    ascending:true
+                }
+            );
+
+
+    if(error){
+
+        console.error(error);
+
+        studentList.innerHTML =
+            `
+            <div class="empty">
+                Unable to load students.<br><br>
+                ${safe(error.message)}
+            </div>
+            `;
+
+        showMessage(
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    students =
+        data || [];
+
+
+    if(students.length === 0){
+
+        studentList.innerHTML =
+            `
+            <div class="empty">
+                No students found for
+                Class ${safe(className)}
+                - Section ${safe(section)}.
+            </div>
+            `;
+
+        saveButton.disabled =
+            true;
+
+        updateSummary();
+
+        return;
+
+    }
+
+
+    /*
+       Load existing attendance
+       for selected date.
+    */
+
+    await loadExistingAttendance();
+
+
+    renderStudents();
+
+}
+
+
+/* =====================================================
+   LOAD EXISTING ATTENDANCE
+   ===================================================== */
+
+async function loadExistingAttendance(){
+
+    attendanceData = {};
+
+
+    const studentIds =
+        students.map(
+            student =>
+                student.id
+        );
+
+
+    if(studentIds.length === 0){
+
+        return;
+
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("attendance")
+            .select(`
+                id,
+                attendance_date,
+                student_id,
+                status,
+                remarks
+            `)
+            .eq(
+                "attendance_date",
+                attendanceDate.value
+            )
+            .in(
+                "student_id",
+                studentIds
+            );
+
+
+    if(error){
+
+        console.error(
+            "Existing attendance error:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    (data || []).forEach(record => {
+
+        attendanceData[
+            String(record.student_id)
+        ] = {
+
+            id:
+                record.id,
+
+            status:
+                record.status ||
+                "Present",
+
+            remarks:
+                record.remarks ||
+                ""
+
+        };
+
+    });
+
+}
+
+
+/* =====================================================
+   RENDER STUDENTS
+   ===================================================== */
+
+function renderStudents(){
+
+    studentList.innerHTML =
+        "";
+
+
+    students.forEach(
+        (student,index)=>{
+
+            const studentId =
+                String(student.id);
+
+
+            if(!attendanceData[studentId]){
+
+                attendanceData[studentId] = {
+
+                    id:null,
+
+                    status:
+                        "Present",
+
+                    remarks:""
+
+                };
+
+            }
+
+
+            const record =
+                attendanceData[studentId];
+
+
+            const firstName =
+                student.first_name ||
+                student.firstName ||
+                "";
+
+
+            const lastName =
+                student.last_name ||
+                student.lastName ||
+                "";
+
+
+            const fullName =
+                `${firstName} ${lastName}`
+                .trim() ||
+                student.name ||
+                "Student";
+
+
+            const displayStudentId =
+                student.student_id ||
+                student.admission_no ||
+                studentId;
+
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "student-row";
+
+
+            row.dataset.studentId =
+                studentId;
+
+
+            row.innerHTML = `
+
+                <div class="student-number">
+                    ${index+1}
+                </div>
+
+                <div>
+
+                    <div class="student-name">
+                        ${safe(fullName)}
+                    </div>
+
+                    <div class="student-id">
+                        ID: ${safe(displayStudentId)}
+                    </div>
+
+                </div>
+
+
+                <div class="status-buttons">
+
+                    <button
+                        type="button"
+                        class="status-btn present ${
+                            record.status === "Present"
+                                ? "active"
+                                : ""
+                        }"
+                        onclick="setStatus('${escapeJs(studentId)}','Present')">
+
+                        ✓ Present
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="status-btn absent ${
+                            record.status === "Absent"
+                                ? "active"
+                                : ""
+                        }"
+                        onclick="setStatus('${escapeJs(studentId)}','Absent')">
+
+                        ✕ Absent
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="status-btn leave ${
+                            record.status === "Leave"
+                                ? "active"
+                                : ""
+                        }"
+                        onclick="setStatus('${escapeJs(studentId)}','Leave')">
+
+                        L
+
+                    </button>
+
+                </div>
+
+
+                <input
+                    class="remark-input"
+                    type="text"
+                    placeholder="Remark"
+                    value="${safe(record.remarks)}"
+                    oninput="setRemark('${escapeJs(studentId)}',this.value)"
+                >
+
+            `;
+
+
+            studentList.appendChild(
+                row
+            );
+
+        }
+    );
+
+
+    saveButton.disabled =
+        false;
+
+
+    updateSummary();
+
+}
+
+
+/* =====================================================
+   SET STATUS
+   ===================================================== */
+
+window.setStatus =
+function(
+    studentId,
+    status
+){
+
+    const id =
+        String(studentId);
+
+
+    if(!attendanceData[id]){
+
+        attendanceData[id] = {
+
+            id:null,
+
+            status:"Present",
+
+            remarks:""
+
+        };
+
+    }
+
+
+    attendanceData[id].status =
+        status;
+
+
+    const row =
+        document.querySelector(
+            `.student-row[data-student-id="${cssEscape(id)}"]`
+        );
+
+
+    if(row){
+
+        row
+            .querySelectorAll(
+                ".status-btn"
+            )
+            .forEach(button => {
+
+                button.classList.remove(
+                    "active"
+                );
+
+            });
+
+
+        const buttons =
+            row.querySelectorAll(
+                ".status-btn"
+            );
+
+
+        if(status==="Present")
+            buttons[0].classList.add("active");
+
+        if(status==="Absent")
+            buttons[1].classList.add("active");
+
+        if(status==="Leave")
+            buttons[2].classList.add("active");
+
+    }
+
+
+    updateSummary();
+
+};
+
+
+/* =====================================================
+   SET REMARK
+   ===================================================== */
+
+window.setRemark =
+function(
+    studentId,
+    value
+){
+
+    const id =
+        String(studentId);
+
+
+    if(!attendanceData[id]){
+
+        attendanceData[id] = {
+
+            id:null,
+
+            status:"Present",
+
+            remarks:""
+
+        };
+
+    }
+
+
+    attendanceData[id].remarks =
+        value;
+
+};
+
+
+/* =====================================================
+   MARK ALL
+   ===================================================== */
+
+function markAll(
+    status
+){
+
+    students.forEach(
+        student=>{
+
+            const id =
+                String(student.id);
+
+
+            if(!attendanceData[id]){
+
+                attendanceData[id] = {
+
+                    id:null,
+
+                    status:"Present",
+
+                    remarks:""
+
+                };
+
+            }
+
+
+            attendanceData[id].status =
+                status;
+
+        }
+    );
+
+
+    renderStudents();
+
+}
+
+
+document
+    .getElementById(
+        "presentAllButton"
+    )
+    .addEventListener(
+        "click",
+        ()=>{
+            markAll("Present");
+        }
+    );
+
+
+document
+    .getElementById(
+        "absentAllButton"
+    )
+    .addEventListener(
+        "click",
+        ()=>{
+            markAll("Absent");
+        }
+    );
+
+
+/* =====================================================
+   SUMMARY
+   ===================================================== */
+
+function updateSummary(){
+
+    let present = 0;
+
+    let absent = 0;
+
+
+    students.forEach(
+        student=>{
+
+            const record =
+                attendanceData[
+                    String(student.id)
+                ];
+
+
+            if(!record){
+
+                return;
+
+            }
+
+
+            if(
+                record.status ===
+                "Present"
+            ){
+
+                present++;
+
+            }
+
+
+            if(
+                record.status ===
+                "Absent"
+            ){
+
+                absent++;
+
+            }
+
+        }
+    );
+
+
+    document
+        .getElementById(
+            "totalStudents"
+        )
+        .textContent =
+        students.length;
+
+
+    document
+        .getElementById(
+            "presentCount"
+        )
+        .textContent =
+        present;
+
+
+    document
+        .getElementById(
+            "absentCount"
+        )
+        .textContent =
+        absent;
+
+}
+
+
+/* =====================================================
+   SAVE ATTENDANCE
+   ===================================================== */
+
+saveButton
+    .addEventListener(
+        "click",
+        saveAttendance
+    );
+
+
+async function saveAttendance(){
+
+    if(
+        !students.length
+    ){
+
+        showMessage(
+            "No students to save."
+        );
+
+        return;
+
+    }
+
+
+    if(!attendanceDate.value){
+
+        showMessage(
+            "Please select a date."
+        );
+
+        return;
+
+    }
+
+
+    saveButton.disabled =
+        true;
+
+    saveButton.textContent =
+        "Saving...";
+
+
+    try{
+
+        const records =
+            students.map(
+                student=>{
+
+                    const record =
+                        attendanceData[
+                            String(student.id)
+                        ];
+
+
+                    return {
+
+                        attendance_date:
+                            attendanceDate.value,
+
+                        student_id:
+                            student.id,
+
+                        status:
+                            record?.status ||
+                            "Present",
+
+                        remarks:
+                            record?.remarks ||
+                            ""
+
+                    };
+
+                }
+            );
+
+
+        /*
+           Upsert using student_id +
+           attendance_date.
+
+           This requires a UNIQUE constraint
+           on those two columns in Supabase.
+
+           If you haven't created it yet,
+           I will give you the SQL below.
+        */
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("attendance")
+                .upsert(
+                    records,
+                    {
+                        onConflict:
+                            "attendance_date,student_id"
+                    }
+                );
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        showMessage(
+            "Attendance saved successfully.",
+            "success"
+        );
+
+
+        await loadExistingAttendance();
+
+        renderStudents();
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        showMessage(
+            "Unable to save attendance: " +
+            error.message
+        );
+
+    }
+
+    finally{
+
+        saveButton.disabled =
+            false;
+
+        saveButton.textContent =
+            "💾 Save Attendance";
+
+    }
+
+}
+
+
+/* =====================================================
+   LOAD BUTTON
+   ===================================================== */
+
+document
+    .getElementById(
+        "loadStudentsButton"
+    )
+    .addEventListener(
+        "click",
+        loadStudents
+    );
+
+
+/* =====================================================
+   DATE CHANGE
+   ===================================================== */
+
+attendanceDate
+    .addEventListener(
+        "change",
+        ()=>{
+            if(
+                students.length > 0 &&
+                classSelect.value &&
+                sectionSelect.value
+            ){
+
+                loadStudents();
+
+            }
+        }
+    );
+
+
+/* =====================================================
+   LOGOUT
+   ===================================================== */
+
+document
+    .getElementById(
+        "logoutButton"
+    )
+    .addEventListener(
+        "click",
+        async()=>{
+
+            await supabaseClient
+                .auth
+                .signOut();
+
+            window.location.href =
+                "index.html";
+
+        }
+    );
+
+
+/* =====================================================
+   SAFE HTML
+   ===================================================== */
+
+function safe(value){
+
+    if(
+        value === null ||
+        value === undefined
+    ){
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   ESCAPE JS
+   ===================================================== */
+
+function escapeJs(value){
+
+    return String(value)
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+        .replace(
+            /'/g,
+            "\\'"
+        );
+
+}
+
+
+/* =====================================================
+   CSS ESCAPE
+   ===================================================== */
+
+function cssEscape(value){
+
+    if(
+        window.CSS &&
+        CSS.escape
+    ){
+
+        return CSS.escape(
+            value
+        );
+
+    }
+
+
+    return String(value)
+        .replace(
+            /["\\]/g,
+            "\\$&"
+        );
+
+}
+
+
+/* =====================================================
+   START
+   ===================================================== */
+
+setToday();
+
+
+(async function(){
+
+    const loggedIn =
+        await checkLogin();
+
+
+    if(loggedIn){
+
+        /*
+           Don't automatically load students.
+           Teacher chooses class and section.
+        */
+
+    }
+
+})();
+
+</script>
+
+</body>
+</html>
