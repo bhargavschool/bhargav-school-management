@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bhargav School | Create Teacher Account</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    min-height:100vh;
+    font-family:Arial,Helvetica,sans-serif;
+    background:linear-gradient(135deg,#0f172a,#1e3a8a);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.card{
+    width:100%;
+    max-width:460px;
+    background:white;
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 25px 60px rgba(0,0,0,.25);
+}
+
+.logo{
+    width:65px;
+    height:65px;
+    margin:0 auto 15px;
+    border-radius:50%;
+    background:#1e3a8a;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    font-weight:bold;
+}
+
+h1{
+    text-align:center;
+    color:#0f172a;
+    font-size:23px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#64748b;
+    font-size:13px;
+    margin:7px 0 25px;
+}
+
+.form-group{
+    margin-bottom:17px;
+}
+
+label{
+    display:block;
+    font-size:13px;
+    font-weight:bold;
+    color:#334155;
+    margin-bottom:7px;
+}
+
+input{
+    width:100%;
+    padding:13px;
+    border:1px solid #cbd5e1;
+    border-radius:9px;
+    font-size:14px;
+    outline:none;
+}
+
+input:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,.1);
+}
+
+button{
+    width:100%;
+    border:0;
+    padding:14px;
+    border-radius:9px;
+    background:#1e3a8a;
+    color:white;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#172554;
+}
+
+button:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+#message{
+    text-align:center;
+    min-height:22px;
+    margin-top:15px;
+    font-size:13px;
+    font-weight:bold;
+}
+
+.back{
+    display:block;
+    text-align:center;
+    margin-top:20px;
+    color:#1e3a8a;
+    text-decoration:none;
+    font-size:13px;
+}
+
+.info{
+    background:#f8fafc;
+    border-radius:10px;
+    padding:13px;
+    margin-bottom:20px;
+    color:#475569;
+    font-size:12px;
+    line-height:1.6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="logo">
+        BS
+    </div>
+
+    <h1>
+        Create Teacher Account
+    </h1>
+
+    <div class="subtitle">
+        Bhargav School Management Portal
+    </div>
+
+    <div class="info">
+        Create or reset a teacher's login password.
+        Teachers will log in using their
+        <strong>Teacher ID + Password</strong>.
+    </div>
+
+    <form id="teacherForm">
+
+        <div class="form-group">
+
+            <label>
+                Teacher ID
+            </label>
+
+            <input
+                type="text"
+                id="teacherId"
+                placeholder="Example: TCH001"
+                required
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+                New Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Minimum 6 characters"
+                minlength="6"
+                required
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+                Confirm Password
+            </label>
+
+            <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Enter password again"
+                minlength="6"
+                required
+            >
+
+        </div>
+
+        <button
+            type="submit"
+            id="submitButton">
+
+            Create / Reset Password
+
+        </button>
+
+    </form>
+
+    <div id="message"></div>
+
+    <a
+        href="dashboard.html"
+        class="back">
+
+        ← Back to Management Dashboard
+
+    </a>
+
+</div>
+
+
+<script>
+
+/* ============================================
+   SUPABASE
+============================================ */
+
+const SUPABASE_URL =
+    "https://jmdujouzsiiwvrsnwawv.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable__sdosuGSmD9Lz29D4CG3YA_-8hOYoVn";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* ============================================
+   ELEMENTS
+============================================ */
+
+const form =
+    document.getElementById(
+        "teacherForm"
+    );
+
+const teacherId =
+    document.getElementById(
+        "teacherId"
+    );
+
+const password =
+    document.getElementById(
+        "password"
+    );
+
+const confirmPassword =
+    document.getElementById(
+        "confirmPassword"
+    );
+
+const submitButton =
+    document.getElementById(
+        "submitButton"
+    );
+
+const message =
+    document.getElementById(
+        "message"
+    );
+
+
+/* ============================================
+   MESSAGE
+============================================ */
+
+function showMessage(
+    text,
+    success = false
+){
+
+    message.textContent =
+        text;
+
+    message.style.color =
+        success
+        ? "#15803d"
+        : "#dc2626";
+}
+
+
+/* ============================================
+   CHECK MANAGEMENT LOGIN
+============================================ */
+
+async function checkManagement(){
+
+    const {
+        data:{
+            session
+        }
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
+
+
+    if(!session){
+
+        window.location.href =
+            "index.html";
+
+        return false;
+    }
+
+
+    const {
+        data:roleData,
+        error
+    } =
+        await supabaseClient
+
+            .from("user_roles")
+
+            .select("role")
+
+            .eq(
+                "user_id",
+                session.user.id
+            )
+
+            .maybeSingle();
+
+
+    if(
+        error ||
+        !roleData ||
+        roleData.role !==
+        "management"
+    ){
+
+        await supabaseClient
+            .auth
+            .signOut();
+
+        window.location.href =
+            "index.html";
+
+        return false;
+    }
+
+
+    return true;
+}
+
+
+/* ============================================
+   CREATE / RESET PASSWORD
+============================================ */
+
+form.addEventListener(
+    "submit",
+    async function(event){
+
+        event.preventDefault();
+
+        showMessage("");
+
+        const id =
+            teacherId.value
+                .trim()
+                .toUpperCase();
+
+        const pass =
+            password.value;
+
+        const confirm =
+            confirmPassword.value;
+
+
+        if(!id){
+
+            showMessage(
+                "Please enter the Teacher ID."
+            );
+
+            return;
+        }
+
+
+        if(pass.length < 6){
+
+            showMessage(
+                "Password must contain at least 6 characters."
+            );
+
+            return;
+        }
+
+
+        if(pass !== confirm){
+
+            showMessage(
+                "Passwords do not match."
+            );
+
+            return;
+        }
+
+
+        submitButton.disabled =
+            true;
+
+        submitButton.textContent =
+            "Creating account...";
+
+
+        try{
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .functions
+                    .invoke(
+                        "create-teacher",
+                        {
+                            body:{
+                                teacher_id:
+                                    id,
+
+                                password:
+                                    pass
+                            }
+                        }
+                    );
+
+
+            if(error){
+
+                throw new Error(
+                    error.message ||
+                    "Unable to contact teacher account service."
+                );
+            }
+
+
+            if(
+                !data ||
+                !data.success
+            ){
+
+                throw new Error(
+                    data?.error ||
+                    "Teacher account could not be created."
+                );
+            }
+
+
+            showMessage(
+                "Teacher account created successfully. The teacher can now log in using Teacher ID + password.",
+                true
+            );
+
+
+            password.value =
+                "";
+
+            confirmPassword.value =
+                "";
+
+        }
+
+        catch(error){
+
+            console.error(
+                error
+            );
+
+            showMessage(
+                error.message ||
+                "Something went wrong."
+            );
+
+        }
+
+        finally{
+
+            submitButton.disabled =
+                false;
+
+            submitButton.textContent =
+                "Create / Reset Password";
+
+        }
+
+    }
+);
+
+
+/* ============================================
+   START
+============================================ */
+
+checkManagement();
+
+</script>
+
+</body>
+</html>
