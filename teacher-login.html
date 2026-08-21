@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Bhargav School | Teacher Login</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+
+    min-height:100vh;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-family:Arial,sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #1e3a8a
+        );
+
+    padding:20px;
+
+}
+
+.login-box{
+
+    width:100%;
+
+    max-width:430px;
+
+    background:white;
+
+    padding:35px;
+
+    border-radius:20px;
+
+    box-shadow:
+        0 20px 50px
+        rgba(0,0,0,0.25);
+
+}
+
+.logo{
+
+    text-align:center;
+
+    margin-bottom:25px;
+
+}
+
+.logo h1{
+
+    color:#1e3a8a;
+
+    font-size:25px;
+
+    letter-spacing:1px;
+
+}
+
+.logo p{
+
+    color:#64748b;
+
+    margin-top:6px;
+
+    font-size:14px;
+
+}
+
+h2{
+
+    text-align:center;
+
+    margin-bottom:25px;
+
+    color:#1e293b;
+
+}
+
+.form-group{
+
+    margin-bottom:18px;
+
+}
+
+label{
+
+    display:block;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    color:#475569;
+
+    margin-bottom:7px;
+
+}
+
+input{
+
+    width:100%;
+
+    padding:14px;
+
+    border:1px solid #cbd5e1;
+
+    border-radius:9px;
+
+    font-size:15px;
+
+    outline:none;
+
+}
+
+input:focus{
+
+    border-color:#2563eb;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37,99,235,0.1);
+
+}
+
+.login-button{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:9px;
+
+    background:#1e3a8a;
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+.login-button:hover{
+
+    background:#172554;
+
+}
+
+.login-button:disabled{
+
+    opacity:.6;
+
+    cursor:not-allowed;
+
+}
+
+.message{
+
+    text-align:center;
+
+    margin-top:15px;
+
+    font-size:14px;
+
+    min-height:20px;
+
+}
+
+.back{
+
+    display:block;
+
+    text-align:center;
+
+    margin-top:20px;
+
+    color:#64748b;
+
+    text-decoration:none;
+
+    font-size:14px;
+
+}
+
+.back:hover{
+
+    color:#1e3a8a;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="login-box">
+
+    <div class="logo">
+
+        <h1>BHARGAV SCHOOL</h1>
+
+        <p>Teacher Portal</p>
+
+    </div>
+
+
+    <h2>Teacher Login</h2>
+
+
+    <form id="loginForm">
+
+
+        <div class="form-group">
+
+            <label>
+                Teacher ID
+            </label>
+
+            <input
+                type="text"
+                id="teacherId"
+                placeholder="Enter Teacher ID"
+                required
+                autocomplete="username"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter Password"
+                required
+                autocomplete="current-password"
+            >
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="login-button"
+            id="loginButton">
+
+            Login
+
+        </button>
+
+
+    </form>
+
+
+    <div
+        class="message"
+        id="message">
+    </div>
+
+
+    <a
+        href="index.html"
+        class="back">
+
+        ← Back to Login
+
+    </a>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+    "https://jmdujouzsiiwvrsnwawv.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable__sdosuGSmD9Lz29D4CG3YA_-8hOYoVn";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+const loginForm =
+    document.getElementById(
+        "loginForm"
+    );
+
+const loginButton =
+    document.getElementById(
+        "loginButton"
+    );
+
+const message =
+    document.getElementById(
+        "message"
+    );
+
+
+loginForm.addEventListener(
+    "submit",
+    async function(event){
+
+        event.preventDefault();
+
+
+        const teacherId =
+            document
+                .getElementById(
+                    "teacherId"
+                )
+                .value
+                .trim();
+
+
+        const password =
+            document
+                .getElementById(
+                    "password"
+                )
+                .value;
+
+
+        if(!teacherId || !password){
+
+            showMessage(
+                "Please enter Teacher ID and password.",
+                false
+            );
+
+            return;
+
+        }
+
+
+        loginButton.disabled = true;
+
+        loginButton.textContent =
+            "Logging in...";
+
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .rpc(
+                "teacher_login",
+                {
+                    p_teacher_id:
+                        teacherId,
+
+                    p_password:
+                        password
+                }
+            );
+
+
+        if(error){
+
+            console.error(error);
+
+            showMessage(
+                error.message,
+                false
+            );
+
+            loginButton.disabled = false;
+
+            loginButton.textContent =
+                "Login";
+
+            return;
+
+        }
+
+
+        if(!data || data.length === 0){
+
+            showMessage(
+                "Invalid Teacher ID or password.",
+                false
+            );
+
+            loginButton.disabled = false;
+
+            loginButton.textContent =
+                "Login";
+
+            return;
+
+        }
+
+
+        const teacher =
+            data[0];
+
+
+        localStorage.setItem(
+            "teacherSession",
+            JSON.stringify(teacher)
+        );
+
+
+        window.location.href =
+            "teacher-dashboard.html";
+
+    }
+);
+
+
+function showMessage(
+    text,
+    success
+){
+
+    message.textContent =
+        text;
+
+    message.style.color =
+        success
+            ? "#15803d"
+            : "#dc2626";
+
+}
+
+</script>
+
+</body>
+
+</html>
