@@ -21,8 +21,13 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
+
             min-height: 100vh;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
 
             background:
                 linear-gradient(
@@ -32,41 +37,47 @@
                 );
 
             display: flex;
+
             align-items: center;
+
             justify-content: center;
 
             padding: 20px;
+
         }
 
-        /* LOGIN CONTAINER */
 
         .login-container {
+
             width: 100%;
-            max-width: 440px;
+
+            max-width: 430px;
+
+        }
+
+
+        .login-card {
 
             background: white;
 
-            border-radius: 20px;
+            border-radius: 22px;
 
-            padding: 40px 35px;
+            padding: 35px;
 
             box-shadow:
                 0 25px 60px
-                rgba(0, 0, 0, 0.25);
+                rgba(0,0,0,0.25);
+
         }
 
-        /* SCHOOL HEADER */
 
-        .school-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+        .logo {
 
-        .school-logo {
-            width: 80px;
-            height: 80px;
+            width: 75px;
 
-            margin: 0 auto 15px;
+            height: 75px;
+
+            margin: 0 auto 18px;
 
             border-radius: 50%;
 
@@ -75,76 +86,121 @@
             color: white;
 
             display: flex;
+
             align-items: center;
+
             justify-content: center;
 
-            font-size: 32px;
+            font-size: 28px;
+
             font-weight: bold;
+
         }
 
-        .school-header h1 {
+
+        .school-name {
+
+            text-align: center;
+
             color: #0f172a;
-            font-size: 25px;
+
+            font-size: 24px;
+
+            font-weight: bold;
+
             letter-spacing: 1px;
+
         }
 
-        .school-header p {
+
+        .subtitle {
+
+            text-align: center;
+
+            color: #64748b;
+
+            font-size: 13px;
+
             margin-top: 6px;
-            color: #64748b;
-            font-size: 13px;
+
+            margin-bottom: 28px;
+
         }
 
-        .tagline {
-            margin-top: 10px;
 
-            font-size: 12px;
+        .role-buttons {
 
-            font-weight: bold;
+            display: grid;
 
-            color: #1e3a8a;
+            grid-template-columns:
+                repeat(3, 1fr);
 
-            letter-spacing: 1px;
+            gap: 8px;
+
+            margin-bottom: 22px;
+
         }
 
-        /* LOGIN TITLE */
 
-        .login-title {
-            margin-bottom: 20px;
-        }
+        .role-button {
 
-        .login-title h2 {
-            color: #1e293b;
-            font-size: 22px;
-        }
+            border: 1px solid #cbd5e1;
 
-        .login-title p {
-            color: #64748b;
-            font-size: 13px;
-            margin-top: 5px;
-        }
-
-        /* FORM */
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-
-            font-size: 13px;
-
-            font-weight: bold;
+            background: #f8fafc;
 
             color: #475569;
 
-            margin-bottom: 7px;
+            padding: 11px 5px;
+
+            border-radius: 9px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            font-size: 12px;
+
         }
 
+
+        .role-button.active {
+
+            background: #1e3a8a;
+
+            color: white;
+
+            border-color: #1e3a8a;
+
+        }
+
+
+        .form-group {
+
+            margin-bottom: 17px;
+
+        }
+
+
+        label {
+
+            display: block;
+
+            color: #334155;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            margin-bottom: 7px;
+
+        }
+
+
         input {
+
             width: 100%;
 
-            padding: 13px 14px;
+            padding: 13px;
 
             border: 1px solid #cbd5e1;
 
@@ -154,62 +210,33 @@
 
             outline: none;
 
-            transition: 0.2s;
         }
 
+
         input:focus {
+
             border-color: #2563eb;
 
             box-shadow:
                 0 0 0 3px
-                rgba(37, 99, 235, 0.1);
+                rgba(37,99,235,0.1);
+
         }
 
-        /* PASSWORD */
-
-        .password-box {
-            position: relative;
-        }
-
-        .password-box input {
-            padding-right: 75px;
-        }
-
-        .show-password {
-            position: absolute;
-
-            right: 10px;
-            top: 50%;
-
-            transform: translateY(-50%);
-
-            border: none;
-
-            background: transparent;
-
-            color: #2563eb;
-
-            font-size: 12px;
-
-            cursor: pointer;
-
-            font-weight: bold;
-        }
-
-        /* LOGIN BUTTON */
 
         .login-button {
+
             width: 100%;
 
-            padding: 14px;
-
             border: none;
-
-            border-radius: 9px;
 
             background: #1e3a8a;
 
             color: white;
+
+            padding: 14px;
+
+            border-radius: 9px;
 
             font-size: 15px;
 
@@ -219,69 +246,71 @@
 
             margin-top: 5px;
 
-            transition: 0.2s;
         }
+
 
         .login-button:hover {
+
             background: #172554;
+
         }
+
 
         .login-button:disabled {
-            background: #94a3b8;
+
+            opacity: 0.6;
 
             cursor: not-allowed;
+
         }
 
-        /* MESSAGE */
 
         #message {
+
             text-align: center;
 
-            margin-top: 18px;
+            margin-top: 16px;
+
+            min-height: 20px;
 
             font-size: 13px;
 
-            min-height: 20px;
+            font-weight: bold;
+
         }
 
-        .success {
-            color: #15803d;
-        }
-
-        .error {
-            color: #dc2626;
-        }
-
-        /* FOOTER */
 
         .footer {
+
             text-align: center;
 
-            margin-top: 25px;
+            margin-top: 20px;
 
-            padding-top: 20px;
-
-            border-top: 1px solid #e2e8f0;
-        }
-
-        .footer p {
             color: #94a3b8;
 
             font-size: 11px;
 
-            line-height: 1.6;
         }
 
-        /* MOBILE */
 
-        @media (max-width: 500px) {
+        @media (max-width: 450px) {
 
-            .login-container {
-                padding: 30px 22px;
+            .login-card {
+
+                padding: 25px 20px;
+
             }
 
-            .school-header h1 {
+            .school-name {
+
                 font-size: 21px;
+
+            }
+
+            .role-button {
+
+                font-size: 11px;
+
             }
 
         }
@@ -297,128 +326,131 @@
 <div class="login-container">
 
 
-    <!-- SCHOOL HEADER -->
+    <div class="login-card">
 
-    <div class="school-header">
 
-        <div class="school-logo">
+        <div class="logo">
             BS
         </div>
 
-        <h1>
+
+        <div class="school-name">
             BHARGAV SCHOOL
-        </h1>
-
-        <p>
-            Management & Learning Portal
-        </p>
-
-        <div class="tagline">
-            EDUCATE • EMPOWER • EXCEL
         </div>
 
-    </div>
+
+        <div class="subtitle">
+            Management & School Portal
+        </div>
 
 
-    <!-- LOGIN TITLE -->
+        <!-- ROLE -->
 
-    <div class="login-title">
-
-        <h2>
-            Welcome Back
-        </h2>
-
-        <p>
-            Login to access your school portal.
-        </p>
-
-    </div>
+        <div class="role-buttons">
 
 
-    <!-- LOGIN FORM -->
+            <button
+                type="button"
+                class="role-button active"
+                data-role="management">
 
-    <form id="loginForm">
+                👨‍💼 Management
+
+            </button>
 
 
-        <div class="form-group">
+            <button
+                type="button"
+                class="role-button"
+                data-role="teacher">
 
-            <label>
-                Email Address
-            </label>
+                👩‍🏫 Teacher
 
-            <input
-                type="email"
-                id="email"
-                placeholder="Enter your email"
-                autocomplete="email"
-                required
-            >
+            </button>
+
+
+            <button
+                type="button"
+                class="role-button"
+                data-role="student">
+
+                👨‍🎓 Student
+
+            </button>
+
 
         </div>
 
 
-        <div class="form-group">
+        <!-- LOGIN FORM -->
 
-            <label>
-                Password
-            </label>
+        <form id="loginForm">
 
-            <div class="password-box">
+
+            <div class="form-group">
+
+
+                <label id="loginLabel">
+                    Email
+                </label>
+
+
+                <input
+                    type="text"
+                    id="loginId"
+                    placeholder="Enter management email"
+                    autocomplete="username"
+                    required
+                >
+
+
+            </div>
+
+
+            <div class="form-group">
+
+
+                <label>
+                    Password
+                </label>
+
 
                 <input
                     type="password"
                     id="password"
-                    placeholder="Enter your password"
+                    placeholder="Enter password"
                     autocomplete="current-password"
                     required
                 >
 
-                <button
-                    type="button"
-                    class="show-password"
-                    id="showPassword">
-
-                    Show
-
-                </button>
 
             </div>
+
+
+            <button
+                type="submit"
+                class="login-button"
+                id="loginButton">
+
+                Login
+
+            </button>
+
+
+        </form>
+
+
+        <div id="message"></div>
+
+
+        <div class="footer">
+
+            Bhargav School © 2026
 
         </div>
 
 
-        <button
-            type="submit"
-            class="login-button"
-            id="loginButton">
-
-            Login
-
-        </button>
-
-
-    </form>
-
-
-    <!-- MESSAGE -->
-
-    <div id="message"></div>
-
-
-    <!-- FOOTER -->
-
-    <div class="footer">
-
-        <p>
-            © 2026 Bhargav School
-        </p>
-
-        <p>
-            Secure School Management Portal
-        </p>
-
     </div>
-
 
 </div>
 
@@ -427,7 +459,7 @@
 
 
 /* =====================================================
-   SUPABASE CONNECTION
+   SUPABASE
    ===================================================== */
 
 const SUPABASE_URL =
@@ -455,13 +487,13 @@ const loginForm =
     );
 
 
-const emailInput =
+const loginId =
     document.getElementById(
-        "email"
+        "loginId"
     );
 
 
-const passwordInput =
+const password =
     document.getElementById(
         "password"
     );
@@ -473,84 +505,169 @@ const loginButton =
     );
 
 
+const loginLabel =
+    document.getElementById(
+        "loginLabel"
+    );
+
+
 const message =
     document.getElementById(
         "message"
     );
 
 
-const showPassword =
-    document.getElementById(
-        "showPassword"
+const roleButtons =
+    document.querySelectorAll(
+        ".role-button"
     );
 
 
+let selectedRole =
+    "management";
+
+
 /* =====================================================
-   SHOW / HIDE PASSWORD
+   ROLE SELECTION
    ===================================================== */
 
-showPassword.addEventListener(
-    "click",
-    function() {
+roleButtons.forEach(button => {
 
-        if (
-            passwordInput.type ===
-            "password"
-        ) {
+    button.addEventListener(
+        "click",
+        function() {
 
-            passwordInput.type =
-                "text";
+            roleButtons.forEach(
+                item =>
+                    item.classList.remove(
+                        "active"
+                    )
+            );
 
-            showPassword.textContent =
-                "Hide";
 
-        } else {
+            this.classList.add(
+                "active"
+            );
 
-            passwordInput.type =
-                "password";
 
-            showPassword.textContent =
-                "Show";
+            selectedRole =
+                this.dataset.role;
+
+
+            updateLoginForm();
 
         }
+    );
 
-    }
-);
+});
 
 
 /* =====================================================
-   MESSAGE FUNCTION
+   UPDATE FORM
    ===================================================== */
 
-function showMessage(
-    text,
-    type
-) {
+function updateLoginForm() {
 
-    message.textContent =
-        text;
+    if (
+        selectedRole ===
+        "management"
+    ) {
 
-    message.className =
-        type;
+        loginLabel.textContent =
+            "Email";
+
+        loginId.placeholder =
+            "Enter management email";
+
+        loginId.type =
+            "email";
+
+    }
+
+
+    else if (
+        selectedRole ===
+        "teacher"
+    ) {
+
+        loginLabel.textContent =
+            "Teacher ID";
+
+        loginId.placeholder =
+            "Example: TCH001";
+
+        loginId.type =
+            "text";
+
+    }
+
+
+    else {
+
+        loginLabel.textContent =
+            "Student ID";
+
+        loginId.placeholder =
+            "Example: STU001";
+
+        loginId.type =
+            "text";
+
+    }
+
+
+    loginId.value =
+        "";
+
+    password.value =
+        "";
+
+    clearMessage();
 
 }
 
 
 /* =====================================================
-   REDIRECT USER
+   MESSAGE
    ===================================================== */
 
-function redirectUser(
-    role
+function showMessage(
+    text,
+    type = "error"
 ) {
 
-    role =
-        String(role || "")
-            .toLowerCase()
-            .trim();
+    message.textContent =
+        text;
 
 
-    /* MANAGEMENT */
+    if (type === "success") {
+
+        message.style.color =
+            "#15803d";
+
+    } else {
+
+        message.style.color =
+            "#dc2626";
+
+    }
+
+}
+
+
+function clearMessage() {
+
+    message.textContent =
+        "";
+
+}
+
+
+/* =====================================================
+   REDIRECT
+   ===================================================== */
+
+function redirectByRole(role) {
 
     if (
         role ===
@@ -565,8 +682,6 @@ function redirectUser(
     }
 
 
-    /* TEACHER */
-
     if (
         role ===
         "teacher"
@@ -579,8 +694,6 @@ function redirectUser(
 
     }
 
-
-    /* STUDENT */
 
     if (
         role ===
@@ -595,12 +708,216 @@ function redirectUser(
     }
 
 
-    /* UNKNOWN ROLE */
+    window.location.href =
+        "index.html";
 
-    showMessage(
-        "Your account does not have a valid portal role. Please contact school management.",
-        "error"
-    );
+}
+
+
+/* =====================================================
+   MANAGEMENT LOGIN
+   ===================================================== */
+
+async function managementLogin(
+    email,
+    userPassword
+) {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .auth
+            .signInWithPassword({
+
+                email:
+                    email,
+
+                password:
+                    userPassword
+
+            });
+
+
+    if (error) {
+
+        throw new Error(
+            error.message
+        );
+
+    }
+
+
+    if (!data.session) {
+
+        throw new Error(
+            "Unable to create login session."
+        );
+
+    }
+
+
+    const {
+        data: roleData,
+        error: roleError
+    } =
+        await supabaseClient
+
+            .from(
+                "user_roles"
+            )
+
+            .select(
+                "role"
+            )
+
+            .eq(
+                "user_id",
+                data.user.id
+            )
+
+            .single();
+
+
+    if (
+        roleError ||
+        !roleData
+    ) {
+
+        await supabaseClient
+            .auth
+            .signOut();
+
+        throw new Error(
+            "Management role was not found."
+        );
+
+    }
+
+
+    if (
+        roleData.role !==
+        "management"
+    ) {
+
+        await supabaseClient
+            .auth
+            .signOut();
+
+        throw new Error(
+            "This account is not a management account."
+        );
+
+    }
+
+
+    return true;
+
+}
+
+
+/* =====================================================
+   TEACHER / STUDENT LOGIN
+   ===================================================== */
+
+/*
+   These two login types use a Supabase Edge Function.
+
+   Function name:
+
+   login-with-id
+
+   The function will:
+   1. Receive teacher/student ID + password
+   2. Find the account
+   3. Authenticate securely
+   4. Return a Supabase session
+*/
+
+
+async function idLogin(
+    userId,
+    userPassword,
+    role
+) {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .functions
+            .invoke(
+                "login-with-id",
+                {
+                    body: {
+
+                        login_id:
+                            userId,
+
+                        password:
+                            userPassword,
+
+                        role:
+                            role
+
+                    }
+
+                }
+            );
+
+
+    if (error) {
+
+        throw new Error(
+            error.message ||
+            "Login request failed."
+        );
+
+    }
+
+
+    if (
+        !data ||
+        !data.access_token ||
+        !data.refresh_token
+    ) {
+
+        throw new Error(
+            data?.error ||
+            "Invalid login response."
+        );
+
+    }
+
+
+    const {
+        error: sessionError
+    } =
+        await supabaseClient
+            .auth
+            .setSession({
+
+                access_token:
+                    data.access_token,
+
+                refresh_token:
+                    data.refresh_token
+
+            });
+
+
+    if (sessionError) {
+
+        throw new Error(
+            sessionError.message
+        );
+
+    }
+
+
+    return true;
 
 }
 
@@ -616,24 +933,22 @@ loginForm.addEventListener(
         event.preventDefault();
 
 
-        const email =
-            emailInput.value
-                .trim()
-                .toLowerCase();
+        clearMessage();
 
 
-        const password =
-            passwordInput.value;
+        const identifier =
+            loginId.value
+                .trim();
 
 
-        if (
-            !email ||
-            !password
-        ) {
+        const userPassword =
+            password.value;
+
+
+        if (!identifier) {
 
             showMessage(
-                "Please enter your email and password.",
-                "error"
+                "Please enter your login ID."
             );
 
             return;
@@ -641,185 +956,53 @@ loginForm.addEventListener(
         }
 
 
-        /* BUTTON LOADING */
+        if (!userPassword) {
+
+            showMessage(
+                "Please enter your password."
+            );
+
+            return;
+
+        }
+
 
         loginButton.disabled =
             true;
 
         loginButton.textContent =
-            "Logging in...";
-
-
-        showMessage(
-            "",
-            ""
-        );
+            "Signing in...";
 
 
         try {
 
 
-            /* =========================================
-               SUPABASE AUTH LOGIN
-               ========================================= */
-
-            const {
-                data,
-                error
-            } =
-                await supabaseClient
-                    .auth
-                    .signInWithPassword({
-
-                        email:
-                            email,
-
-                        password:
-                            password
-
-                    });
-
-
-            /* LOGIN ERROR */
-
-            if (error) {
-
-                showMessage(
-                    error.message ||
-                    "Login failed. Please check your credentials.",
-                    "error"
-                );
-
-                loginButton.disabled =
-                    false;
-
-                loginButton.textContent =
-                    "Login";
-
-                return;
-
-            }
-
-
-            /* =========================================
-               CHECK SESSION
-               ========================================= */
-
             if (
-                !data ||
-                !data.user
+                selectedRole ===
+                "management"
             ) {
 
-                showMessage(
-                    "Unable to create login session.",
-                    "error"
+                await managementLogin(
+                    identifier,
+                    userPassword
                 );
-
-                loginButton.disabled =
-                    false;
-
-                loginButton.textContent =
-                    "Login";
-
-                return;
 
             }
 
 
-            const userId =
-                data.user.id;
+            else {
 
-
-            /* =========================================
-               GET USER ROLE
-               ========================================= */
-
-            const {
-                data: roleData,
-                error: roleError
-            } =
-                await supabaseClient
-
-                    .from(
-                        "user_roles"
-                    )
-
-                    .select(
-                        "role"
-                    )
-
-                    .eq(
-                        "user_id",
-                        userId
-                    )
-
-                    .maybeSingle();
-
-
-            if (
-                roleError
-            ) {
-
-                console.error(
-                    roleError
+                await idLogin(
+                    identifier,
+                    userPassword,
+                    selectedRole
                 );
-
-
-                await supabaseClient
-                    .auth
-                    .signOut();
-
-
-                showMessage(
-                    "Unable to verify your account role. Please contact management.",
-                    "error"
-                );
-
-
-                loginButton.disabled =
-                    false;
-
-                loginButton.textContent =
-                    "Login";
-
-                return;
 
             }
 
-
-            if (
-                !roleData ||
-                !roleData.role
-            ) {
-
-                await supabaseClient
-                    .auth
-                    .signOut();
-
-
-                showMessage(
-                    "No portal role is assigned to this account. Please contact school management.",
-                    "error"
-                );
-
-
-                loginButton.disabled =
-                    false;
-
-                loginButton.textContent =
-                    "Login";
-
-                return;
-
-            }
-
-
-            /* =========================================
-               SUCCESS
-               ========================================= */
 
             showMessage(
-                "Login successful. Opening your portal...",
+                "Login successful. Redirecting...",
                 "success"
             );
 
@@ -827,8 +1010,8 @@ loginForm.addEventListener(
             setTimeout(
                 function() {
 
-                    redirectUser(
-                        roleData.role
+                    redirectByRole(
+                        selectedRole
                     );
 
                 },
@@ -836,9 +1019,9 @@ loginForm.addEventListener(
             );
 
 
-        } catch (
-            error
-        ) {
+        }
+
+        catch(error) {
 
             console.error(
                 error
@@ -846,8 +1029,8 @@ loginForm.addEventListener(
 
 
             showMessage(
-                "Something went wrong. Please try again.",
-                "error"
+                error.message ||
+                "Login failed."
             );
 
 
@@ -859,85 +1042,65 @@ loginForm.addEventListener(
 
         }
 
-    }
-);
+    });
 
 
 /* =====================================================
-   CHECK IF ALREADY LOGGED IN
+   CHECK EXISTING SESSION
    ===================================================== */
 
 async function checkExistingSession() {
 
-    try {
-
-        const {
-            data
-        } =
-            await supabaseClient
-                .auth
-                .getSession();
+    const {
+        data
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
 
 
-        const session =
-            data.session;
-
-
-        if (
-            !session
-        ) {
-
-            return;
-
-        }
-
-
-        /* =============================================
-           GET EXISTING USER ROLE
-           ============================================= */
-
-        const {
-            data: roleData,
-            error
-        } =
-            await supabaseClient
-
-                .from(
-                    "user_roles"
-                )
-
-                .select(
-                    "role"
-                )
-
-                .eq(
-                    "user_id",
-                    session.user.id
-                )
-
-                .maybeSingle();
-
-
-        if (
-            error ||
-            !roleData
-        ) {
-
-            return;
-
-        }
-
-
-        redirectUser(
-            roleData.role
-        );
-
-    } catch (
-        error
+    if (
+        !data ||
+        !data.session
     ) {
 
-        console.error(
-            error
+        return;
+
+    }
+
+
+    const user =
+        data.session.user;
+
+
+    const {
+        data: roleData
+    } =
+        await supabaseClient
+
+            .from(
+                "user_roles"
+            )
+
+            .select(
+                "role"
+            )
+
+            .eq(
+                "user_id",
+                user.id
+            )
+
+            .maybeSingle();
+
+
+    if (
+        roleData &&
+        roleData.role
+    ) {
+
+        redirectByRole(
+            roleData.role
         );
 
     }
@@ -949,8 +1112,9 @@ async function checkExistingSession() {
    START
    ===================================================== */
 
-checkExistingSession();
+updateLoginForm();
 
+checkExistingSession();
 
 </script>
 
