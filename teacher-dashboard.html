@@ -21,8 +21,6 @@ body{
     color:#1e293b;
 }
 
-/* SIDEBAR */
-
 .sidebar{
     position:fixed;
     left:0;
@@ -51,15 +49,15 @@ body{
     margin-top:5px;
 }
 
-.teacher-info{
+.teacher-box{
     text-align:center;
-    padding:20px 5px;
+    padding:18px 5px;
     border-bottom:1px solid #334155;
 }
 
-.teacher-avatar{
-    width:60px;
-    height:60px;
+.avatar{
+    width:55px;
+    height:55px;
     border-radius:50%;
     background:#1e3a8a;
     display:flex;
@@ -69,11 +67,11 @@ body{
     font-size:24px;
 }
 
-.teacher-info h3{
-    font-size:15px;
+.teacher-box h3{
+    font-size:14px;
 }
 
-.teacher-info p{
+.teacher-box p{
     color:#94a3b8;
     font-size:12px;
     margin-top:5px;
@@ -119,140 +117,137 @@ body{
     background:#dc2626;
 }
 
-/* MAIN */
-
 .main{
     margin-left:250px;
     padding:30px;
 }
 
-.topbar{
+.header{
     background:white;
-    padding:22px 25px;
+    padding:25px;
     border-radius:15px;
-    margin-bottom:25px;
+    margin-bottom:20px;
 }
 
-.topbar h1{
+.header h1{
     font-size:26px;
 }
 
-.topbar p{
+.header p{
     color:#64748b;
-    margin-top:6px;
+    margin-top:7px;
 }
 
-/* WELCOME */
-
-.welcome{
-    background:#1e3a8a;
-    color:white;
-    border-radius:15px;
-    padding:25px;
-    margin-bottom:25px;
-}
-
-.welcome h2{
-    margin-bottom:8px;
-}
-
-.welcome p{
-    color:#dbeafe;
-}
-
-/* CARDS */
-
-.cards{
+.stats{
     display:grid;
     grid-template-columns:repeat(4,1fr);
     gap:15px;
-    margin-bottom:25px;
+    margin-bottom:20px;
 }
 
-.card{
+.stat-card{
     background:white;
-    padding:22px;
     border-radius:15px;
+    padding:20px;
+}
+
+.stat-card p{
+    color:#64748b;
+    font-size:13px;
+    margin-bottom:10px;
+}
+
+.stat-card h2{
+    font-size:28px;
+}
+
+.quick-title{
+    font-size:20px;
+    margin-bottom:15px;
+}
+
+.quick-links{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.quick-card{
+    background:white;
+    border-radius:15px;
+    padding:25px;
     text-decoration:none;
     color:#1e293b;
     transition:.2s;
 }
 
-.card:hover{
-    transform:translateY(-2px);
-    box-shadow:0 8px 20px rgba(15,23,42,.08);
+.quick-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
 }
 
-.card-icon{
-    font-size:28px;
+.quick-icon{
+    font-size:30px;
     margin-bottom:12px;
 }
 
-.card h3{
-    font-size:17px;
+.quick-card h3{
+    font-size:16px;
     margin-bottom:6px;
 }
 
-.card p{
+.quick-card p{
+    font-size:12px;
     color:#64748b;
-    font-size:13px;
 }
 
-/* INFORMATION */
-
-.info-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-}
-
-.info-box{
+.profile{
+    margin-top:20px;
     background:white;
     border-radius:15px;
-    padding:22px;
+    padding:25px;
 }
 
-.info-box h2{
-    font-size:18px;
+.profile h2{
     margin-bottom:18px;
 }
 
-.info-row{
-    display:flex;
-    justify-content:space-between;
-    gap:20px;
-    padding:12px 0;
-    border-bottom:1px solid #e2e8f0;
+.profile-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
 }
 
-.info-row:last-child{
-    border-bottom:none;
+.profile-item{
+    background:#f8fafc;
+    padding:15px;
+    border-radius:8px;
 }
 
-.info-label{
+.profile-item span{
+    display:block;
     color:#64748b;
-    font-size:13px;
+    font-size:11px;
+    margin-bottom:5px;
 }
 
-.info-value{
-    font-weight:bold;
+.profile-item strong{
     font-size:14px;
-    text-align:right;
 }
-
-/* MESSAGE */
 
 #message{
     text-align:center;
     margin-bottom:15px;
-    font-size:14px;
+    font-weight:bold;
 }
 
-/* MOBILE */
+@media(max-width:1000px){
 
-@media(max-width:1100px){
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
 
-    .cards{
+    .quick-links{
         grid-template-columns:repeat(2,1fr);
     }
 }
@@ -278,35 +273,29 @@ body{
         padding:15px;
     }
 
-    .cards{
+    .stats{
         grid-template-columns:1fr 1fr;
     }
 
-    .info-grid{
+    .quick-links{
         grid-template-columns:1fr;
     }
 
-    .topbar h1{
-        font-size:22px;
+    .profile-grid{
+        grid-template-columns:1fr;
     }
 }
 
 @media(max-width:450px){
 
-    .cards{
+    .stats{
         grid-template-columns:1fr;
-    }
-
-    .welcome{
-        padding:20px;
     }
 }
 </style>
 </head>
 
 <body>
-
-<!-- SIDEBAR -->
 
 <aside class="sidebar">
 
@@ -315,30 +304,33 @@ body{
         <p>Teacher Portal</p>
     </div>
 
-    <div class="teacher-info">
+    <div class="teacher-box">
 
-        <div class="teacher-avatar">
-            👩‍🏫
-        </div>
+        <div class="avatar">👩‍🏫</div>
 
-        <h3 id="sidebarTeacherName">
+        <h3 id="sideName">
             Teacher
         </h3>
 
-        <p id="sidebarTeacherSubject">
-            Teacher Portal
+        <p id="sideSubject">
+            Teacher
         </p>
 
     </div>
 
     <nav class="menu">
 
-        <a href="teacher-dashboard.html" class="active">
+        <a href="teacher-dashboard.html"
+           class="active">
             📊 Dashboard
         </a>
 
         <a href="teacher-attendance.html">
             📅 Attendance
+        </a>
+
+        <a href="absentees.html">
+            📱 Absentees
         </a>
 
         <a href="teacher-marks.html">
@@ -351,10 +343,6 @@ body{
 
         <a href="notices.html">
             📢 Notices
-        </a>
-
-        <a href="#">
-            👤 My Profile
         </a>
 
     </nav>
@@ -370,88 +358,138 @@ body{
 </aside>
 
 
-<!-- MAIN -->
-
 <main class="main">
 
-    <div class="topbar">
+    <div class="header">
 
         <h1>
-            Teacher Dashboard
+            Welcome, <span id="teacherName">
+                Teacher
+            </span> 👋
         </h1>
 
-        <p id="currentDate">
-            Loading date...
+        <p id="teacherDetails">
+            Loading teacher information...
         </p>
 
     </div>
 
-
     <div id="message"></div>
 
 
-    <!-- WELCOME -->
+    <div class="stats">
 
-    <section class="welcome">
+        <div class="stat-card">
 
-        <h2>
-            Welcome, <span id="welcomeName">Teacher</span> 👋
-        </h2>
+            <p>Total Students</p>
 
-        <p>
-            Manage your classes, attendance, marks and academic activities from here.
-        </p>
+            <h2 id="totalStudents">
+                0
+            </h2>
 
-    </section>
+        </div>
 
 
-    <!-- QUICK CARDS -->
+        <div class="stat-card">
 
-    <section class="cards">
+            <p>Present Today</p>
 
-        <a
-            href="teacher-attendance.html"
-            class="card">
+            <h2 id="presentToday">
+                0
+            </h2>
 
-            <div class="card-icon">
+        </div>
+
+
+        <div class="stat-card">
+
+            <p>Absent Today</p>
+
+            <h2 id="absentToday">
+                0
+            </h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <p>Leave Today</p>
+
+            <h2 id="leaveToday">
+                0
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <h2 class="quick-title">
+        Quick Actions
+    </h2>
+
+
+    <div class="quick-links">
+
+        <a href="teacher-attendance.html"
+           class="quick-card">
+
+            <div class="quick-icon">
                 📅
             </div>
 
             <h3>
-                Attendance
+                Take Attendance
             </h3>
 
             <p>
-                Take and manage student attendance.
+                Mark today's student attendance.
             </p>
 
         </a>
 
 
-        <a
-            href="teacher-marks.html"
-            class="card">
+        <a href="absentees.html"
+           class="quick-card">
 
-            <div class="card-icon">
+            <div class="quick-icon">
+                📱
+            </div>
+
+            <h3>
+                View Absentees
+            </h3>
+
+            <p>
+                View absent students and contact parents.
+            </p>
+
+        </a>
+
+
+        <a href="teacher-marks.html"
+           class="quick-card">
+
+            <div class="quick-icon">
                 📚
             </div>
 
             <h3>
-                Marks
+                Enter Marks
             </h3>
 
             <p>
-                Enter and manage student marks.
+                Add and manage student examination marks.
             </p>
 
         </a>
 
 
-        <a
-            href="homework.html"
-            class="card">
+        <a href="homework.html"
+           class="quick-card">
 
-            <div class="card-icon">
+            <div class="quick-icon">
                 📝
             </div>
 
@@ -466,11 +504,10 @@ body{
         </a>
 
 
-        <a
-            href="notices.html"
-            class="card">
+        <a href="notices.html"
+           class="quick-card">
 
-            <div class="card-icon">
+            <div class="quick-icon">
                 📢
             </div>
 
@@ -479,173 +516,103 @@ body{
             </h3>
 
             <p>
-                View school notices and announcements.
+                View school notices.
             </p>
 
         </a>
 
-    </section>
+
+        <a href="index.html"
+           class="quick-card">
+
+            <div class="quick-icon">
+                🏫
+            </div>
+
+            <h3>
+                School Portal
+            </h3>
+
+            <p>
+                Return to the main login page.
+            </p>
+
+        </a>
+
+    </div>
 
 
-    <!-- INFORMATION -->
+    <div class="profile">
 
-    <section class="info-grid">
+        <h2>
+            My Profile
+        </h2>
 
+        <div class="profile-grid">
 
-        <div class="info-box">
+            <div class="profile-item">
 
-            <h2>
-                👤 Teacher Information
-            </h2>
-
-
-            <div class="info-row">
-
-                <span class="info-label">
+                <span>
                     Teacher ID
                 </span>
 
-                <span
-                    class="info-value"
-                    id="teacherId">
+                <strong id="teacherId">
                     -
-                </span>
+                </strong>
 
             </div>
 
 
-            <div class="info-row">
+            <div class="profile-item">
 
-                <span class="info-label">
+                <span>
                     Name
                 </span>
 
-                <span
-                    class="info-value"
-                    id="teacherName">
+                <strong id="profileName">
                     -
-                </span>
+                </strong>
 
             </div>
 
 
-            <div class="info-row">
+            <div class="profile-item">
 
-                <span class="info-label">
+                <span>
                     Subject
                 </span>
 
-                <span
-                    class="info-value"
-                    id="teacherSubject">
+                <strong id="profileSubject">
                     -
-                </span>
+                </strong>
 
             </div>
 
 
-            <div class="info-row">
+            <div class="profile-item">
 
-                <span class="info-label">
+                <span>
                     Email
                 </span>
 
-                <span
-                    class="info-value"
-                    id="teacherEmail">
+                <strong id="profileEmail">
                     -
-                </span>
-
-            </div>
-
-
-            <div class="info-row">
-
-                <span class="info-label">
-                    Phone
-                </span>
-
-                <span
-                    class="info-value"
-                    id="teacherPhone">
-                    -
-                </span>
+                </strong>
 
             </div>
 
         </div>
 
-
-        <div class="info-box">
-
-            <h2>
-                🏫 School Information
-            </h2>
-
-
-            <div class="info-row">
-
-                <span class="info-label">
-                    School
-                </span>
-
-                <span class="info-value">
-                    Bhargav School
-                </span>
-
-            </div>
-
-
-            <div class="info-row">
-
-                <span class="info-label">
-                    School Timing
-                </span>
-
-                <span class="info-value">
-                    8:45 AM – 4:00 PM
-                </span>
-
-            </div>
-
-
-            <div class="info-row">
-
-                <span class="info-label">
-                    Working Days
-                </span>
-
-                <span class="info-value">
-                    Monday – Saturday
-                </span>
-
-            </div>
-
-
-            <div class="info-row">
-
-                <span class="info-label">
-                    Portal
-                </span>
-
-                <span class="info-value">
-                    Teacher Portal
-                </span>
-
-            </div>
-
-        </div>
-
-    </section>
+    </div>
 
 </main>
 
 
 <script>
 
-/* =====================================================
+/* ============================================
    SUPABASE
-   ===================================================== */
+============================================ */
 
 const SUPABASE_URL =
     "https://jmdujouzsiiwvrsnwawv.supabase.co";
@@ -660,93 +627,64 @@ const supabaseClient =
     );
 
 
-/* =====================================================
-   ELEMENTS
-   ===================================================== */
-
-const welcomeName =
-    document.getElementById(
-        "welcomeName"
-    );
-
-const sidebarTeacherName =
-    document.getElementById(
-        "sidebarTeacherName"
-    );
-
-const sidebarTeacherSubject =
-    document.getElementById(
-        "sidebarTeacherSubject"
-    );
-
-const teacherIdElement =
-    document.getElementById(
-        "teacherId"
-    );
-
-const teacherNameElement =
-    document.getElementById(
-        "teacherName"
-    );
-
-const teacherSubjectElement =
-    document.getElementById(
-        "teacherSubject"
-    );
-
-const teacherEmailElement =
-    document.getElementById(
-        "teacherEmail"
-    );
-
-const teacherPhoneElement =
-    document.getElementById(
-        "teacherPhone"
-    );
-
-const currentDate =
-    document.getElementById(
-        "currentDate"
-    );
+let currentTeacher = null;
 
 
-/* =====================================================
-   DATE
-   ===================================================== */
+/* ============================================
+   TODAY
+============================================ */
 
-function showDate(){
+function getToday(){
 
     const today =
         new Date();
 
-    currentDate.textContent =
-        today.toLocaleDateString(
-            "en-IN",
-            {
-                weekday:"long",
-                day:"2-digit",
-                month:"long",
-                year:"numeric"
-            }
-        );
+    const year =
+        today.getFullYear();
 
+    const month =
+        String(
+            today.getMonth()+1
+        ).padStart(2,"0");
+
+    const day =
+        String(
+            today.getDate()
+        ).padStart(2,"0");
+
+    return `${year}-${month}-${day}`;
 }
 
 
-/* =====================================================
+/* ============================================
+   MESSAGE
+============================================ */
+
+function showMessage(
+    text,
+    type="error"
+){
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+    message.textContent =
+        text;
+
+    message.style.color =
+        type === "success"
+        ? "#15803d"
+        : "#dc2626";
+}
+
+
+/* ============================================
    LOAD TEACHER
-   ===================================================== */
+============================================ */
 
 async function loadTeacher(){
-
-    /*
-       At this stage the teacher login
-       will provide the authenticated
-       Supabase user.
-
-       We then use the teacher's email
-       to find the matching teacher record.
-    */
 
     const {
         data:{
@@ -763,151 +701,330 @@ async function loadTeacher(){
         window.location.href =
             "index.html";
 
-        return;
-
+        return false;
     }
 
 
-    const user =
-        session.user;
+    const email =
+        session.user.email;
 
 
-    /*
-       Try to find teacher using
-       authenticated email.
-    */
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
 
-    let teacher = null;
+            .from("teachers")
 
+            .select(`
+                id,
+                teacher_id,
+                first_name,
+                last_name,
+                subject,
+                email,
+                status
+            `)
 
-    if(user.email){
+            .eq(
+                "email",
+                email
+            )
 
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("teachers")
-                .select(`
-                    id,
-                    teacher_id,
-                    first_name,
-                    last_name,
-                    subject,
-                    phone,
-                    email,
-                    qualification,
-                    joining_date,
-                    status
-                `)
-                .eq(
-                    "email",
-                    user.email
-                )
-                .maybeSingle();
+            .maybeSingle();
 
 
-        if(!error){
+    if(error){
 
-            teacher =
-                data;
+        console.error(error);
 
-        }
+        showMessage(
+            error.message
+        );
 
+        return false;
     }
 
 
-    /*
-       If teacher record is not found,
-       show account information.
-    */
+    if(!data){
 
-    if(!teacher){
+        showMessage(
+            "Teacher profile not found."
+        );
 
-        const emailName =
-            user.email
-                ? user.email.split("@")[0]
-                : "Teacher";
-
-
-        welcomeName.textContent =
-            emailName;
-
-        sidebarTeacherName.textContent =
-            emailName;
-
-        teacherEmailElement.textContent =
-            user.email || "-";
-
-        return;
-
+        return false;
     }
 
 
-    /* FULL NAME */
+    currentTeacher =
+        data;
+
 
     const fullName =
-        (
-            teacher.first_name ||
-            ""
-        ) +
-        " " +
-        (
-            teacher.last_name ||
-            ""
+        `${data.first_name || ""}
+         ${data.last_name || ""}`
+        .replace(/\s+/g," ")
+        .trim() ||
+        "Teacher";
+
+
+    document
+        .getElementById(
+            "teacherName"
+        )
+        .textContent =
+        fullName;
+
+
+    document
+        .getElementById(
+            "sideName"
+        )
+        .textContent =
+        fullName;
+
+
+    document
+        .getElementById(
+            "sideSubject"
+        )
+        .textContent =
+        data.subject ||
+        "Teacher";
+
+
+    document
+        .getElementById(
+            "teacherDetails"
+        )
+        .textContent =
+        `${data.subject || "Teacher"} • Teacher ID: ${
+            data.teacher_id || "-"
+        }`;
+
+
+    document
+        .getElementById(
+            "teacherId"
+        )
+        .textContent =
+        data.teacher_id ||
+        "-";
+
+
+    document
+        .getElementById(
+            "profileName"
+        )
+        .textContent =
+        fullName;
+
+
+    document
+        .getElementById(
+            "profileSubject"
+        )
+        .textContent =
+        data.subject ||
+        "-";
+
+
+    document
+        .getElementById(
+            "profileEmail"
+        )
+        .textContent =
+        data.email ||
+        email;
+
+
+    return true;
+}
+
+
+/* ============================================
+   LOAD DASHBOARD STATISTICS
+============================================ */
+
+async function loadStatistics(){
+
+    if(!currentTeacher){
+
+        return;
+    }
+
+
+    /*
+       Get all active students.
+    */
+
+    const {
+        data:students,
+        error:studentError
+    } =
+        await supabaseClient
+
+            .from("students")
+
+            .select(`
+                id,
+                status
+            `);
+
+
+    if(studentError){
+
+        console.error(
+            studentError
+        );
+
+        return;
+    }
+
+
+    const activeStudents =
+        (students || [])
+        .filter(
+            student => {
+
+                if(!student.status){
+
+                    return true;
+                }
+
+                return String(
+                    student.status
+                )
+                .toLowerCase()
+                .trim()
+                ===
+                "active";
+            }
         );
 
 
-    const displayName =
-        fullName.trim() ||
-        "Teacher";
+    document
+        .getElementById(
+            "totalStudents"
+        )
+        .textContent =
+        activeStudents.length;
 
 
-    /* DISPLAY */
+    /*
+       Get today's attendance.
+    */
 
-    welcomeName.textContent =
-        displayName;
+    const {
+        data:attendance,
+        error:attendanceError
+    } =
+        await supabaseClient
 
+            .from("attendance")
 
-    sidebarTeacherName.textContent =
-        displayName;
+            .select(`
+                id,
+                student_id,
+                status
+            `)
 
-
-    sidebarTeacherSubject.textContent =
-        teacher.subject ||
-        "Teacher";
-
-
-    teacherIdElement.textContent =
-        teacher.teacher_id ||
-        "-";
-
-
-    teacherNameElement.textContent =
-        displayName;
-
-
-    teacherSubjectElement.textContent =
-        teacher.subject ||
-        "-";
+            .eq(
+                "attendance_date",
+                getToday()
+            );
 
 
-    teacherEmailElement.textContent =
-        teacher.email ||
-        user.email ||
-        "-";
+    if(attendanceError){
+
+        console.error(
+            attendanceError
+        );
+
+        return;
+    }
 
 
-    teacherPhoneElement.textContent =
-        teacher.phone ||
-        "-";
+    let present = 0;
+
+    let absent = 0;
+
+    let leave = 0;
+
+
+    (attendance || [])
+        .forEach(
+            record => {
+
+                const status =
+                    String(
+                        record.status ||
+                        ""
+                    )
+                    .toLowerCase()
+                    .trim();
+
+
+                if(
+                    status ===
+                    "present"
+                ){
+
+                    present++;
+                }
+
+
+                else if(
+                    status ===
+                    "absent"
+                ){
+
+                    absent++;
+                }
+
+
+                else if(
+                    status ===
+                    "leave"
+                ){
+
+                    leave++;
+                }
+
+            }
+        );
+
+
+    document
+        .getElementById(
+            "presentToday"
+        )
+        .textContent =
+        present;
+
+
+    document
+        .getElementById(
+            "absentToday"
+        )
+        .textContent =
+        absent;
+
+
+    document
+        .getElementById(
+            "leaveToday"
+        )
+        .textContent =
+        leave;
 
 }
 
 
-/* =====================================================
+/* ============================================
    LOGOUT
-   ===================================================== */
+============================================ */
 
 document
     .getElementById(
@@ -928,13 +1045,23 @@ document
     );
 
 
-/* =====================================================
+/* ============================================
    START
-   ===================================================== */
+============================================ */
 
-showDate();
+(async function(){
 
-loadTeacher();
+    const teacherLoaded =
+        await loadTeacher();
+
+    if(!teacherLoaded){
+
+        return;
+    }
+
+    await loadStatistics();
+
+})();
 
 </script>
 
