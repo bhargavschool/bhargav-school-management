@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Bhargav School | Absentees</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f1f5f9;
+    color:#1e293b;
+}
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:250px;
+    height:100vh;
+    background:#0f172a;
+    color:white;
+    padding:25px 15px;
+}
+
+.school-name{
+    text-align:center;
+    padding-bottom:22px;
+    border-bottom:1px solid #334155;
+}
+
+.school-name h2{
+    font-size:20px;
+}
+
+.school-name p{
+    color:#94a3b8;
+    font-size:12px;
+    margin-top:5px;
+}
+
+.menu{
+    margin-top:20px;
+}
+
+.menu a{
+    display:block;
+    color:#cbd5e1;
+    text-decoration:none;
+    padding:13px 15px;
+    border-radius:8px;
+    margin-bottom:5px;
+}
+
+.menu a:hover,
+.menu a.active{
+    background:#1e3a8a;
+    color:white;
+}
+
+.logout{
+    position:absolute;
+    bottom:25px;
+    left:15px;
+    right:15px;
+}
+
+.logout button{
+    width:100%;
+    padding:12px;
+    background:transparent;
+    border:1px solid #475569;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.logout button:hover{
+    background:#dc2626;
+}
+
+.main{
+    margin-left:250px;
+    padding:30px;
+}
+
+.header{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    margin-bottom:20px;
+}
+
+.header h1{
+    font-size:25px;
+}
+
+.header p{
+    color:#64748b;
+    margin-top:6px;
+}
+
+.controls{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+
+    display:flex;
+    gap:15px;
+    align-items:end;
+}
+
+.form-group{
+    flex:1;
+}
+
+.form-group label{
+    display:block;
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:7px;
+    color:#475569;
+}
+
+.form-group input{
+    width:100%;
+    padding:12px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+}
+
+.load-button{
+    padding:12px 20px;
+    border:none;
+    border-radius:8px;
+    background:#1e3a8a;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.summary{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+}
+
+.card p{
+    color:#64748b;
+    font-size:13px;
+    margin-bottom:7px;
+}
+
+.card h2{
+    font-size:26px;
+}
+
+.table-container{
+    background:white;
+    border-radius:15px;
+    overflow:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:900px;
+}
+
+th{
+    background:#f8fafc;
+    color:#475569;
+    font-size:12px;
+    text-align:left;
+    padding:15px;
+}
+
+td{
+    padding:15px;
+    border-top:1px solid #e2e8f0;
+    font-size:13px;
+}
+
+.student-name{
+    font-weight:bold;
+}
+
+.student-id{
+    color:#64748b;
+    font-size:11px;
+    margin-top:4px;
+}
+
+.whatsapp{
+    display:inline-block;
+    padding:8px 11px;
+    border-radius:7px;
+    background:#16a34a;
+    color:white;
+    text-decoration:none;
+    font-size:12px;
+    font-weight:bold;
+    margin-right:5px;
+}
+
+.email{
+    display:inline-block;
+    padding:8px 11px;
+    border-radius:7px;
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    font-size:12px;
+}
+
+.empty{
+    text-align:center;
+    padding:50px;
+    color:#64748b;
+}
+
+#message{
+    text-align:center;
+    margin-bottom:15px;
+    font-weight:bold;
+}
+
+@media(max-width:700px){
+
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+    }
+
+    .logout{
+        position:relative;
+        left:auto;
+        right:auto;
+        bottom:auto;
+        margin-top:20px;
+    }
+
+    .main{
+        margin-left:0;
+        padding:15px;
+    }
+
+    .controls{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .summary{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<aside class="sidebar">
+
+    <div class="school-name">
+
+        <h2>
+            BHARGAV SCHOOL
+        </h2>
+
+        <p>
+            School Management
+        </p>
+
+    </div>
+
+    <nav class="menu">
+
+        <a href="dashboard.html">
+            📊 Dashboard
+        </a>
+
+        <a href="students.html">
+            👨‍🎓 Students
+        </a>
+
+        <a href="teachers.html">
+            👩‍🏫 Teachers
+        </a>
+
+        <a href="attendance.html">
+            📅 Attendance
+        </a>
+
+        <a href="absentees.html"
+           class="active">
+            📱 Absentees
+        </a>
+
+        <a href="marks.html">
+            📚 Marks
+        </a>
+
+        <a href="fees.html">
+            💰 Fees
+        </a>
+
+        <a href="notices.html">
+            📢 Notices
+        </a>
+
+    </nav>
+
+    <div class="logout">
+
+        <button id="logoutButton">
+            🚪 Logout
+        </button>
+
+    </div>
+
+</aside>
+
+
+<main class="main">
+
+    <div class="header">
+
+        <h1>
+            Absentee Management
+        </h1>
+
+        <p>
+            View absent students and contact their parents.
+        </p>
+
+    </div>
+
+
+    <div id="message"></div>
+
+
+    <div class="controls">
+
+        <div class="form-group">
+
+            <label>
+                Attendance Date
+            </label>
+
+            <input
+                type="date"
+                id="attendanceDate"
+            >
+
+        </div>
+
+        <button
+            class="load-button"
+            id="loadButton">
+
+            Load Absentees
+
+        </button>
+
+    </div>
+
+
+    <div class="summary">
+
+        <div class="card">
+
+            <p>
+                Total Absentees
+            </p>
+
+            <h2 id="totalAbsent">
+                0
+            </h2>
+
+        </div>
+
+
+        <div class="card">
+
+            <p>
+                Parents With Phone
+            </p>
+
+            <h2 id="phoneCount">
+                0
+            </h2>
+
+        </div>
+
+
+        <div class="card">
+
+            <p>
+                Parents With Email
+            </p>
+
+            <h2 id="emailCount">
+                0
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Student
+                    </th>
+
+                    <th>
+                        Class
+                    </th>
+
+                    <th>
+                        Parent
+                    </th>
+
+                    <th>
+                        Phone
+                    </th>
+
+                    <th>
+                        Remark
+                    </th>
+
+                    <th>
+                        Contact
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="absenteeList">
+
+                <tr>
+
+                    <td
+                        colspan="6"
+                        class="empty">
+
+                        Select a date and click
+                        <strong>
+                            Load Absentees
+                        </strong>.
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</main>
+
+
+<script>
+
+/* ============================================
+   SUPABASE
+============================================ */
+
+const SUPABASE_URL =
+    "https://jmdujouzsiiwvrsnwawv.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable__sdosuGSmD9Lz29D4CG3YA_-8hOYoVn";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* ============================================
+   ELEMENTS
+============================================ */
+
+const dateInput =
+    document.getElementById(
+        "attendanceDate"
+    );
+
+const loadButton =
+    document.getElementById(
+        "loadButton"
+    );
+
+const absenteeList =
+    document.getElementById(
+        "absenteeList"
+    );
+
+const message =
+    document.getElementById(
+        "message"
+    );
+
+
+/* ============================================
+   TODAY
+============================================ */
+
+function setToday(){
+
+    const today =
+        new Date();
+
+    const year =
+        today.getFullYear();
+
+    const month =
+        String(
+            today.getMonth()+1
+        ).padStart(2,"0");
+
+    const day =
+        String(
+            today.getDate()
+        ).padStart(2,"0");
+
+    dateInput.value =
+        `${year}-${month}-${day}`;
+
+}
+
+
+/* ============================================
+   MESSAGE
+============================================ */
+
+function showMessage(
+    text,
+    type="error"
+){
+
+    message.textContent =
+        text;
+
+    message.style.color =
+        type === "success"
+        ? "#15803d"
+        : "#dc2626";
+
+}
+
+
+/* ============================================
+   LOAD ABSENTEES
+============================================ */
+
+async function loadAbsentees(){
+
+    const date =
+        dateInput.value;
+
+
+    if(!date){
+
+        showMessage(
+            "Please select a date."
+        );
+
+        return;
+
+    }
+
+
+    loadButton.disabled =
+        true;
+
+    loadButton.textContent =
+        "Loading...";
+
+
+    absenteeList.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="6"
+                class="empty">
+
+                Loading absentees...
+
+            </td>
+
+        </tr>
+
+    `;
+
+
+    /*
+       First get attendance records.
+    */
+
+    const {
+        data:attendance,
+        error:attendanceError
+    } =
+        await supabaseClient
+
+            .from("attendance")
+
+            .select(`
+                id,
+                attendance_date,
+                student_id,
+                status,
+                remarks
+            `)
+
+            .eq(
+                "attendance_date",
+                date
+            )
+
+            .eq(
+                "status",
+                "Absent"
+            );
+
+
+    if(attendanceError){
+
+        console.error(
+            attendanceError
+        );
+
+        showMessage(
+            attendanceError.message
+        );
+
+        loadButton.disabled =
+            false;
+
+        loadButton.textContent =
+            "Load Absentees";
+
+        return;
+
+    }
+
+
+    if(
+        !attendance ||
+        attendance.length === 0
+    ){
+
+        absenteeList.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="empty">
+
+                    🎉 No absent students
+                    found for this date.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        updateSummary(
+            []
+        );
+
+        loadButton.disabled =
+            false;
+
+        loadButton.textContent =
+            "Load Absentees";
+
+        return;
+
+    }
+
+
+    /*
+       Get student UUIDs.
+    */
+
+    const studentIds =
+        attendance.map(
+            item =>
+                item.student_id
+        );
+
+
+    /*
+       Get student information.
+    */
+
+    const {
+        data:students,
+        error:studentError
+    } =
+        await supabaseClient
+
+            .from("students")
+
+            .select(`
+                id,
+                admission_no,
+                first_name,
+                last_name,
+                class_name,
+                section,
+                parent_name,
+                parent_phone,
+                parent_email
+            `)
+
+            .in(
+                "id",
+                studentIds
+            );
+
+
+    if(studentError){
+
+        console.error(
+            studentError
+        );
+
+        showMessage(
+            studentError.message
+        );
+
+        loadButton.disabled =
+            false;
+
+        loadButton.textContent =
+            "Load Absentees";
+
+        return;
+
+    }
+
+
+    const studentMap =
+        {};
+
+
+    (students || [])
+        .forEach(
+            student => {
+
+                studentMap[
+                    student.id
+                ] =
+                    student;
+
+            }
+        );
+
+
+    const records =
+        attendance.map(
+            record => {
+
+                return {
+
+                    attendance:
+                        record,
+
+                    student:
+                        studentMap[
+                            record.student_id
+                        ]
+
+                };
+
+            }
+        )
+        .filter(
+            item =>
+                item.student
+        );
+
+
+    renderAbsentees(
+        records
+    );
+
+
+    updateSummary(
+        records
+    );
+
+
+    loadButton.disabled =
+        false;
+
+    loadButton.textContent =
+        "Load Absentees";
+
+
+    showMessage(
+        `${records.length} absentee(s) found.`,
+        "success"
+    );
+
+}
+
+
+/* ============================================
+   RENDER
+============================================ */
+
+function renderAbsentees(
+    records
+){
+
+    absenteeList.innerHTML =
+        "";
+
+
+    records.forEach(
+        item => {
+
+            const student =
+                item.student;
+
+            const attendance =
+                item.attendance;
+
+
+            const firstName =
+                student.first_name ||
+                "";
+
+            const lastName =
+                student.last_name ||
+                "";
+
+            const fullName =
+                `${firstName} ${lastName}`
+                .trim();
+
+
+            const classText =
+                `${student.class_name || "-"}
+                 ${student.section
+                    ? "- " + student.section
+                    : ""}`;
+
+
+            const phone =
+                cleanPhone(
+                    student.parent_phone
+                );
+
+
+            const email =
+                student.parent_email ||
+                "";
+
+
+            const parentName =
+                student.parent_name ||
+                "Parent";
+
+
+            const messageText =
+                `Dear ${parentName},%0A%0A` +
+                `Your child ${
+                    fullName
+                } was marked ABSENT ` +
+                `from Bhargav School on ${
+                    attendance.attendance_date
+                }.%0A%0A` +
+                `Please contact the school ` +
+                `if necessary.%0A%0A` +
+                `Regards,%0A` +
+                `Bhargav School`;
+
+
+            const whatsappUrl =
+                phone
+                ? `https://wa.me/${
+                    phone
+                  }?text=${
+                    messageText
+                  }`
+                : "#";
+
+
+            const emailSubject =
+                encodeURIComponent(
+                    "Absence Notification - Bhargav School"
+                );
+
+
+            const emailBody =
+                encodeURIComponent(
+                    `Dear ${parentName},
+
+Your child ${fullName} was marked ABSENT from Bhargav School on ${attendance.attendance_date}.
+
+Please contact the school if necessary.
+
+Regards,
+Bhargav School`
+                );
+
+
+            const emailUrl =
+                email
+                ? `mailto:${email}?subject=${emailSubject}&body=${emailBody}`
+                : "#";
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+
+                    <div class="student-name">
+
+                        ${safe(fullName)}
+
+                    </div>
+
+                    <div class="student-id">
+
+                        Admission No:
+                        ${safe(
+                            student.admission_no ||
+                            "-"
+                        )}
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    ${safe(classText)}
+
+                </td>
+
+
+                <td>
+
+                    ${safe(parentName)}
+
+                </td>
+
+
+                <td>
+
+                    ${safe(
+                        student.parent_phone ||
+                        "Not available"
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${safe(
+                        attendance.remarks ||
+                        "-"
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${
+                        phone
+                        ?
+
+                        `<a
+                            class="whatsapp"
+                            href="${whatsappUrl}"
+                            target="_blank">
+
+                            WhatsApp
+
+                        </a>`
+
+                        :
+
+                        ""
+                    }
+
+
+                    ${
+                        email
+                        ?
+
+                        `<a
+                            class="email"
+                            href="${emailUrl}">
+
+                            Email
+
+                        </a>`
+
+                        :
+
+                        ""
+                    }
+
+
+                    ${
+                        !phone &&
+                        !email
+
+                        ?
+
+                        `<span>
+                            No contact
+                        </span>`
+
+                        :
+
+                        ""
+                    }
+
+                </td>
+
+            `;
+
+
+            absenteeList.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+/* ============================================
+   SUMMARY
+============================================ */
+
+function updateSummary(
+    records
+){
+
+    const total =
+        records.length;
+
+
+    const phone =
+        records.filter(
+            item =>
+                cleanPhone(
+                    item.student.parent_phone
+                )
+        ).length;
+
+
+    const email =
+        records.filter(
+            item =>
+                item.student.parent_email
+        ).length;
+
+
+    document
+        .getElementById(
+            "totalAbsent"
+        )
+        .textContent =
+        total;
+
+
+    document
+        .getElementById(
+            "phoneCount"
+        )
+        .textContent =
+        phone;
+
+
+    document
+        .getElementById(
+            "emailCount"
+        )
+        .textContent =
+        email;
+
+}
+
+
+/* ============================================
+   CLEAN PHONE
+============================================ */
+
+function cleanPhone(
+    phone
+){
+
+    if(!phone){
+
+        return "";
+
+    }
+
+
+    let number =
+        String(phone)
+        .replace(
+            /\D/g,
+            ""
+        );
+
+
+    /*
+       Indian numbers:
+       10 digits -> add 91
+    */
+
+    if(
+        number.length === 10
+    ){
+
+        number =
+            "91" +
+            number;
+
+    }
+
+
+    return number;
+
+}
+
+
+/* ============================================
+   SECURITY
+============================================ */
+
+function safe(
+    value
+){
+
+    if(
+        value === null ||
+        value === undefined
+    ){
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* ============================================
+   LOGOUT
+============================================ */
+
+document
+    .getElementById(
+        "logoutButton"
+    )
+    .addEventListener(
+        "click",
+        async () => {
+
+            await supabaseClient
+                .auth
+                .signOut();
+
+            window.location.href =
+                "index.html";
+
+        }
+    );
+
+
+/* ============================================
+   LOAD BUTTON
+============================================ */
+
+loadButton
+    .addEventListener(
+        "click",
+        loadAbsentees
+    );
+
+
+/* ============================================
+   START
+============================================ */
+
+setToday();
+
+
+(async function(){
+
+    const {
+        data:{
+            session
+        }
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
+
+
+    if(!session){
+
+        window.location.href =
+            "index.html";
+
+    }
+
+})();
+
+</script>
+
+</body>
+
+</html>
