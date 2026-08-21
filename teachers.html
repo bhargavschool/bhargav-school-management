@@ -1,427 +1,417 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Bhargav School | Teachers</title>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: #f1f5f9;
-            color: #1e293b;
-        }
-
-        /* SIDEBAR */
-
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 250px;
-            height: 100vh;
-            background: #0f172a;
-            color: white;
-            padding: 25px 15px;
-        }
-
-        .school-name {
-            text-align: center;
-            padding-bottom: 25px;
-            border-bottom: 1px solid #334155;
-        }
-
-        .school-name h2 {
-            font-size: 20px;
-            letter-spacing: 1px;
-        }
-
-        .school-name p {
-            color: #94a3b8;
-            margin-top: 5px;
-            font-size: 12px;
-        }
-
-        .menu {
-            margin-top: 25px;
-        }
-
-        .menu a {
-            display: block;
-            color: #cbd5e1;
-            text-decoration: none;
-            padding: 13px 15px;
-            border-radius: 8px;
-            margin-bottom: 5px;
-        }
-
-        .menu a:hover,
-        .menu a.active {
-            background: #1e3a8a;
-            color: white;
-        }
-
-        .logout {
-            position: absolute;
-            bottom: 25px;
-            left: 15px;
-            right: 15px;
-        }
-
-        .logout button {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #475569;
-            background: transparent;
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .logout button:hover {
-            background: #dc2626;
-        }
-
-        /* MAIN */
-
-        .main {
-            margin-left: 250px;
-            padding: 30px;
-        }
-
-        .topbar {
-            background: white;
-            padding: 20px 25px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-        }
-
-        .topbar h1 {
-            font-size: 26px;
-        }
-
-        .topbar p {
-            color: #64748b;
-            margin-top: 6px;
-        }
-
-        /* SUMMARY */
-
-        .summary {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .summary-card {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-        }
-
-        .summary-card p {
-            color: #64748b;
-            font-size: 13px;
-            margin-bottom: 8px;
-        }
-
-        .summary-card h2 {
-            font-size: 24px;
-        }
-
-        /* ACTIONS */
-
-        .actions {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-
-            display: flex;
-            gap: 15px;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .search {
-            flex: 1;
-            min-width: 220px;
-        }
-
-        .search input {
-            width: 100%;
-            padding: 13px;
-            border: 1px solid #cbd5e1;
-            border-radius: 9px;
-            font-size: 14px;
-        }
-
-        .add-button {
-            background: #1e3a8a;
-            color: white;
-            border: none;
-            padding: 13px 20px;
-            border-radius: 9px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .add-button:hover {
-            background: #172554;
-        }
-
-        /* TABLE */
-
-        .table-container {
-            background: white;
-            border-radius: 15px;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 1100px;
-        }
-
-        th {
-            background: #f8fafc;
-            text-align: left;
-            padding: 15px;
-            font-size: 13px;
-            color: #475569;
-        }
-
-        td {
-            padding: 15px;
-            border-top: 1px solid #e2e8f0;
-            font-size: 14px;
-        }
-
-        tr:hover {
-            background: #f8fafc;
-        }
-
-        /* BUTTONS */
-
-        .edit {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 7px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-right: 5px;
-        }
-
-        .delete {
-            background: #dc2626;
-            color: white;
-            border: none;
-            padding: 7px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        /* STATUS */
-
-        .status {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .active-status {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .inactive-status {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .other-status {
-            background: #e2e8f0;
-            color: #334155;
-        }
-
-        /* MODAL */
-
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.65);
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            z-index: 1000;
-        }
-
-        .modal-box {
-            width: 100%;
-            max-width: 700px;
-            max-height: 90vh;
-            overflow-y: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 18px;
-        }
-
-        .modal-box h2 {
-            margin-bottom: 20px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .form-group {
-            margin-bottom: 5px;
-        }
-
-        .form-group.full {
-            grid-column: 1 / -1;
-        }
-
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 6px;
-            color: #475569;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .save-button {
-            flex: 1;
-            padding: 13px;
-            border: none;
-            border-radius: 8px;
-            background: #1e3a8a;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .cancel-button {
-            flex: 1;
-            padding: 13px;
-            border: none;
-            border-radius: 8px;
-            background: #e2e8f0;
-            color: #334155;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        #message {
-            text-align: center;
-            margin: 15px 0;
-            font-size: 14px;
-        }
-
-        .empty {
-            text-align: center;
-            padding: 40px;
-            color: #64748b;
-        }
-
-        /* MOBILE */
-
-        @media (max-width: 900px) {
-
-            .summary {
-                grid-template-columns: 1fr;
-            }
-
-        }
-
-        @media (max-width: 700px) {
-
-            .sidebar {
-                position: relative;
-                width: 100%;
-                height: auto;
-            }
-
-            .logout {
-                position: relative;
-                left: auto;
-                right: auto;
-                bottom: auto;
-                margin-top: 20px;
-            }
-
-            .main {
-                margin-left: 0;
-                padding: 15px;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-group.full {
-                grid-column: auto;
-            }
-
-        }
-
-    </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bhargav School | Teachers</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f1f5f9;
+    color:#1e293b;
+}
+
+/* SIDEBAR */
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:250px;
+    height:100vh;
+    background:#0f172a;
+    color:white;
+    padding:25px 15px;
+}
+
+.school-name{
+    text-align:center;
+    padding-bottom:25px;
+    border-bottom:1px solid #334155;
+}
+
+.school-name h2{
+    font-size:20px;
+    letter-spacing:1px;
+}
+
+.school-name p{
+    color:#94a3b8;
+    margin-top:5px;
+    font-size:12px;
+}
+
+.menu{
+    margin-top:25px;
+}
+
+.menu a{
+    display:block;
+    color:#cbd5e1;
+    text-decoration:none;
+    padding:13px 15px;
+    border-radius:8px;
+    margin-bottom:5px;
+}
+
+.menu a:hover,
+.menu a.active{
+    background:#1e3a8a;
+    color:white;
+}
+
+.logout{
+    position:absolute;
+    bottom:25px;
+    left:15px;
+    right:15px;
+}
+
+.logout button{
+    width:100%;
+    padding:12px;
+    border:1px solid #475569;
+    background:transparent;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.logout button:hover{
+    background:#dc2626;
+}
+
+/* MAIN */
+.main{
+    margin-left:250px;
+    padding:30px;
+}
+
+.topbar{
+    background:white;
+    padding:20px 25px;
+    border-radius:15px;
+    margin-bottom:25px;
+}
+
+.topbar h1{
+    font-size:26px;
+}
+
+.topbar p{
+    color:#64748b;
+    margin-top:6px;
+}
+
+/* SUMMARY */
+.summary{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.summary-card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+}
+
+.summary-card p{
+    color:#64748b;
+    font-size:13px;
+    margin-bottom:8px;
+}
+
+.summary-card h2{
+    font-size:25px;
+}
+
+/* ACTIONS */
+.actions{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+
+    display:flex;
+    gap:15px;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+.search{
+    flex:1;
+    min-width:220px;
+}
+
+.search input{
+    width:100%;
+    padding:13px;
+    border:1px solid #cbd5e1;
+    border-radius:9px;
+    font-size:14px;
+}
+
+.add-button{
+    background:#1e3a8a;
+    color:white;
+    border:none;
+    padding:13px 20px;
+    border-radius:9px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.add-button:hover{
+    background:#172554;
+}
+
+/* TABLE */
+.table-container{
+    background:white;
+    border-radius:15px;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1100px;
+}
+
+th{
+    background:#f8fafc;
+    text-align:left;
+    padding:15px;
+    font-size:13px;
+    color:#475569;
+}
+
+td{
+    padding:15px;
+    border-top:1px solid #e2e8f0;
+    font-size:14px;
+}
+
+tr:hover{
+    background:#f8fafc;
+}
+
+.subject{
+    display:inline-block;
+    background:#dbeafe;
+    color:#1e40af;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.status{
+    display:inline-block;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.status-active{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.status-inactive{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.edit{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:7px 10px;
+    border-radius:6px;
+    cursor:pointer;
+    margin-right:5px;
+}
+
+.delete{
+    background:#dc2626;
+    color:white;
+    border:none;
+    padding:7px 10px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+/* MODAL */
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.65);
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:1000;
+}
+
+.modal-box{
+    width:100%;
+    max-width:650px;
+    max-height:90vh;
+    overflow-y:auto;
+    background:white;
+    padding:30px;
+    border-radius:18px;
+}
+
+.modal-box h2{
+    margin-bottom:20px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.form-group{
+    margin-bottom:5px;
+}
+
+.form-group.full{
+    grid-column:1/-1;
+}
+
+label{
+    display:block;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:6px;
+    color:#475569;
+}
+
+input,
+select{
+    width:100%;
+    padding:12px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    font-size:14px;
+}
+
+input:focus,
+select:focus{
+    outline:none;
+    border-color:#2563eb;
+}
+
+.modal-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+.save-button{
+    flex:1;
+    padding:13px;
+    border:none;
+    border-radius:8px;
+    background:#1e3a8a;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.cancel-button{
+    flex:1;
+    padding:13px;
+    border:none;
+    border-radius:8px;
+    background:#e2e8f0;
+    color:#334155;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+#message{
+    text-align:center;
+    margin:15px 0;
+    font-size:14px;
+}
+
+.empty{
+    text-align:center;
+    padding:40px;
+    color:#64748b;
+}
+
+/* MOBILE */
+@media(max-width:900px){
+
+    .summary{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:700px){
+
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+    }
+
+    .logout{
+        position:relative;
+        left:auto;
+        right:auto;
+        bottom:auto;
+        margin-top:20px;
+    }
+
+    .main{
+        margin-left:0;
+        padding:15px;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .form-group.full{
+        grid-column:auto;
+    }
+
+    .modal-box{
+        padding:20px;
+    }
+}
+</style>
 </head>
 
 <body>
-
 
 <!-- SIDEBAR -->
 
 <aside class="sidebar">
 
     <div class="school-name">
-
         <h2>BHARGAV SCHOOL</h2>
-
         <p>Management Portal</p>
-
     </div>
-
 
     <nav class="menu">
 
@@ -445,27 +435,24 @@
             📚 Marks
         </a>
 
-        <a href="#">
+        <a href="attendance.html">
             📅 Attendance
         </a>
 
-        <a href="#">
+        <a href="notices.html">
             📢 Notices
         </a>
 
-        <a href="#">
+        <a href="homework.html">
             📝 Homework
         </a>
 
     </nav>
 
-
     <div class="logout">
-
         <button id="logoutButton">
             🚪 Logout
         </button>
-
     </div>
 
 </aside>
@@ -474,7 +461,6 @@
 <!-- MAIN -->
 
 <main class="main">
-
 
     <div class="topbar">
 
@@ -492,41 +478,24 @@
     <div class="summary">
 
         <div class="summary-card">
-
             <p>Total Teachers</p>
-
-            <h2 id="teacherCount">
-                0
-            </h2>
-
+            <h2 id="totalTeachers">0</h2>
         </div>
 
-
         <div class="summary-card">
-
             <p>Active Teachers</p>
-
-            <h2 id="activeTeacherCount">
-                0
-            </h2>
-
+            <h2 id="activeTeachers">0</h2>
         </div>
 
-
         <div class="summary-card">
-
             <p>Subjects</p>
-
-            <h2 id="subjectCount">
-                0
-            </h2>
-
+            <h2 id="subjectCount">0</h2>
         </div>
 
     </div>
 
 
-    <!-- ACTION BAR -->
+    <!-- ACTIONS -->
 
     <div class="actions">
 
@@ -535,11 +504,10 @@
             <input
                 type="text"
                 id="searchInput"
-                placeholder="🔍 Search by teacher ID, name, subject or phone..."
+                placeholder="🔍 Search by Teacher ID, name, subject or phone..."
             >
 
         </div>
-
 
         <button
             class="add-button"
@@ -555,7 +523,7 @@
     <div id="message"></div>
 
 
-    <!-- TEACHER TABLE -->
+    <!-- TABLE -->
 
     <div class="table-container">
 
@@ -587,9 +555,7 @@
 
             </thead>
 
-            <tbody id="teacherTable">
-
-            </tbody>
+            <tbody id="teacherTable"></tbody>
 
         </table>
 
@@ -598,7 +564,7 @@
 </main>
 
 
-<!-- ADD / EDIT MODAL -->
+<!-- MODAL -->
 
 <div class="modal" id="teacherModal">
 
@@ -608,14 +574,12 @@
             Add Teacher
         </h2>
 
-
         <form id="teacherForm">
 
             <input
                 type="hidden"
-                id="teacherRecordId"
+                id="teacherDatabaseId"
             >
-
 
             <div class="form-grid">
 
@@ -629,7 +593,7 @@
                     <input
                         type="text"
                         id="teacherId"
-                        placeholder="Example: T001"
+                        placeholder="Example: TCH001"
                         required
                     >
 
@@ -690,7 +654,7 @@
                     <input
                         type="tel"
                         id="phone"
-                        placeholder="Enter phone number"
+                        placeholder="Teacher phone number"
                     >
 
                 </div>
@@ -705,7 +669,6 @@
                     <input
                         type="email"
                         id="email"
-                        placeholder="teacher@example.com"
                     >
 
                 </div>
@@ -748,18 +711,17 @@
 
                     <select id="status">
 
-                        <option value="active">
+                        <option value="Active">
                             Active
                         </option>
 
-                        <option value="inactive">
+                        <option value="Inactive">
                             Inactive
                         </option>
 
                     </select>
 
                 </div>
-
 
             </div>
 
@@ -773,7 +735,6 @@
                     Save Teacher
 
                 </button>
-
 
                 <button
                     type="button"
@@ -795,18 +756,15 @@
 
 <script>
 
-
 /* =====================================================
-   SUPABASE CONNECTION
+   SUPABASE
    ===================================================== */
 
 const SUPABASE_URL =
     "https://jmdujouzsiiwvrsnwawv.supabase.co";
 
-
 const SUPABASE_KEY =
     "sb_publishable__sdosuGSmD9Lz29D4CG3YA_-8hOYoVn";
-
 
 const supabaseClient =
     window.supabase.createClient(
@@ -839,19 +797,22 @@ let teachers = [];
 
 
 /* =====================================================
-   CHECK LOGIN
+   LOGIN CHECK
    ===================================================== */
 
-async function checkLogin() {
+async function checkLogin(){
 
     const {
-        data: {
+        data:{
             session
         }
-    } = await supabaseClient.auth.getSession();
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
 
 
-    if (!session) {
+    if(!session){
 
         window.location.href =
             "index.html";
@@ -862,27 +823,24 @@ async function checkLogin() {
 
 
     const {
-        data: roleData,
+        data:roleData,
         error
-    } = await supabaseClient
-
-        .from("user_roles")
-
-        .select("role")
-
-        .eq(
-            "user_id",
-            session.user.id
-        )
-
-        .single();
+    } =
+        await supabaseClient
+            .from("user_roles")
+            .select("role")
+            .eq(
+                "user_id",
+                session.user.id
+            )
+            .maybeSingle();
 
 
-    if (
+    if(
         error ||
         !roleData ||
         roleData.role !== "management"
-    ) {
+    ){
 
         await supabaseClient
             .auth
@@ -905,26 +863,37 @@ async function checkLogin() {
    LOAD TEACHERS
    ===================================================== */
 
-async function loadTeachers() {
+async function loadTeachers(){
 
     const {
         data,
         error
-    } = await supabaseClient
+    } =
+        await supabaseClient
+            .from("teachers")
+            .select(`
+                id,
+                teacher_id,
+                first_name,
+                last_name,
+                subject,
+                phone,
+                email,
+                qualification,
+                joining_date,
+                status,
+                created_at,
+                updated_at
+            `)
+            .order(
+                "first_name",
+                {
+                    ascending:true
+                }
+            );
 
-        .from("teachers")
 
-        .select("*")
-
-        .order(
-            "first_name",
-            {
-                ascending: true
-            }
-        );
-
-
-    if (error) {
+    if(error){
 
         showMessage(
             "Unable to load teachers: " +
@@ -940,11 +909,9 @@ async function loadTeachers() {
     teachers =
         data || [];
 
-
     displayTeachers(
         teachers
     );
-
 
     updateSummary(
         teachers
@@ -954,15 +921,15 @@ async function loadTeachers() {
 
 
 /* =====================================================
-   DISPLAY TEACHERS
+   DISPLAY
    ===================================================== */
 
-function displayTeachers(list) {
+function displayTeachers(list){
 
     teacherTable.innerHTML = "";
 
 
-    if (list.length === 0) {
+    if(list.length === 0){
 
         teacherTable.innerHTML = `
 
@@ -985,147 +952,123 @@ function displayTeachers(list) {
     }
 
 
-    list.forEach(teacher => {
+    list.forEach(
+        teacher => {
+
+            const row =
+                document.createElement("tr");
 
 
-        const firstName =
-            teacher.first_name || "";
-
-
-        const lastName =
-            teacher.last_name || "";
-
-
-        const fullName =
-            (
-                firstName +
+            const fullName =
+                (
+                    teacher.first_name ||
+                    ""
+                ) +
                 " " +
-                lastName
-            ).trim();
+                (
+                    teacher.last_name ||
+                    ""
+                );
 
 
-        const status =
-            String(
-                teacher.status || ""
-            );
+            const status =
+                teacher.status ||
+                "Active";
 
 
-        let statusClass =
-            "other-status";
+            const statusClass =
+                status.toLowerCase() ===
+                "active"
+                    ? "status-active"
+                    : "status-inactive";
 
 
-        if (
-            status.toLowerCase() ===
-            "active"
-        ) {
+            row.innerHTML = `
 
-            statusClass =
-                "active-status";
+                <td>
+                    <strong>
+                        ${safe(
+                            teacher.teacher_id
+                        )}
+                    </strong>
+                </td>
+
+                <td>
+                    ${safe(
+                        fullName.trim()
+                    )}
+                </td>
+
+                <td>
+                    <span class="subject">
+                        ${safe(
+                            teacher.subject
+                        )}
+                    </span>
+                </td>
+
+                <td>
+                    ${safe(
+                        teacher.phone
+                    )}
+                </td>
+
+                <td>
+                    ${safe(
+                        teacher.email
+                    )}
+                </td>
+
+                <td>
+                    ${safe(
+                        teacher.qualification
+                    )}
+                </td>
+
+                <td>
+                    ${formatDate(
+                        teacher.joining_date
+                    )}
+                </td>
+
+                <td>
+
+                    <span
+                        class="status ${statusClass}">
+
+                        ${safe(status)}
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <button
+                        class="edit"
+                        onclick="editTeacher('${teacher.id}')">
+
+                        Edit
+
+                    </button>
+
+                    <button
+                        class="delete"
+                        onclick="deleteTeacher('${teacher.id}')">
+
+                        Delete
+
+                    </button>
+
+                </td>
+
+            `;
+
+
+            teacherTable.appendChild(row);
 
         }
-
-
-        if (
-            status.toLowerCase() ===
-            "inactive"
-        ) {
-
-            statusClass =
-                "inactive-status";
-
-        }
-
-
-        const row =
-            document.createElement("tr");
-
-
-        row.innerHTML = `
-
-            <td>
-                ${safe(
-                    teacher.teacher_id
-                )}
-            </td>
-
-            <td>
-                <strong>
-                    ${safe(
-                        fullName
-                    )}
-                </strong>
-            </td>
-
-            <td>
-                ${safe(
-                    teacher.subject
-                )}
-            </td>
-
-            <td>
-                ${safe(
-                    teacher.phone
-                )}
-            </td>
-
-            <td>
-                ${safe(
-                    teacher.email
-                )}
-            </td>
-
-            <td>
-                ${safe(
-                    teacher.qualification
-                )}
-            </td>
-
-            <td>
-                ${formatDate(
-                    teacher.joining_date
-                )}
-            </td>
-
-            <td>
-
-                <span
-                    class="status ${statusClass}">
-
-                    ${safe(
-                        teacher.status ||
-                        "Not Set"
-                    )}
-
-                </span>
-
-            </td>
-
-            <td>
-
-                <button
-                    class="edit"
-                    onclick="editTeacher('${teacher.id}')">
-
-                    Edit
-
-                </button>
-
-                <button
-                    class="delete"
-                    onclick="deleteTeacher('${teacher.id}')">
-
-                    Delete
-
-                </button>
-
-            </td>
-
-        `;
-
-
-        teacherTable.appendChild(row);
-
-    });
+    );
 
 }
 
@@ -1134,60 +1077,49 @@ function displayTeachers(list) {
    SUMMARY
    ===================================================== */
 
-function updateSummary(list) {
+function updateSummary(list){
 
     document
         .getElementById(
-            "teacherCount"
+            "totalTeachers"
         )
         .textContent =
         list.length;
 
 
-    const activeTeachers =
+    const active =
         list.filter(
             teacher =>
                 String(
-                    teacher.status || ""
+                    teacher.status ||
+                    "Active"
                 ).toLowerCase() ===
                 "active"
-        );
+        ).length;
 
 
     document
         .getElementById(
-            "activeTeacherCount"
+            "activeTeachers"
         )
         .textContent =
-        activeTeachers.length;
+        active;
 
 
     const subjects =
-        new Set();
-
-
-    list.forEach(
-        teacher => {
-
-            if (
-                teacher.subject &&
-                String(
-                    teacher.subject
-                ).trim()
-            ) {
-
-                subjects.add(
-                    String(
-                        teacher.subject
-                    )
-                    .trim()
-                    .toLowerCase()
-                );
-
-            }
-
-        }
-    );
+        new Set(
+            list
+                .map(
+                    teacher =>
+                        String(
+                            teacher.subject ||
+                            ""
+                        )
+                        .trim()
+                        .toLowerCase()
+                )
+                .filter(Boolean)
+        );
 
 
     document
@@ -1210,7 +1142,15 @@ document
     )
     .addEventListener(
         "click",
-        function() {
+        function(){
+
+            teacherForm.reset();
+
+            document
+                .getElementById(
+                    "teacherDatabaseId"
+                )
+                .value = "";
 
             document
                 .getElementById(
@@ -1219,24 +1159,12 @@ document
                 .textContent =
                 "Add Teacher";
 
-
-            teacherForm.reset();
-
-
-            document
-                .getElementById(
-                    "teacherRecordId"
-                )
-                .value = "";
-
-
             document
                 .getElementById(
                     "status"
                 )
                 .value =
-                "active";
-
+                "Active";
 
             teacherModal.style.display =
                 "flex";
@@ -1251,95 +1179,15 @@ document
 
 teacherForm.addEventListener(
     "submit",
-    async function(event) {
+    async function(event){
 
         event.preventDefault();
 
 
-        const recordId =
+        const databaseId =
             document
                 .getElementById(
-                    "teacherRecordId"
-                )
-                .value;
-
-
-        const teacherId =
-            document
-                .getElementById(
-                    "teacherId"
-                )
-                .value
-                .trim();
-
-
-        const firstName =
-            document
-                .getElementById(
-                    "firstName"
-                )
-                .value
-                .trim();
-
-
-        const lastName =
-            document
-                .getElementById(
-                    "lastName"
-                )
-                .value
-                .trim();
-
-
-        const subject =
-            document
-                .getElementById(
-                    "subject"
-                )
-                .value
-                .trim();
-
-
-        const phone =
-            document
-                .getElementById(
-                    "phone"
-                )
-                .value
-                .trim();
-
-
-        const email =
-            document
-                .getElementById(
-                    "email"
-                )
-                .value
-                .trim();
-
-
-        const qualification =
-            document
-                .getElementById(
-                    "qualification"
-                )
-                .value
-                .trim();
-
-
-        const joiningDate =
-            document
-                .getElementById(
-                    "joiningDate"
-                )
-                .value ||
-            null;
-
-
-        const status =
-            document
-                .getElementById(
-                    "status"
+                    "teacherDatabaseId"
                 )
                 .value;
 
@@ -1347,67 +1195,116 @@ teacherForm.addEventListener(
         const teacherData = {
 
             teacher_id:
-                teacherId,
+                document
+                    .getElementById(
+                        "teacherId"
+                    )
+                    .value
+                    .trim(),
 
             first_name:
-                firstName,
+                document
+                    .getElementById(
+                        "firstName"
+                    )
+                    .value
+                    .trim(),
 
             last_name:
-                lastName,
+                document
+                    .getElementById(
+                        "lastName"
+                    )
+                    .value
+                    .trim(),
 
             subject:
-                subject,
+                document
+                    .getElementById(
+                        "subject"
+                    )
+                    .value
+                    .trim(),
 
             phone:
-                phone,
+                document
+                    .getElementById(
+                        "phone"
+                    )
+                    .value
+                    .trim(),
 
             email:
-                email,
+                document
+                    .getElementById(
+                        "email"
+                    )
+                    .value
+                    .trim(),
 
             qualification:
-                qualification,
+                document
+                    .getElementById(
+                        "qualification"
+                    )
+                    .value
+                    .trim(),
 
             joining_date:
-                joiningDate,
+                document
+                    .getElementById(
+                        "joiningDate"
+                    )
+                    .value ||
+                null,
 
             status:
-                status
+                document
+                    .getElementById(
+                        "status"
+                    )
+                    .value
 
         };
+
+
+        if(
+            !teacherData.teacher_id ||
+            !teacherData.first_name ||
+            !teacherData.subject
+        ){
+
+            showMessage(
+                "Teacher ID, First Name and Subject are required.",
+                "error"
+            );
+
+            return;
+
+        }
 
 
         let result;
 
 
-        /* UPDATE */
-
-        if (recordId) {
+        if(databaseId){
 
             result =
                 await supabaseClient
-
                     .from("teachers")
-
                     .update(
                         teacherData
                     )
-
                     .eq(
                         "id",
-                        recordId
+                        databaseId
                     );
 
-        }
-
-        /* INSERT */
-
-        else {
+        }else{
 
             result =
                 await supabaseClient
-
                     .from("teachers")
-
                     .insert(
                         teacherData
                     );
@@ -1415,7 +1312,7 @@ teacherForm.addEventListener(
         }
 
 
-        if (result.error) {
+        if(result.error){
 
             showMessage(
                 result.error.message,
@@ -1432,7 +1329,7 @@ teacherForm.addEventListener(
 
 
         showMessage(
-            recordId
+            databaseId
                 ? "Teacher updated successfully."
                 : "Teacher added successfully.",
             "success"
@@ -1450,23 +1347,18 @@ teacherForm.addEventListener(
    ===================================================== */
 
 window.editTeacher =
-    function(id) {
-
+    function(id){
 
         const teacher =
             teachers.find(
                 item =>
-                    String(
-                        item.id
-                    ) ===
+                    String(item.id) ===
                     String(id)
             );
 
 
-        if (!teacher) {
-
+        if(!teacher){
             return;
-
         }
 
 
@@ -1480,7 +1372,7 @@ window.editTeacher =
 
         document
             .getElementById(
-                "teacherRecordId"
+                "teacherDatabaseId"
             )
             .value =
             teacher.id;
@@ -1555,7 +1447,7 @@ window.editTeacher =
                 "status"
             )
             .value =
-            teacher.status || "active";
+            teacher.status || "Active";
 
 
         teacherModal.style.display =
@@ -1565,77 +1457,63 @@ window.editTeacher =
 
 
 /* =====================================================
-   DELETE TEACHER
+   DELETE
    ===================================================== */
 
 window.deleteTeacher =
-    async function(id) {
-
+    async function(id){
 
         const teacher =
             teachers.find(
                 item =>
-                    String(
-                        item.id
-                    ) ===
+                    String(item.id) ===
                     String(id)
             );
 
 
-        if (!teacher) {
-
+        if(!teacher){
             return;
-
         }
 
 
         const name =
             (
-                String(
-                    teacher.first_name ||
-                    ""
-                ) +
-                " " +
-                String(
-                    teacher.last_name ||
-                    ""
-                )
-            ).trim();
+                teacher.first_name ||
+                ""
+            ) +
+            " " +
+            (
+                teacher.last_name ||
+                ""
+            );
 
 
         const confirmed =
             confirm(
-                "Delete " +
-                (
-                    name ||
-                    "this teacher"
-                ) +
-                "?\n\nThis cannot be undone."
+                "Delete teacher " +
+                name.trim() +
+                "? This cannot be undone."
             );
 
 
-        if (!confirmed) {
-
+        if(!confirmed){
             return;
-
         }
 
 
         const {
             error
-        } = await supabaseClient
-
-            .from("teachers")
-
-            .delete()
-
-            .eq(
-                "id",
-                id
-            );
+        } =
+            await supabaseClient
+                .from("teachers")
+                .delete()
+                .eq(
+                    "id",
+                    id
+                );
 
 
-        if (error) {
+        if(error){
 
             showMessage(
                 error.message,
@@ -1668,7 +1546,7 @@ document
     )
     .addEventListener(
         "click",
-        function() {
+        function(){
 
             teacherModal.style.display =
                 "none";
@@ -1683,8 +1561,7 @@ document
 
 searchInput.addEventListener(
     "input",
-    function() {
-
+    function(){
 
         const search =
             this.value
@@ -1692,7 +1569,7 @@ searchInput.addEventListener(
                 .trim();
 
 
-        if (!search) {
+        if(!search){
 
             displayTeachers(
                 teachers
@@ -1707,90 +1584,59 @@ searchInput.addEventListener(
             teachers.filter(
                 teacher => {
 
-
-                    const firstName =
-                        String(
+                    const name =
+                        (
                             teacher.first_name ||
                             ""
-                        )
-                        .toLowerCase();
-
-
-                    const lastName =
-                        String(
+                        ) +
+                        " " +
+                        (
                             teacher.last_name ||
                             ""
-                        )
-                        .toLowerCase();
-
-
-                    const teacherId =
-                        String(
-                            teacher.teacher_id ||
-                            ""
-                        )
-                        .toLowerCase();
-
-
-                    const subject =
-                        String(
-                            teacher.subject ||
-                            ""
-                        )
-                        .toLowerCase();
-
-
-                    const phone =
-                        String(
-                            teacher.phone ||
-                            ""
-                        )
-                        .toLowerCase();
-
-
-                    const email =
-                        String(
-                            teacher.email ||
-                            ""
-                        )
-                        .toLowerCase();
+                        );
 
 
                     return (
 
-                        teacherId.includes(
-                            search
+                        String(
+                            teacher.teacher_id ||
+                            ""
                         )
+                        .toLowerCase()
+                        .includes(search)
 
                         ||
 
-                        firstName.includes(
-                            search
-                        )
+                        name
+                            .toLowerCase()
+                            .includes(search)
 
                         ||
 
-                        lastName.includes(
-                            search
+                        String(
+                            teacher.subject ||
+                            ""
                         )
+                        .toLowerCase()
+                        .includes(search)
 
                         ||
 
-                        subject.includes(
-                            search
+                        String(
+                            teacher.phone ||
+                            ""
                         )
+                        .toLowerCase()
+                        .includes(search)
 
                         ||
 
-                        phone.includes(
-                            search
+                        String(
+                            teacher.email ||
+                            ""
                         )
-
-                        ||
-
-                        email.includes(
-                            search
-                        )
+                        .toLowerCase()
+                        .includes(search)
 
                     );
 
@@ -1807,15 +1653,52 @@ searchInput.addEventListener(
 
 
 /* =====================================================
-   DATE FORMAT
+   SAFE TEXT
    ===================================================== */
 
-function formatDate(value) {
+function safe(value){
 
-    if (!value) {
-
+    if(
+        value === null ||
+        value === undefined
+    ){
         return "";
+    }
 
+
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   DATE
+   ===================================================== */
+
+function formatDate(value){
+
+    if(!value){
+        return "";
     }
 
 
@@ -1823,71 +1706,23 @@ function formatDate(value) {
         new Date(value);
 
 
-    if (
+    if(
         Number.isNaN(
             date.getTime()
         )
-    ) {
-
-        return safe(value);
-
+    ){
+        return value;
     }
 
 
     return date.toLocaleDateString(
         "en-IN",
         {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric"
         }
     );
-
-}
-
-
-/* =====================================================
-   SAFE TEXT
-   ===================================================== */
-
-function safe(value) {
-
-    if (
-        value === null ||
-        value === undefined
-    ) {
-
-        return "";
-
-    }
-
-
-    return String(value)
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
 
 }
 
@@ -1899,7 +1734,7 @@ function safe(value) {
 function showMessage(
     text,
     type
-) {
+){
 
     message.textContent =
         text;
@@ -1912,7 +1747,7 @@ function showMessage(
 
 
     setTimeout(
-        function() {
+        function(){
 
             message.textContent =
                 "";
@@ -1934,7 +1769,7 @@ document
     )
     .addEventListener(
         "click",
-        async function() {
+        async function(){
 
             await supabaseClient
                 .auth
@@ -1957,5 +1792,4 @@ checkLogin();
 </script>
 
 </body>
-
 </html>
