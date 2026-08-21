@@ -3,304 +3,499 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-    <title>Bhargav School | Teacher Dashboard</title>
+<title>Bhargav School | Teacher Dashboard</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <style>
+<style>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f1f5f9;
-            color: #1e293b;
-        }
+body{
 
-        /* SIDEBAR */
+    font-family:Arial,sans-serif;
 
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 250px;
-            height: 100vh;
-            background: #0f172a;
-            color: white;
-            padding: 25px 15px;
-        }
+    background:#f1f5f9;
 
-        .school-name {
-            text-align: center;
-            padding-bottom: 25px;
-            border-bottom: 1px solid #334155;
-        }
+    color:#1e293b;
 
-        .school-name h2 {
-            font-size: 20px;
-            letter-spacing: 1px;
-        }
+}
 
-        .school-name p {
-            color: #94a3b8;
-            margin-top: 5px;
-            font-size: 12px;
-        }
+.sidebar{
 
-        .teacher-box {
-            text-align: center;
-            padding: 20px 5px;
-            border-bottom: 1px solid #334155;
-        }
+    position:fixed;
 
-        .teacher-icon {
-            width: 55px;
-            height: 55px;
-            background: #1e3a8a;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: auto;
-            font-size: 25px;
-        }
+    left:0;
+    top:0;
 
-        .teacher-box h3 {
-            margin-top: 10px;
-            font-size: 16px;
-        }
+    width:250px;
 
-        .teacher-box p {
-            color: #94a3b8;
-            font-size: 12px;
-            margin-top: 4px;
-        }
+    height:100vh;
 
-        .menu {
-            margin-top: 20px;
-        }
+    background:#0f172a;
 
-        .menu a {
-            display: block;
-            color: #cbd5e1;
-            text-decoration: none;
-            padding: 13px 15px;
-            border-radius: 8px;
-            margin-bottom: 5px;
-        }
+    color:white;
 
-        .menu a:hover,
-        .menu a.active {
-            background: #1e3a8a;
-            color: white;
-        }
+    padding:25px 15px;
 
-        .logout {
-            position: absolute;
-            bottom: 25px;
-            left: 15px;
-            right: 15px;
-        }
+}
 
-        .logout button {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #475569;
-            background: transparent;
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-        }
+.school-name{
 
-        .logout button:hover {
-            background: #dc2626;
-        }
+    text-align:center;
 
-        /* MAIN */
+    padding-bottom:25px;
 
-        .main {
-            margin-left: 250px;
-            padding: 30px;
-        }
+    border-bottom:
+        1px solid #334155;
 
-        .topbar {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-        }
+}
 
-        .topbar h1 {
-            font-size: 28px;
-        }
+.school-name h2{
 
-        .topbar p {
-            color: #64748b;
-            margin-top: 7px;
-        }
+    font-size:20px;
 
-        /* CARDS */
+    letter-spacing:1px;
 
-        .cards {
-            display: grid;
-            grid-template-columns:
-                repeat(4, 1fr);
-            gap: 18px;
-            margin-bottom: 25px;
-        }
+}
 
-        .card {
-            background: white;
-            padding: 22px;
-            border-radius: 15px;
-        }
+.school-name p{
 
-        .card-icon {
-            font-size: 25px;
-            margin-bottom: 12px;
-        }
+    color:#94a3b8;
 
-        .card p {
-            color: #64748b;
-            font-size: 13px;
-        }
+    margin-top:5px;
 
-        .card h2 {
-            margin-top: 7px;
-            font-size: 26px;
-        }
+    font-size:12px;
 
-        /* WELCOME */
+}
 
-        .welcome {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-        }
+.teacher-info{
 
-        .welcome h2 {
-            margin-bottom: 10px;
-        }
+    text-align:center;
 
-        .welcome p {
-            color: #64748b;
-            line-height: 1.6;
-        }
+    padding:20px 5px;
 
-        /* QUICK ACTIONS */
+    border-bottom:
+        1px solid #334155;
 
-        .section-title {
-            margin-bottom: 15px;
-            font-size: 20px;
-        }
+}
 
-        .quick-actions {
-            display: grid;
-            grid-template-columns:
-                repeat(4, 1fr);
-            gap: 18px;
-        }
+.teacher-avatar{
 
-        .action {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            text-decoration: none;
-            color: #1e293b;
-            transition: 0.2s;
-        }
+    width:55px;
+    height:55px;
 
-        .action:hover {
-            transform: translateY(-3px);
-            box-shadow:
-                0 8px 20px
-                rgba(0,0,0,0.08);
-        }
+    border-radius:50%;
 
-        .action-icon {
-            font-size: 30px;
-            margin-bottom: 12px;
-        }
+    background:#1e3a8a;
 
-        .action h3 {
-            margin-bottom: 6px;
-        }
+    display:flex;
 
-        .action p {
-            color: #64748b;
-            font-size: 13px;
-        }
+    align-items:center;
 
-        /* LOADING */
+    justify-content:center;
 
-        #loading {
-            text-align: center;
-            padding: 40px;
-            color: #64748b;
-        }
+    margin:auto;
 
-        /* MOBILE */
+    font-size:22px;
 
-        @media (max-width: 1000px) {
+}
 
-            .cards {
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
+.teacher-info h3{
 
-            .quick-actions {
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
+    margin-top:10px;
 
-        }
+    font-size:15px;
 
-        @media (max-width: 700px) {
+}
 
-            .sidebar {
-                position: relative;
-                width: 100%;
-                height: auto;
-            }
+.teacher-info p{
 
-            .logout {
-                position: relative;
-                left: auto;
-                right: auto;
-                bottom: auto;
-                margin-top: 20px;
-            }
+    color:#94a3b8;
 
-            .main {
-                margin-left: 0;
-                padding: 15px;
-            }
+    font-size:12px;
 
-            .cards {
-                grid-template-columns: 1fr;
-            }
+    margin-top:4px;
 
-            .quick-actions {
-                grid-template-columns: 1fr;
-            }
+}
 
-            .topbar h1 {
-                font-size: 23px;
-            }
+.menu{
 
-        }
+    margin-top:20px;
 
-    </style>
+}
+
+.menu a{
+
+    display:block;
+
+    color:#cbd5e1;
+
+    text-decoration:none;
+
+    padding:13px 15px;
+
+    border-radius:8px;
+
+    margin-bottom:5px;
+
+}
+
+.menu a:hover,
+.menu a.active{
+
+    background:#1e3a8a;
+
+    color:white;
+
+}
+
+.logout{
+
+    position:absolute;
+
+    bottom:25px;
+
+    left:15px;
+    right:15px;
+
+}
+
+.logout button{
+
+    width:100%;
+
+    padding:12px;
+
+    border:
+        1px solid #475569;
+
+    background:transparent;
+
+    color:white;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+.logout button:hover{
+
+    background:#dc2626;
+
+}
+
+.main{
+
+    margin-left:250px;
+
+    padding:30px;
+
+}
+
+.topbar{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    margin-bottom:20px;
+
+}
+
+.topbar h1{
+
+    font-size:26px;
+
+}
+
+.topbar p{
+
+    color:#64748b;
+
+    margin-top:6px;
+
+}
+
+.cards{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:15px;
+
+    margin-bottom:20px;
+
+}
+
+.card{
+
+    background:white;
+
+    padding:22px;
+
+    border-radius:15px;
+
+}
+
+.card p{
+
+    color:#64748b;
+
+    font-size:13px;
+
+    margin-bottom:8px;
+
+}
+
+.card h2{
+
+    font-size:25px;
+
+}
+
+.attendance-box{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:15px;
+
+}
+
+.attendance-box h2{
+
+    margin-bottom:20px;
+
+}
+
+.filters{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr 1fr;
+
+    gap:15px;
+
+    margin-bottom:20px;
+
+}
+
+label{
+
+    display:block;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    color:#475569;
+
+    margin-bottom:6px;
+
+}
+
+input,
+select{
+
+    width:100%;
+
+    padding:12px;
+
+    border:
+        1px solid #cbd5e1;
+
+    border-radius:8px;
+
+    font-size:14px;
+
+}
+
+.student-list{
+
+    border:
+        1px solid #e2e8f0;
+
+    border-radius:10px;
+
+    overflow:hidden;
+
+}
+
+.student-row{
+
+    display:grid;
+
+    grid-template-columns:
+        60px 1fr 120px 180px;
+
+    gap:10px;
+
+    align-items:center;
+
+    padding:14px;
+
+    border-bottom:
+        1px solid #e2e8f0;
+
+}
+
+.student-row:last-child{
+
+    border-bottom:none;
+
+}
+
+.student-name{
+
+    font-weight:bold;
+
+}
+
+.admission{
+
+    color:#64748b;
+
+    font-size:12px;
+
+    margin-top:4px;
+
+}
+
+.status-select{
+
+    padding:9px;
+
+}
+
+.save-button{
+
+    margin-top:20px;
+
+    width:100%;
+
+    padding:14px;
+
+    background:#1e3a8a;
+
+    color:white;
+
+    border:none;
+
+    border-radius:9px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+.save-button:hover{
+
+    background:#172554;
+
+}
+
+.empty{
+
+    text-align:center;
+
+    padding:35px;
+
+    color:#64748b;
+
+}
+
+.message{
+
+    text-align:center;
+
+    margin:15px 0;
+
+    font-size:14px;
+
+}
+
+@media(max-width:900px){
+
+    .cards{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .filters{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+@media(max-width:700px){
+
+    .sidebar{
+
+        position:relative;
+
+        width:100%;
+
+        height:auto;
+
+    }
+
+    .logout{
+
+        position:relative;
+
+        left:auto;
+        right:auto;
+        bottom:auto;
+
+        margin-top:20px;
+
+    }
+
+    .main{
+
+        margin-left:0;
+
+        padding:15px;
+
+    }
+
+    .student-row{
+
+        grid-template-columns:
+            35px 1fr 100px;
+
+    }
+
+    .student-row .remarks{
+
+        display:none;
+
+    }
+
+}
+
+</style>
 
 </head>
 
@@ -308,9 +503,8 @@
 <body>
 
 
-<!-- SIDEBAR -->
-
 <aside class="sidebar">
+
 
     <div class="school-name">
 
@@ -321,10 +515,10 @@
     </div>
 
 
-    <div class="teacher-box">
+    <div class="teacher-info">
 
-        <div class="teacher-icon">
-            👨‍🏫
+        <div class="teacher-avatar">
+            👩‍🏫
         </div>
 
         <h3 id="teacherName">
@@ -332,7 +526,11 @@
         </h3>
 
         <p id="teacherSubject">
-            Loading...
+            Subject
+        </p>
+
+        <p id="teacherIdDisplay">
+            ID
         </p>
 
     </div>
@@ -340,25 +538,24 @@
 
     <nav class="menu">
 
-        <a href="teacher-dashboard.html"
-           class="active">
-            📊 Dashboard
+        <a
+            href="teacher-dashboard.html"
+            class="active">
+
+            🏠 Dashboard
+
         </a>
 
-        <a href="attendance.html">
-            🗓️ Attendance
+        <a href="#attendance">
+
+            📅 Attendance
+
         </a>
 
-        <a href="#">
-            📚 Marks
-        </a>
+        <a href="#students">
 
-        <a href="#">
-            📝 Homework
-        </a>
+            👨‍🎓 Students
 
-        <a href="#">
-            📢 Notices
         </a>
 
     </nav>
@@ -367,7 +564,9 @@
     <div class="logout">
 
         <button id="logoutButton">
+
             🚪 Logout
+
         </button>
 
     </div>
@@ -375,249 +574,168 @@
 </aside>
 
 
-<!-- MAIN -->
-
 <main class="main">
 
 
-    <div id="loading">
-        Checking login...
+    <div class="topbar">
+
+        <h1>
+            Welcome, <span id="welcomeName">
+            Teacher
+            </span>
+        </h1>
+
+        <p>
+            Manage your classes and take attendance.
+        </p>
+
     </div>
 
 
-    <div id="dashboard"
-         style="display:none;">
+    <div class="cards">
 
-
-        <!-- TOPBAR -->
-
-        <div class="topbar">
-
-            <h1>
-                Welcome, <span id="welcomeName">
-                    Teacher
-                </span> 👋
-            </h1>
+        <div class="card">
 
             <p>
-                Welcome to your Bhargav School teacher portal.
+                Students
             </p>
 
-        </div>
-
-
-        <!-- CARDS -->
-
-        <div class="cards">
-
-            <div class="card">
-
-                <div class="card-icon">
-                    👨‍🎓
-                </div>
-
-                <p>
-                    Students
-                </p>
-
-                <h2 id="studentCount">
-                    0
-                </h2>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="card-icon">
-                    🗓️
-                </div>
-
-                <p>
-                    Today's Attendance
-                </p>
-
-                <h2 id="attendanceCount">
-                    0
-                </h2>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="card-icon">
-                    📚
-                </div>
-
-                <p>
-                    Subject
-                </p>
-
-                <h2 id="subjectName"
-                    style="font-size:18px;">
-                    -
-                </h2>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="card-icon">
-                    🆔
-                </div>
-
-                <p>
-                    Teacher ID
-                </p>
-
-                <h2 id="teacherId"
-                    style="font-size:16px;">
-                    -
-                </h2>
-
-            </div>
-
-        </div>
-
-
-        <!-- WELCOME -->
-
-        <div class="welcome">
-
-            <h2>
-                Teacher Information
+            <h2 id="studentCount">
+                0
             </h2>
 
-            <p>
-                <strong>Name:</strong>
-                <span id="fullName">-</span>
-            </p>
+        </div>
+
+
+        <div class="card">
 
             <p>
-                <strong>Email:</strong>
-                <span id="teacherEmail">-</span>
+                Present Today
             </p>
 
-            <p>
-                <strong>Phone:</strong>
-                <span id="teacherPhone">-</span>
-            </p>
-
-            <p>
-                <strong>Qualification:</strong>
-                <span id="qualification">-</span>
-            </p>
-
-            <p>
-                <strong>Joining Date:</strong>
-                <span id="joiningDate">-</span>
-            </p>
+            <h2 id="presentCount">
+                0
+            </h2>
 
         </div>
 
 
-        <!-- QUICK ACTIONS -->
+        <div class="card">
 
-        <h2 class="section-title">
-            Quick Actions
+            <p>
+                Absent Today
+            </p>
+
+            <h2 id="absentCount">
+                0
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <section
+        class="attendance-box"
+        id="attendance">
+
+        <h2>
+            📅 Take Attendance
         </h2>
 
 
-        <div class="quick-actions">
+        <div class="filters">
 
 
-            <a href="attendance.html"
-               class="action">
+            <div>
 
-                <div class="action-icon">
-                    🗓️
-                </div>
+                <label>
+                    Date
+                </label>
 
-                <h3>
-                    Take Attendance
-                </h3>
+                <input
+                    type="date"
+                    id="attendanceDate">
 
-                <p>
-                    Mark today's student attendance
-                    from your phone or computer.
-                </p>
-
-            </a>
+            </div>
 
 
-            <a href="#"
-               class="action">
+            <div>
 
-                <div class="action-icon">
-                    📚
-                </div>
+                <label>
+                    Class
+                </label>
 
-                <h3>
-                    Enter Marks
-                </h3>
+                <select id="classSelect">
 
-                <p>
-                    Enter and manage student examination marks.
-                </p>
+                    <option value="">
+                        Select Class
+                    </option>
 
-            </a>
+                </select>
 
-
-            <a href="#"
-               class="action">
-
-                <div class="action-icon">
-                    📝
-                </div>
-
-                <h3>
-                    Homework
-                </h3>
-
-                <p>
-                    Assign homework to your students.
-                </p>
-
-            </a>
+            </div>
 
 
-            <a href="#"
-               class="action">
+            <div>
 
-                <div class="action-icon">
-                    📢
-                </div>
+                <label>
+                    Section
+                </label>
 
-                <h3>
-                    Notices
-                </h3>
+                <select id="sectionSelect">
 
-                <p>
-                    View important school notices.
-                </p>
+                    <option value="">
+                        Select Section
+                    </option>
 
-            </a>
+                </select>
+
+            </div>
 
 
         </div>
 
 
-    </div>
+        <div
+            id="message"
+            class="message">
+        </div>
+
+
+        <div
+            id="studentList"
+            class="student-list">
+
+            <div class="empty">
+
+                Select class and section
+                to load students.
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="save-button"
+            id="saveAttendance">
+
+            💾 Save Attendance
+
+        </button>
+
+
+    </section>
 
 </main>
 
 
 <script>
 
-/* =====================================================
-   SUPABASE
-   ===================================================== */
 
 const SUPABASE_URL =
     "https://jmdujouzsiiwvrsnwawv.supabase.co";
-
 
 const SUPABASE_KEY =
     "sb_publishable__sdosuGSmD9Lz29D4CG3YA_-8hOYoVn";
@@ -630,184 +748,64 @@ const supabaseClient =
     );
 
 
+let teacher = null;
+
+let students = [];
+
+
+const today =
+    new Date()
+        .toISOString()
+        .split("T")[0];
+
+
+document
+    .getElementById(
+        "attendanceDate"
+    )
+    .value = today;
+
+
 /* =====================================================
    CHECK TEACHER LOGIN
    ===================================================== */
 
-async function checkTeacherLogin() {
+function checkTeacherLogin(){
 
-    const {
-        data: {
-            session
-        },
-        error
-    } =
-        await supabaseClient
-            .auth
-            .getSession();
-
-
-    if (error) {
-
-        console.error(error);
-
-        window.location.href =
-            "index.html";
-
-        return;
-
-    }
-
-
-    if (!session) {
-
-        window.location.href =
-            "index.html";
-
-        return;
-
-    }
-
-
-    /* GET ROLE */
-
-    const {
-        data: roleData,
-        error: roleError
-    } =
-        await supabaseClient
-
-            .from("user_roles")
-
-            .select("role")
-
-            .eq(
-                "user_id",
-                session.user.id
-            )
-
-            .single();
-
-
-    if (
-        roleError ||
-        !roleData ||
-        roleData.role !== "teacher"
-    ) {
-
-        alert(
-            "Teacher access required."
+    const saved =
+        localStorage.getItem(
+            "teacherSession"
         );
 
-        await supabaseClient
-            .auth
-            .signOut();
+
+    if(!saved){
 
         window.location.href =
-            "index.html";
+            "teacher-login.html";
 
-        return;
+        return false;
 
     }
 
 
-    /* LOAD TEACHER */
+    try{
 
-    await loadTeacher(
-        session.user
-    );
+        teacher =
+            JSON.parse(saved);
 
+    }
+    catch(error){
 
-    document
-        .getElementById("loading")
-        .style.display =
-        "none";
-
-
-    document
-        .getElementById("dashboard")
-        .style.display =
-        "block";
-
-}
-
-
-/* =====================================================
-   LOAD TEACHER
-   ===================================================== */
-
-async function loadTeacher(user) {
-
-    const email =
-        user.email;
-
-
-    const {
-        data: teacher,
-        error
-    } =
-        await supabaseClient
-
-            .from("teachers")
-
-            .select("*")
-
-            .eq(
-                "email",
-                email
-            )
-
-            .maybeSingle();
-
-
-    if (error) {
-
-        console.error(
-            "Teacher error:",
-            error
+        localStorage.removeItem(
+            "teacherSession"
         );
 
-        return;
+        window.location.href =
+            "teacher-login.html";
+
+        return false;
 
     }
-
-
-    if (!teacher) {
-
-        document
-            .getElementById(
-                "teacherName"
-            )
-            .textContent =
-            "Teacher";
-
-
-        document
-            .getElementById(
-                "welcomeName"
-            )
-            .textContent =
-            "Teacher";
-
-        return;
-
-    }
-
-
-    const firstName =
-        teacher.first_name || "";
-
-
-    const lastName =
-        teacher.last_name || "";
-
-
-    const fullName =
-        (
-            firstName +
-            " " +
-            lastName
-        ).trim();
 
 
     document
@@ -815,8 +813,13 @@ async function loadTeacher(user) {
             "teacherName"
         )
         .textContent =
-        fullName ||
-        "Teacher";
+        (
+            teacher.first_name || ""
+        ) +
+        " " +
+        (
+            teacher.last_name || ""
+        );
 
 
     document
@@ -824,63 +827,8 @@ async function loadTeacher(user) {
             "welcomeName"
         )
         .textContent =
-        fullName ||
+        teacher.first_name ||
         "Teacher";
-
-
-    document
-        .getElementById(
-            "fullName"
-        )
-        .textContent =
-        fullName ||
-        "-";
-
-
-    document
-        .getElementById(
-            "teacherEmail"
-        )
-        .textContent =
-        teacher.email ||
-        email ||
-        "-";
-
-
-    document
-        .getElementById(
-            "teacherPhone"
-        )
-        .textContent =
-        teacher.phone ||
-        "-";
-
-
-    document
-        .getElementById(
-            "qualification"
-        )
-        .textContent =
-        teacher.qualification ||
-        "-";
-
-
-    document
-        .getElementById(
-            "joiningDate"
-        )
-        .textContent =
-        teacher.joining_date ||
-        "-";
-
-
-    document
-        .getElementById(
-            "subjectName"
-        )
-        .textContent =
-        teacher.subject ||
-        "-";
 
 
     document
@@ -894,42 +842,340 @@ async function loadTeacher(user) {
 
     document
         .getElementById(
-            "teacherId"
+            "teacherIdDisplay"
         )
         .textContent =
-        teacher.teacher_id ||
-        "-";
+        "ID: " +
+        teacher.teacher_id;
 
 
-    await loadStudentCount();
+    return true;
 
 }
 
 
 /* =====================================================
-   STUDENT COUNT
+   LOAD CLASSES
    ===================================================== */
 
-async function loadStudentCount() {
+async function loadClasses(){
 
     const {
-        count,
+        data,
         error
-    } =
-        await supabaseClient
+    } = await supabaseClient
+
+        .from("students")
+
+        .select("class,section");
+
+
+    if(error){
+
+        showMessage(
+            error.message,
+            false
+        );
+
+        return;
+
+    }
+
+
+    const classes =
+        [
+            ...new Set(
+                (data || [])
+                    .map(
+                        item =>
+                            item.class
+                    )
+                    .filter(Boolean)
+            )
+        ]
+        .sort();
+
+
+    const sections =
+        [
+            ...new Set(
+                (data || [])
+                    .map(
+                        item =>
+                            item.section
+                    )
+                    .filter(Boolean)
+            )
+        ]
+        .sort();
+
+
+    const classSelect =
+        document
+            .getElementById(
+                "classSelect"
+            );
+
+
+    const sectionSelect =
+        document
+            .getElementById(
+                "sectionSelect"
+            );
+
+
+    classSelect.innerHTML =
+        `<option value="">
+            Select Class
+        </option>`;
+
+
+    sectionSelect.innerHTML =
+        `<option value="">
+            Select Section
+        </option>`;
+
+
+    classes.forEach(
+        value => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                value;
+
+            option.textContent =
+                value;
+
+            classSelect.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    sections.forEach(
+        value => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                value;
+
+            option.textContent =
+                value;
+
+            sectionSelect.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   LOAD STUDENTS
+   ===================================================== */
+
+async function loadStudents(){
+
+    const classValue =
+        document
+            .getElementById(
+                "classSelect"
+            )
+            .value;
+
+
+    const sectionValue =
+        document
+            .getElementById(
+                "sectionSelect"
+            )
+            .value;
+
+
+    if(!classValue){
+
+        document
+            .getElementById(
+                "studentList"
+            )
+            .innerHTML = `
+
+                <div class="empty">
+
+                    Select a class.
+
+                </div>
+
+            `;
+
+        return;
+
+    }
+
+
+    let query =
+        supabaseClient
 
             .from("students")
 
             .select(
-                "id",
+                "id,admission_number,student_name,class,section"
+            )
+
+            .eq(
+                "class",
+                classValue
+            )
+
+            .order(
+                "student_name",
                 {
-                    count: "exact",
-                    head: true
+                    ascending:true
                 }
             );
 
 
-    if (error) {
+    if(sectionValue){
+
+        query =
+            query.eq(
+                "section",
+                sectionValue
+            );
+
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await query;
+
+
+    if(error){
+
+        showMessage(
+            error.message,
+            false
+        );
+
+        return;
+
+    }
+
+
+    students =
+        data || [];
+
+
+    document
+        .getElementById(
+            "studentCount"
+        )
+        .textContent =
+        students.length;
+
+
+    if(students.length === 0){
+
+        document
+            .getElementById(
+                "studentList"
+            )
+            .innerHTML = `
+
+                <div class="empty">
+
+                    No students found.
+
+                </div>
+
+            `;
+
+        return;
+
+    }
+
+
+    await loadExistingAttendance();
+
+
+    displayStudents();
+
+}
+
+
+/* =====================================================
+   LOAD EXISTING ATTENDANCE
+   ===================================================== */
+
+let existingAttendance = {};
+
+
+async function loadExistingAttendance(){
+
+    existingAttendance = {};
+
+
+    const date =
+        document
+            .getElementById(
+                "attendanceDate"
+            )
+            .value;
+
+
+    if(!date || students.length === 0){
+
+        return;
+
+    }
+
+
+    const ids =
+        students.map(
+            student =>
+                student.id
+        );
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+
+            .from("attendance")
+
+            .select(
+                "student_id,status,remarks"
+            )
+
+            .eq(
+                "attendance_date",
+                date
+            )
+
+            .in(
+                "student_id",
+                ids
+            );
+
+
+    if(error){
 
         console.error(error);
 
@@ -938,14 +1184,493 @@ async function loadStudentCount() {
     }
 
 
-    document
-        .getElementById(
-            "studentCount"
-        )
-        .textContent =
-        count || 0;
+    (data || []).forEach(
+        record => {
+
+            existingAttendance[
+                record.student_id
+            ] = record;
+
+        }
+    );
 
 }
+
+
+/* =====================================================
+   DISPLAY STUDENTS
+   ===================================================== */
+
+function displayStudents(){
+
+    const container =
+        document
+            .getElementById(
+                "studentList"
+            );
+
+
+    container.innerHTML = "";
+
+
+    students.forEach(
+        (student,index) => {
+
+            const existing =
+                existingAttendance[
+                    student.id
+                ];
+
+
+            const status =
+                existing
+                    ? existing.status
+                    : "Present";
+
+
+            const remarks =
+                existing
+                    ? (
+                        existing.remarks ||
+                        ""
+                    )
+                    : "";
+
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "student-row";
+
+
+            row.dataset.studentId =
+                student.id;
+
+
+            row.innerHTML = `
+
+                <div>
+                    ${index + 1}
+                </div>
+
+                <div>
+
+                    <div class="student-name">
+
+                        ${safe(
+                            student.student_name
+                        )}
+
+                    </div>
+
+                    <div class="admission">
+
+                        Admission:
+                        ${safe(
+                            student.admission_number
+                        )}
+
+                    </div>
+
+                </div>
+
+                <div>
+
+                    <select
+                        class="status-select attendance-status">
+
+                        <option
+                            value="Present"
+                            ${status === "Present"
+                                ? "selected"
+                                : ""}>
+
+                            Present
+
+                        </option>
+
+                        <option
+                            value="Absent"
+                            ${status === "Absent"
+                                ? "selected"
+                                : ""}>
+
+                            Absent
+
+                        </option>
+
+                        <option
+                            value="Late"
+                            ${status === "Late"
+                                ? "selected"
+                                : ""}>
+
+                            Late
+
+                        </option>
+
+                        <option
+                            value="Leave"
+                            ${status === "Leave"
+                                ? "selected"
+                                : ""}>
+
+                            Leave
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="remarks">
+
+                    <input
+                        class="attendance-remarks"
+                        placeholder="Remarks"
+                        value="${safe(
+                            remarks
+                        )}">
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                row
+            );
+
+        }
+    );
+
+
+    updateAttendanceCounts();
+
+}
+
+
+/* =====================================================
+   ATTENDANCE COUNTS
+   ===================================================== */
+
+function updateAttendanceCounts(){
+
+    const selects =
+        document.querySelectorAll(
+            ".attendance-status"
+        );
+
+
+    let present = 0;
+
+    let absent = 0;
+
+
+    selects.forEach(
+        select => {
+
+            if(
+                select.value ===
+                "Present"
+            ){
+
+                present++;
+
+            }
+
+
+            if(
+                select.value ===
+                "Absent"
+            ){
+
+                absent++;
+
+            }
+
+        }
+    );
+
+
+    document
+        .getElementById(
+            "presentCount"
+        )
+        .textContent =
+        present;
+
+
+    document
+        .getElementById(
+            "absentCount"
+        )
+        .textContent =
+        absent;
+
+}
+
+
+document.addEventListener(
+    "change",
+    function(event){
+
+        if(
+            event.target.classList
+                .contains(
+                    "attendance-status"
+                )
+        ){
+
+            updateAttendanceCounts();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   SAVE ATTENDANCE
+   ===================================================== */
+
+document
+    .getElementById(
+        "saveAttendance"
+    )
+    .addEventListener(
+        "click",
+        saveAttendance
+    );
+
+
+async function saveAttendance(){
+
+    if(students.length === 0){
+
+        showMessage(
+            "Please select a class first.",
+            false
+        );
+
+        return;
+
+    }
+
+
+    const date =
+        document
+            .getElementById(
+                "attendanceDate"
+            )
+            .value;
+
+
+    if(!date){
+
+        showMessage(
+            "Please select attendance date.",
+            false
+        );
+
+        return;
+
+    }
+
+
+    const rows =
+        document.querySelectorAll(
+            ".student-row"
+        );
+
+
+    const records =
+        Array.from(rows).map(
+            row => {
+
+                return {
+
+                    attendance_date:
+                        date,
+
+                    student_id:
+                        row.dataset.studentId,
+
+                    status:
+                        row
+                            .querySelector(
+                                ".attendance-status"
+                            )
+                            .value,
+
+                    remarks:
+                        row
+                            .querySelector(
+                                ".attendance-remarks"
+                            )
+                            .value
+                            .trim()
+
+                };
+
+            }
+        );
+
+
+    const button =
+        document
+            .getElementById(
+                "saveAttendance"
+            );
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "Saving...";
+
+
+    /*
+       Delete existing attendance
+       for these students/date.
+    */
+
+    const studentIds =
+        students.map(
+            student =>
+                student.id
+        );
+
+
+    const {
+        error:
+            deleteError
+    } =
+        await supabaseClient
+
+            .from("attendance")
+
+            .delete()
+
+            .eq(
+                "attendance_date",
+                date
+            )
+
+            .in(
+                "student_id",
+                studentIds
+            );
+
+
+    if(deleteError){
+
+        showMessage(
+            deleteError.message,
+            false
+        );
+
+        button.disabled = false;
+
+        button.textContent =
+            "💾 Save Attendance";
+
+        return;
+
+    }
+
+
+    const {
+        error:
+            insertError
+    } =
+        await supabaseClient
+
+            .from("attendance")
+
+            .insert(
+                records
+            );
+
+
+    if(insertError){
+
+        showMessage(
+            insertError.message,
+            false
+        );
+
+        button.disabled = false;
+
+        button.textContent =
+            "💾 Save Attendance";
+
+        return;
+
+    }
+
+
+    showMessage(
+        "Attendance saved successfully.",
+        true
+    );
+
+
+    await loadExistingAttendance();
+
+    displayStudents();
+
+
+    button.disabled = false;
+
+    button.textContent =
+        "💾 Save Attendance";
+
+}
+
+
+/* =====================================================
+   FILTER EVENTS
+   ===================================================== */
+
+document
+    .getElementById(
+        "classSelect"
+    )
+    .addEventListener(
+        "change",
+        loadStudents
+    );
+
+
+document
+    .getElementById(
+        "sectionSelect"
+    )
+    .addEventListener(
+        "change",
+        loadStudents
+    );
+
+
+document
+    .getElementById(
+        "attendanceDate"
+    )
+    .addEventListener(
+        "change",
+        async function(){
+
+            await loadExistingAttendance();
+
+            displayStudents();
+
+        }
+    );
 
 
 /* =====================================================
@@ -958,25 +1683,114 @@ document
     )
     .addEventListener(
         "click",
-        async function() {
+        function(){
 
-            await supabaseClient
-                .auth
-                .signOut();
-
+            localStorage.removeItem(
+                "teacherSession"
+            );
 
             window.location.href =
-                "index.html";
+                "teacher-login.html";
 
         }
     );
 
 
 /* =====================================================
+   MESSAGE
+   ===================================================== */
+
+function showMessage(
+    text,
+    success
+){
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    message.textContent =
+        text;
+
+
+    message.style.color =
+        success
+            ? "#15803d"
+            : "#dc2626";
+
+
+    setTimeout(
+        function(){
+
+            message.textContent =
+                "";
+
+        },
+        4000
+    );
+
+}
+
+
+/* =====================================================
+   SAFE TEXT
+   ===================================================== */
+
+function safe(value){
+
+    if(
+        value === null ||
+        value === undefined
+    ){
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
    START
    ===================================================== */
 
-checkTeacherLogin();
+if(
+    checkTeacherLogin()
+){
+
+    loadClasses();
+
+}
 
 </script>
 
